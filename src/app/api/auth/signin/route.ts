@@ -4,24 +4,6 @@ import authApiRequest from "@/apiRequests/auth";
 import { HttpError } from "@/lib/http";
 
 export async function POST(request: Request) {
-  // const body = await request.json();
-  // const tokenCybersoft:string = body ;
-  // if (!tokenCybersoft) {
-  //   return Response.json(
-  //     { message: 'tokenCybersoft không nhận được' },
-  //     {
-  //       status: 400,
-  //     }
-  //   );
-  // }
-  // return Response.json(
-  //   body,
-  //   {
-  //     status: 200,
-  //     headers: { "Set-Cookie": `tokenCybersoft=${tokenCybersoft}; Path=/; HttpOnly; SameSite=Lax; Secure` },
-  //   }
-  // );
-
   const body = (await request.json()) as SigninBodyType;
     const cookieStore = await cookies();
   try {

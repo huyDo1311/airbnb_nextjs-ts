@@ -28,6 +28,7 @@ export default function SigninForm() {
       toast({
         description: 'Xin chào ' + result.content.user.name
       })
+      window.location.href = '/';
     } catch (error:any) {
       handleErrorApi({
         error,

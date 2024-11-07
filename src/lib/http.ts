@@ -146,7 +146,7 @@ const request = async <Response>(
         localStorage.setItem("tokenCybersoft", token);
         clienttokenCybersoft.value = (payload as SigninResponseType).content.token;
 
-    } else if (normalizeURL === "api/auth/logout") {
+    } else if (normalizeURL === "api/auth/signout") {
       localStorage.removeItem("tokenCybersoft");
     }
   }

@@ -6,3 +6,9 @@ export const useSigninMuatation = () => {
         mutationFn: authApiRequest.NextClientToNextServerSignin
     })
 }
+
+export const useSignoutMuatation = () => {
+    return useMutation({
+        mutationFn: authApiRequest.NextClientToNextServerSignout
+    })
+}

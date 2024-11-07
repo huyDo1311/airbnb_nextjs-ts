@@ -6,6 +6,9 @@ const authApiRequest = {
   NextClientToNextServerSignin: (body:SigninBodyType) => http.post<SigninResponseType>(`/api/auth/signin`,body, {
     baseUrl: '',
   }),
+  NextClientToNextServerSignout: () => http.post(`/api/auth/signout`,null, {
+    baseUrl: '',
+  }),
 }
 
 export default authApiRequest
