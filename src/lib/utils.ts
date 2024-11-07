@@ -59,3 +59,6 @@ export const handleErrorApi = ({
   //   })
   // }
 }
+
+const isBrowser = typeof window !== 'undefined';
+export const getTokenCybersoftFromLocalStorage = () => (isBrowser ? localStorage.getItem('tokenCybersoft') : null);
