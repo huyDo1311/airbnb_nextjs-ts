@@ -24,7 +24,7 @@ export const handleErrorApi = ({
   setError?: UseFormSetError<any>
   duration?: number
 }) => {
-  console.log(error.payload);
+  // console.log(error.payload);
   error?.payload?.errors?.forEach((item:any) => {
     setError?.(item.field, {
       type: 'server',

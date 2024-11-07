@@ -2,9 +2,9 @@ import http from "@/lib/http";
 import { SigninBodyType, SigninResponseType } from "@/schemaValidations/auth.schema";
 
 const authApiRequest = {
-  NextServerToServerSigin: (body:SigninBodyType ) => http.post<SigninResponseType>(`/api/auth/signin`,body),
-  NextClientToNextServerSigin: (body:SigninBodyType ) => http.post<SigninResponseType>(`/api/auth/signin`,body, {
-    baseUrl: ''
+  NextServerToServerSignin: (body:SigninBodyType ) => http.post<SigninResponseType>(`/api/auth/signin`,body),
+  NextClientToNextServerSignin: (body:SigninBodyType) => http.post<SigninResponseType>(`/api/auth/signin`,body, {
+    baseUrl: '',
   }),
 }
 

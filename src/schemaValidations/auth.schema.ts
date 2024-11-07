@@ -35,7 +35,9 @@ export type SignupResponseType = z.infer<typeof SignupResponse>;
 
 // Signin Request Body
 export const SigninBody = z.object({
-  email: z.string().email(),
+  // email: z.string().email(),
+  // password: z.string().min(6).max(100)
+  email: z.string(),
   password: z.string()
 }).strict();
 
