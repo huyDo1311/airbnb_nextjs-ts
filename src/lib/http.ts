@@ -1,8 +1,10 @@
+import { Caramel } from 'next/font/google';
 import envConfig from "@/config";
 import { SigninResponseType } from "@/schemaValidations/auth.schema";
 // import { normalizePath } from "./utils";
 import { redirect } from "next/navigation";
 import { normalizePath } from "@/lib/utils";
+
 
 type CustomOptions = RequestInit & {
   baseUrl?: string;
@@ -56,20 +58,20 @@ export class EntityError extends HttpError {
   }
 }
 
-class tokenCybersoft {
-  private token = "";
-  get value() {
-    return this.token;
-  }
-  set value(token: string) {
-    if (typeof window === "undefined") {
-      throw new Error("Cannot set token on the server side");
-    }
-    this.token = token;
-  }
-}
+// class tokenCybersoft {
+//   private token = "";
+//   get value() {
+//     return this.token;
+//   }
+//   set value(token: string) {
+//     if (typeof window === "undefined") {
+//       throw new Error("Cannot set token on the server side");
+//     }
+//     this.token = token;
+//   }
+// }
 
-export const clienttokenCybersoft = new tokenCybersoft();
+// export const clienttokenCybersoft = new tokenCybersoft();
 
 // export const clientSessionToken = new SessionToken();
 // let clientLogoutRequest: null | Promise<any> = null;
@@ -110,16 +112,18 @@ const request = async <Response>(
         };
 
   if (isClient) {
-    let tokenCybersoft = localStorage.getItem("tokenCybersoft");
+    // let tokenCybersoft = localStorage.getItem("tokenCybersoft");
+    let tokenCybersoft = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5Mb3AiOiJCb290Y2FtcCA3MSIsIkhldEhhblN0cmluZyI6IjAxLzA0LzIwMjUiLCJIZXRIYW5UaW1lIjoiMTc0MzQ2NTYwMDAwMCIsIm5iZiI6MTcxNDA2NDQwMCwiZXhwIjoxNzQzNjEzMjAwfQ.1tMnTQqva72K1_dfy7Il8zGazsZvipWNYjtqBrR_2aM';
 
     if (!tokenCybersoft) {
       tokenCybersoft = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5Mb3AiOiJCb290Y2FtcCA3MSIsIkhldEhhblN0cmluZyI6IjAxLzA0LzIwMjUiLCJIZXRIYW5UaW1lIjoiMTc0MzQ2NTYwMDAwMCIsIm5iZiI6MTcxNDA2NDQwMCwiZXhwIjoxNzQzNjEzMjAwfQ.1tMnTQqva72K1_dfy7Il8zGazsZvipWNYjtqBrR_2aM`;
     }
-    baseHeaders["tokenCybersoft"] = tokenCybersoft;
+    baseHeaders['tokenCybersoft'] = tokenCybersoft;
   } else {
     const tokenCybersoft = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5Mb3AiOiJCb290Y2FtcCA3MSIsIkhldEhhblN0cmluZyI6IjAxLzA0LzIwMjUiLCJIZXRIYW5UaW1lIjoiMTc0MzQ2NTYwMDAwMCIsIm5iZiI6MTcxNDA2NDQwMCwiZXhwIjoxNzQzNjEzMjAwfQ.1tMnTQqva72K1_dfy7Il8zGazsZvipWNYjtqBrR_2aM`;
     baseHeaders["tokenCybersoft"] = tokenCybersoft;
   }
+
 
   const res = await fetch(fullUrl, {
     ...options,
@@ -143,11 +147,11 @@ const request = async <Response>(
     if (normalizeURL === "api/auth/signin") {
       console.log("🚀 ~ payload:", payload);
       const {token}  = (payload as SigninResponseType).content;
-        localStorage.setItem("tokenCybersoft", token);
-        clienttokenCybersoft.value = (payload as SigninResponseType).content.token;
+        localStorage.setItem("userToken", token);
+        // clienttokenCybersoft.value = (payload as SigninResponseType).content.token;
 
     } else if (normalizeURL === "api/auth/signout") {
-      localStorage.removeItem("tokenCybersoft");
+      localStorage.removeItem("userToken");
     }
   }
 

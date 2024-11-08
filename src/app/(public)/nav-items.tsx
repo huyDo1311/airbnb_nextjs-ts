@@ -1,7 +1,6 @@
 'use client'
 
 import Link from 'next/link'
-import { getTokenCybersoftFromLocalStorage } from '@/lib/utils';
 import { useEffect, useState } from 'react';
 
 const menuItems = [
@@ -22,7 +21,7 @@ const menuItems = [
   },
   {
     title: 'Quản lý',
-    href: '/manage/dashboard',
+    href: `/manage/dashboard`,
     authRequired: true // true đặp nhập rồi thì hiển thị
   }
 ]
@@ -30,15 +29,15 @@ const menuItems = [
 export default function NavItems({ className }: { className?: string }) {
   
   const [isAuth, setIsAuth] = useState(false);
-
   useEffect(() => {
-    const token = localStorage.getItem('tokenCybersoft');
+    const token = localStorage.getItem('userToken');
     setIsAuth(Boolean(token));
   }, []);
 
 
+
   return menuItems.map((item) => {
-    if (item.authRequired === false && isAuth || item.authRequired === true && !isAuth) return null
+    if (item.authRequired === false && isAuth || item.authRequired === true && !isAuth) return null;
     return (
       <Link href={item.href} key={item.href} className={className}>
         {item.title}

@@ -10,9 +10,12 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
-import { useSignoutMuatation } from '@/queries/useAuth'
 import { handleErrorApi } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
+import { useSignoutMutation } from '@/queries/useAuth'
+import { useUserProfile } from '@/queries/useUser'
+import { useEffect, useState } from 'react'
+
 
 const account = {
   name: 'Nguyễn Văn A',
@@ -20,30 +23,52 @@ const account = {
 }
 
 export default function DropdownAvatar() {
-  const signOutMutation = useSignoutMuatation();
+  const signOutMutation = useSignoutMutation();
   const router = useRouter();
+  const [userId, setUserId] = useState<number>(0);
+  const [hasFetchedUserId, setHasFetchedUserId] = useState(false);
+
+  const { data } = useUserProfile(userId);
+  const account = data?.content
+
+  useEffect(() => {
+    const userString = localStorage.getItem('user');
+    if (userString) {
+      try {
+        const user = JSON.parse(userString); // Chuyển chuỗi JSON thành đối tượng
+        const id = user?.id;
+        setUserId(id); // Lưu id vào state hoặc làm việc với id
+      } catch (error) {
+        console.error("Lỗi khi phân tích dữ liệu người dùng:", error);
+      }
+    }
+  }, [userId]);
+
+
+
   const signout = async () => {
-    if(signOutMutation.isPending) return;
+    if (signOutMutation.isPending) return;
     try {
       await signOutMutation.mutateAsync();
+      localStorage.removeItem("user");
       router.push('/');
-    } catch (error:any) {
-      handleErrorApi({error})
+    } catch (error: any) {
+      handleErrorApi({ error })
     }
-
   }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant='outline' size='icon' className='overflow-hidden rounded-full'>
           <Avatar>
-            <AvatarImage src={account.avatar ?? undefined} alt={account.name} />
-            <AvatarFallback>{account.name.slice(0, 2).toUpperCase()}</AvatarFallback>
+            <AvatarImage src={account?.avatar || undefined} alt={account?.name} />
+            <AvatarFallback>{account?.name?.slice(0, 2).toUpperCase()}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align='end'>
-        <DropdownMenuLabel>{account.name}</DropdownMenuLabel>
+        <DropdownMenuLabel>{account?.name}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <Link href={'/manage/setting'} className='cursor-pointer'>
@@ -57,3 +82,7 @@ export default function DropdownAvatar() {
     </DropdownMenu>
   )
 }
+
+
+
+

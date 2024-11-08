@@ -10,7 +10,7 @@ export async function POST(request: Request) {
     const  payload  = await authApiRequest.NextServerToServerSignin(body);
     console.log('payload', payload);
     const { token } = payload.content;
-    cookieStore.set("tokenCybersoft", token, {
+    cookieStore.set("userToken", token, {
       path: "/",
       httpOnly: true,
       sameSite: "lax",

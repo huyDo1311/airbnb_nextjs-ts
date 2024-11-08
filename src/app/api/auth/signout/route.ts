@@ -4,8 +4,8 @@ import { HttpError } from "@/lib/http";
 
 export async function POST(request: Request) {
     const cookiesStore = await cookies();
-    const tokenCybersoft = cookiesStore.get('tokenCybersoft')?.value;
-    cookiesStore.delete('tokenCybersoft');
+    const tokenCybersoft = cookiesStore.get('userToken')?.value;
+    cookiesStore.delete('userToken');
 
     if(!tokenCybersoft){
         return Response.json({

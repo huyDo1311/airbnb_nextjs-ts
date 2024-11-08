@@ -5,14 +5,16 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useForm } from 'react-hook-form'
 import { Form, FormField, FormItem, FormMessage } from '@/components/ui/form'
-import {  SigninBody, SigninBodyType } from '@/schemaValidations/auth.schema'
+import { SigninBody, SigninBodyType } from '@/schemaValidations/auth.schema'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useSigninMuatation } from '@/queries/useAuth'
 import { toast } from '@/hooks/use-toast'
 import { handleErrorApi } from '@/lib/utils'
+import { useSigninMutation } from '@/queries/useAuth'
+
+
 
 export default function SigninForm() {
-  const signinMutation = useSigninMuatation();
+  const signinMutation = useSigninMutation();
   const form = useForm<SigninBodyType>({
     resolver: zodResolver(SigninBody),
     defaultValues: {
@@ -21,22 +23,27 @@ export default function SigninForm() {
     }
   })
 
-  const onSubmit = async (data:SigninBodyType) => {
-    if(signinMutation.isPending) return
+  const onSubmit = async (data: SigninBodyType) => {
+    if (signinMutation.isPending) return
     try {
-      const result = await signinMutation.mutateAsync(data)
+      const result = await signinMutation.mutateAsync(data);
+      const user = result.content.user;
+      localStorage.setItem('user',JSON.stringify(user));
+    
+      
       toast({
         description: 'Xin chào ' + result.content.user.name
       })
+    
       window.location.href = '/';
-    } catch (error:any) {
+    } catch (error: any) {
       handleErrorApi({
         error,
         setError: form.setError
       })
     }
   }
-  
+
 
   return (
     <Card className='mx-auto max-w-sm'>
@@ -47,9 +54,9 @@ export default function SigninForm() {
       <CardContent>
         <Form {...form}>
           <form className='space-y-2 max-w-[600px] flex-shrink-0 w-full' noValidate
-          onSubmit={form.handleSubmit(onSubmit,err => {
-            console.warn(err)
-          })}
+            onSubmit={form.handleSubmit(onSubmit, err => {
+              console.warn(err)
+            })}
           >
             <div className='grid gap-4'>
               <FormField

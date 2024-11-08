@@ -1,13 +1,14 @@
 import authApiRequest from "@/apiRequests/auth"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation} from "@tanstack/react-query"
 
-export const useSigninMuatation = () => {
+export const useSigninMutation = () => {
     return useMutation({
         mutationFn: authApiRequest.NextClientToNextServerSignin
     })
 }
 
-export const useSignoutMuatation = () => {
+
+export const useSignoutMutation = () => {
     return useMutation({
         mutationFn: authApiRequest.NextClientToNextServerSignout
     })

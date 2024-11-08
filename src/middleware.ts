@@ -8,7 +8,7 @@ const unAuthPaths = ['/signin']
 // This function can be marked `async` if using `await` inside
 export function middleware(request: NextRequest) {
   const {pathname} = request.nextUrl;
-  const isAuth = Boolean(request.cookies.get('tokenCybersoft')?.value);
+  const isAuth = Boolean(request.cookies.get('userToken')?.value);
   if(privatePaths.some(path => pathname.startsWith(path)) && !isAuth){
     return NextResponse.redirect(new URL('/', request.url));
   }
