@@ -26,23 +26,21 @@ export default function DropdownAvatar() {
   const signOutMutation = useSignoutMutation();
   const router = useRouter();
   const [userId, setUserId] = useState<number>(0);
-  const [hasFetchedUserId, setHasFetchedUserId] = useState(false);
+  const [handleFetch, setHandleFetch] = useState(false);
 
-  const { data } = useUserProfile(userId);
+  const { data } = useUserProfile(userId,handleFetch);
+  // const { data } = userId !== 0 ? useUserProfile(userId) : { data: null };
   const account = data?.content
 
   useEffect(() => {
     const userString = localStorage.getItem('user');
     if (userString) {
-      try {
-        const user = JSON.parse(userString); // Chuyển chuỗi JSON thành đối tượng
-        const id = user?.id;
-        setUserId(id); // Lưu id vào state hoặc làm việc với id
-      } catch (error) {
-        console.error("Lỗi khi phân tích dữ liệu người dùng:", error);
-      }
+      const user = JSON.parse(userString); // Chuyển chuỗi JSON thành đối tượng
+      const id = user?.id;
+      setUserId(id); // Lưu id vào state hoặc làm việc với id
+      setHandleFetch(true)
     }
-  }, [userId]);
+  }, []);
 
 
 
