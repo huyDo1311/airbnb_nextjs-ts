@@ -1,5 +1,6 @@
 import userApiRequest from "@/apiRequests/user"
 import { useQuery } from '@tanstack/react-query';
+import {GetUserResponseType} from '@/schemaValidations/user.schema';
 
 
 

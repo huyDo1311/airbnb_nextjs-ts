@@ -35,7 +35,7 @@ export default function SigninForm() {
         description: 'Xin chào ' + result.content.user.name
       })
     
-      window.location.href = '/';
+      window.location.href = '/manage/dashboard';
     } catch (error: any) {
       handleErrorApi({
         error,

@@ -25,15 +25,14 @@ const account = {
 export default function DropdownAvatar() {
   const signOutMutation = useSignoutMutation();
   const router = useRouter();
+
   const [userId, setUserId] = useState<number>(0);
   const [handleFetch, setHandleFetch] = useState(false);
-
-  const { data } = useUserProfile(userId,handleFetch);
-  // const { data } = userId !== 0 ? useUserProfile(userId) : { data: null };
+  const { data } = useUserProfile(userId, handleFetch);
   const account = data?.content
 
   useEffect(() => {
-    const userString = localStorage.getItem('user');
+    const userString = localStorage.getItem('user') ? localStorage.getItem('user') : localStorage.getItem('userProfile');
     if (userString) {
       const user = JSON.parse(userString); // Chuyển chuỗi JSON thành đối tượng
       const id = user?.id;
@@ -42,7 +41,10 @@ export default function DropdownAvatar() {
     }
   }, []);
 
-
+  useEffect(() => {
+    // localStorage.removeItem('user');
+    localStorage.setItem('userProfile', JSON.stringify(account));
+  }, [account]);
 
   const signout = async () => {
     if (signOutMutation.isPending) return;
