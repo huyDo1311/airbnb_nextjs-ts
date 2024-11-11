@@ -108,9 +108,11 @@ export const UserSchema = z.object({
 
 export type UserType = z.TypeOf<typeof UserSchema>;
 
-export const UsertListRes = z.object({
-  data: z.array(UserSchema),
-  message: z.string(),
+export const UsertListRes = z.object({  
+    statusCode: z.number(), // Mã trạng thái HTTP
+    content: z.array(UserSchema),
+    dateTime: z.string().datetime(), // ISO 8601 datetime format
+  
 });
 
 export type UserListResType = z.TypeOf<typeof UsertListRes>;

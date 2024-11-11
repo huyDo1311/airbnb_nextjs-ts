@@ -43,8 +43,9 @@ import {
 } from '@/components/ui/alert-dialog'
 import { useSearchParams } from 'next/navigation'
 import AutoPagination from '@/components/auto-pagination'
+import { useGetUserList } from '@/queries/useUser'
 
-type AccountItem = UserListResType['data'][0]
+type AccountItem = UserListResType['content'][0]
 
 const AccountTableContext = createContext<{
   setEmployeeIdEdit: (value: number) => void
@@ -52,32 +53,59 @@ const AccountTableContext = createContext<{
   employeeDelete: AccountItem | null
   setEmployeeDelete: (value: AccountItem | null) => void
 }>({
-  setEmployeeIdEdit: (value: number | undefined) => {},
+  setEmployeeIdEdit: (value: number | undefined) => { },
   employeeIdEdit: undefined,
   employeeDelete: null,
-  setEmployeeDelete: (value: AccountItem | null) => {}
+  setEmployeeDelete: (value: AccountItem | null) => { }
 })
 
 export const columns: ColumnDef<UserType>[] = [
   {
+    id: 'stt',
+    header: 'STT',
+    cell: ({ row }) => {
+      return (
+        <>{row.index + 1}</>
+      )
+    }
+  },
+  {
     accessorKey: 'id',
-    header: 'ID'
+    header: ({ column }) => {
+      return (
+        <Button variant='ghost' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+          ID
+          <CaretSortIcon className='ml-2 h-4 w-4' />
+        </Button>
+      )
+    },
   },
   {
     accessorKey: 'avatar',
     header: 'Avatar',
-    cell: ({ row }) => (
-      <div>
-        <Avatar className='aspect-square w-[100px] h-[100px] rounded-md object-cover'>
-          <AvatarImage src={row.getValue('avatar')} />
-          <AvatarFallback className='rounded-none'>{row.original.name}</AvatarFallback>
-        </Avatar>
-      </div>
-    )
+    cell: ({ row }) => {
+      const avatarUrl = row.getValue('avatar');
+      console.log(avatarUrl);
+      return (
+        <div>
+          <Avatar className='aspect-square w-[100px] h-[100px] rounded-md object-cover'>
+            <AvatarImage src={row.getValue('avatar')} />
+            <AvatarFallback className='rounded-none'>{row.original.name}</AvatarFallback>
+          </Avatar>
+        </div>
+      )
+    }
   },
   {
     accessorKey: 'name',
-    header: 'Tên',
+    header: ({ column }) => {
+      return (
+        <Button variant='ghost' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+          Tên
+          <CaretSortIcon className='ml-2 h-4 w-4' />
+        </Button>
+      )
+    },
     cell: ({ row }) => <div className='capitalize'>{row.getValue('name')}</div>
   },
   {
@@ -165,7 +193,10 @@ export default function AccountTable() {
   // const params = Object.fromEntries(searchParam.entries())
   const [employeeIdEdit, setEmployeeIdEdit] = useState<number | undefined>()
   const [employeeDelete, setEmployeeDelete] = useState<AccountItem | null>(null)
-  const data: any[] = []
+
+
+  const userListQuery = useGetUserList();
+  const data = userListQuery.data?.content ?? [];
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
@@ -207,7 +238,7 @@ export default function AccountTable() {
   return (
     <AccountTableContext.Provider value={{ employeeIdEdit, setEmployeeIdEdit, employeeDelete, setEmployeeDelete }}>
       <div className='w-full'>
-        <EditEmployee id={employeeIdEdit} setId={setEmployeeIdEdit} onSubmitSuccess={() => {}} />
+        <EditEmployee id={employeeIdEdit} setId={setEmployeeIdEdit} onSubmitSuccess={() => { }} />
         <AlertDialogDeleteAccount employeeDelete={employeeDelete} setEmployeeDelete={setEmployeeDelete} />
         <div className='flex items-center py-4'>
           <Input
