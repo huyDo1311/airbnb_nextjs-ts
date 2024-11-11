@@ -1,6 +1,6 @@
 import userApiRequest from "@/apiRequests/user"
+// import { UserUpdateBodyType } from "@/schemaValidations/user.schema";
 import { useQuery } from '@tanstack/react-query';
-import {GetUserResponseType} from '@/schemaValidations/user.schema';
 
 
 
@@ -11,6 +11,12 @@ export const useUserProfile = (id:number, handleFetch: boolean) => {
         enabled: handleFetch && id !== 0
     })
 }
+
+// export const useUserUpdateProfile = (id:number,body:UserUpdateBodyType) => {
+//     return useMutation({
+//         mutationFn: (id,body) => userApiRequest.NextClientToServerUserUpdateProfile(id,body),
+//     })
+// }
 
 
 

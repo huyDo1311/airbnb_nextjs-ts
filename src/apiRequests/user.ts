@@ -1,8 +1,9 @@
 import http from "@/lib/http"
-import { GetUserResponseType } from "@/schemaValidations/user.schema"
+import { GetUserResponseType, UserUpdateBodyType, UserUpdateResponseType } from "@/schemaValidations/user.schema"
 
-const userApiRequest = {
+export const userApiRequest = {
     NextClientToServerGetUser: (id:number) => http.get<GetUserResponseType>(`/api/users/${id}`),
+    NextClientToServerUserUpdateProfile: (id:number, body: UserUpdateBodyType) => http.put<UserUpdateResponseType>(`/api/users/${id}`,body),
 }
 
 export default userApiRequest

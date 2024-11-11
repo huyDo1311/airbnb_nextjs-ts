@@ -114,10 +114,17 @@ const request = async <Response>(
   if (isClient) {
     // let tokenCybersoft = localStorage.getItem("tokenCybersoft");
     let tokenCybersoft = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5Mb3AiOiJCb290Y2FtcCA3MSIsIkhldEhhblN0cmluZyI6IjAxLzA0LzIwMjUiLCJIZXRIYW5UaW1lIjoiMTc0MzQ2NTYwMDAwMCIsIm5iZiI6MTcxNDA2NDQwMCwiZXhwIjoxNzQzNjEzMjAwfQ.1tMnTQqva72K1_dfy7Il8zGazsZvipWNYjtqBrR_2aM';
+    // let userToken = localStorage.getItem('userToken');
 
-    if (!tokenCybersoft) {
-      tokenCybersoft = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5Mb3AiOiJCb290Y2FtcCA3MSIsIkhldEhhblN0cmluZyI6IjAxLzA0LzIwMjUiLCJIZXRIYW5UaW1lIjoiMTc0MzQ2NTYwMDAwMCIsIm5iZiI6MTcxNDA2NDQwMCwiZXhwIjoxNzQzNjEzMjAwfQ.1tMnTQqva72K1_dfy7Il8zGazsZvipWNYjtqBrR_2aM`;
-    }
+    // if (userToken) {
+    //   // tokenCybersoft = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5Mb3AiOiJCb290Y2FtcCA3MSIsIkhldEhhblN0cmluZyI6IjAxLzA0LzIwMjUiLCJIZXRIYW5UaW1lIjoiMTc0MzQ2NTYwMDAwMCIsIm5iZiI6MTcxNDA2NDQwMCwiZXhwIjoxNzQzNjEzMjAwfQ.1tMnTQqva72K1_dfy7Il8zGazsZvipWNYjtqBrR_2aM`;
+   
+    //   const token = JSON.parse(userToken); 
+    //   baseHeaders['token'] = token; 
+    //   baseHeaders['tokenCybersoft'] = tokenCybersoft;
+    // }
+
+    // baseHeaders['token'] = localStorage.getItem('userToken') ? JSON.parse(localStorage.getItem('userToken')??'') : null; 
     baseHeaders['tokenCybersoft'] = tokenCybersoft;
   } else {
     const tokenCybersoft = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5Mb3AiOiJCb290Y2FtcCA3MSIsIkhldEhhblN0cmluZyI6IjAxLzA0LzIwMjUiLCJIZXRIYW5UaW1lIjoiMTc0MzQ2NTYwMDAwMCIsIm5iZiI6MTcxNDA2NDQwMCwiZXhwIjoxNzQzNjEzMjAwfQ.1tMnTQqva72K1_dfy7Il8zGazsZvipWNYjtqBrR_2aM`;

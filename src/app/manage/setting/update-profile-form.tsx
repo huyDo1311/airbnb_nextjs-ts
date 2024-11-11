@@ -13,10 +13,18 @@ import {  UserUpdateBody, UserUpdateBodyType } from '@/schemaValidations/user.sc
 import { useMemo, useRef, useState, useEffect } from 'react';
 import dayjs from 'dayjs';
 import {useUserProfile} from '@/queries/useUser';
+import { useUploadMediaMutation } from '@/queries/useMedia'
+import {userApiRequest} from '@/apiRequests/user';
+import { handleErrorApi } from '@/lib/utils'
+import {mediaApiRequest} from '@/apiRequests/media';
+import { toast } from '@/hooks/use-toast'
+// import { Value } from '@radix-ui/react-select'
 
 export default function UpdateProfileForm() {
   const [file, setFile] = useState<File | null>(null);
   const avatarInputRef = useRef<HTMLInputElement>(null);
+  const uploadMediaMutation = useUploadMediaMutation();
+
 
   // Cách 1 fetch 2 lần
   const [userId, setUserId] = useState<number>(0);
@@ -33,7 +41,7 @@ export default function UpdateProfileForm() {
       birthday: '',
       gender: true,
       role: 'USER',
-      avatar: account?.avatar ?? ''
+      // avatar: account?.avatar ?? ''
     }
   })
 
@@ -51,17 +59,18 @@ export default function UpdateProfileForm() {
     if(account){
     const { name, email, phone, birthday, gender, role, avatar } = account;
     form.reset({
-      name: name ?? '',
-      email: email ?? '',
-      phone: phone ?? '',
+      name: name ,
+      email: email ,
+      phone: phone ,
       birthday: birthday ?? '',
-      gender: gender ?? '',
-      role: role ?? '',
+      gender: gender ,
+      role: role ,
       avatar: avatar ?? ''
     })
   }
   }, [account]);
 
+  
 
 
 
@@ -97,23 +106,50 @@ export default function UpdateProfileForm() {
 
   //Nếu dùng react 19 và next 15 thì không cần dùng useMemo chỗ này
   // const inputRef = useRef<HTMLInputElement | null>(null)
-  const image = form.watch('avatar')
-
+  const avatar = form.watch('avatar')
   const name = form.watch('name')
-  const previewAvatar = useMemo(() => {
-    if (file) {
-      return URL.createObjectURL(file);
-    }
-  }, [file])
+  const previewAvatar = () => (file ? URL.createObjectURL(file) : avatar)
+  // const previewAvatar = useMemo(() => {
+  //   if (file) {
+  //     return URL.createObjectURL(file);
+  //   }
+  // }, [file])
 
   const reset = () => {
     form.reset()
     setFile(null)
   }
 
+  const onSubmit = async (values:UserUpdateBodyType) => {
+    console.log('file-onSubmit',file);
+    try {
+      if(file){
+        const formData = new FormData();
+        formData.append('formFile',file);
+        const uploadImage = await mediaApiRequest.upload(formData);
+        console.log("🚀 ~ onSubmit ~ uploadImage:", uploadImage);
+      } 
+      const result = await userApiRequest.NextClientToServerUserUpdateProfile(userId,values);
+      toast({
+        description: result.statusCode
+      })
+    } catch (error) {
+      handleErrorApi({
+        error,
+        setError: form.setError
+      })
+    }
+  }
+
   return (
     <Form {...form} >
-      <form onReset={reset} noValidate className="grid auto-rows-max items-start gap-4 md:gap-8">
+      <form 
+      noValidate className="grid auto-rows-max items-start gap-4 md:gap-8"
+      onReset={reset} 
+      onSubmit={form.handleSubmit(onSubmit,(e) => {
+        console.log(e)
+      })} 
+      >
         <Card x-chunk="dashboard-07-chunk-0">
           <CardHeader>
             <CardTitle>Thông tin cá nhân</CardTitle>
@@ -128,18 +164,20 @@ export default function UpdateProfileForm() {
                   <FormItem>
                     <div className="flex gap-2 items-start justify-start">
                       <Avatar className="aspect-square w-[100px] h-[100px] rounded-md object-cover">
-                        {(file || image) && (
+                        {/* {(file || avatar) && ( */}
                           <div>
-                            <AvatarImage src={file ? URL.createObjectURL(file) : image} />
+                            <AvatarImage src={previewAvatar()} />
                             <AvatarFallback className="rounded-none">{name}</AvatarFallback>
                           </div>
-                        )}
+                        {/* )} */}
                       </Avatar>
                       <input type="file" accept="image/*" className="hidden" ref={avatarInputRef}
                         onChange={e => {
                           const file = e.target.files?.[0];
                           if (file) {
                             setFile(file)
+                            field.onChange('http://localhost:3000/' + field.name)
+                            console.log('file', file)
                           }
                         }}
                       />
@@ -187,6 +225,11 @@ export default function UpdateProfileForm() {
                     <div className="grid gap-3">
                       <Label htmlFor="email">Email</Label>
                       <Input id="email" type="email" className="w-full" {...field}
+                       onChange={(e) => {
+                        field.onChange(e); // Cập nhật giá trị trong form
+                        // Bạn có thể thực hiện các logic bổ sung nếu cần
+                        console.log("email", e.target.value);
+                      }}
                       />
                       <FormMessage />
                     </div>
@@ -202,7 +245,13 @@ export default function UpdateProfileForm() {
                   <FormItem>
                     <div className="grid gap-3">
                       <Label htmlFor="phone">Số điện thoại</Label>
-                      <Input id="phone" type="text" className="w-full" {...field} />
+                      <Input id="phone" type="text" className="w-full" {...field} 
+                       onChange={(e) => {
+                        field.onChange(e); // Cập nhật giá trị trong form
+                        // Bạn có thể thực hiện các logic bổ sung nếu cần
+                        console.log("phone", e.target.value);
+                      }}
+                      />
                       <FormMessage />
                     </div>
                   </FormItem>
@@ -268,7 +317,8 @@ export default function UpdateProfileForm() {
                         value={field.value ? dayjs(field.value).format('YYYY-MM-DD') : ''}
                         onChange={(e) => {
                           // Cập nhật giá trị birthday trong form dưới định dạng 'YYYY-MM-DD'
-                          field.onChange(e.target.value);
+                          field.onChange((e.target.value));
+                          console.log("birthday:", e.target.value);
                         }}
                       />
                       <FormMessage />
@@ -290,6 +340,11 @@ export default function UpdateProfileForm() {
                         {...field}
                         className="w-full p-2"
                         value={field.value ? 'true' : 'false'}
+                        onChange={(e) => {
+                          // Chuyển đổi giá trị từ string thành boolean
+                          field.onChange(e.target.value === 'true'); // Chuyển 'true' thành true, 'false' thành false
+                          console.log("gender:", e.target.value === 'true');
+                        }}
                       >
                         <option value="true">Nam</option>
                         <option value="false">Nữ</option>
@@ -310,7 +365,13 @@ export default function UpdateProfileForm() {
                   <FormItem>
                     <div className="grid gap-3">
                       <Label htmlFor="role">Vai trò</Label>
-                      <select id="role" {...field} className="w-full p-2">
+                      <select id="role" {...field} className="w-full p-2"
+                         onChange={(e) => {
+                          field.onChange(e); // Cập nhật giá trị trong form
+                          // Bạn có thể thực hiện các logic bổ sung nếu cần
+                          console.log("role:", e.target.value);
+                        }}
+                      >
                         <option value="USER">User</option>
                         <option value="ADMIN">Admin</option>
                       </select>

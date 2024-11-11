@@ -32,11 +32,11 @@ export type GetUserResponseType = z.infer<typeof GetUserResponse>;
 
 export const UserUpdateBody = z
   .object({
-    id: z.number().min(1), // id là số nguyên và phải lớn hơn hoặc bằng 1
-    name: z.string().min(1).max(256), // Tên phải là chuỗi và có độ dài tối thiểu 1 ký tự, tối đa 256 ký tự
-    email: z.string().email(), // Email phải có định dạng hợp lệ
-    phone: z.string().min(10).max(15), // Số điện thoại với độ dài từ 10 đến 15 ký tự
-    birthday: z.string().optional(), // Ngày sinh, có thể không có (optional)
+    // id: z.number().min(1), // id là số nguyên và phải lớn hơn hoặc bằng 1
+    name: z.string(), // Tên phải là chuỗi và có độ dài tối thiểu 1 ký tự, tối đa 256 ký tự
+    email: z.string(), // Email phải có định dạng hợp lệ
+    phone: z.string(), // Số điện thoại với độ dài từ 10 đến 15 ký tự
+    birthday: z.string(), // Ngày sinh, có thể không có (optional)
     gender: z.boolean(), // Giới tính là boolean
     role: z.enum([Role.User, Role.Admin]),
     avatar: z.string().url().optional(),
