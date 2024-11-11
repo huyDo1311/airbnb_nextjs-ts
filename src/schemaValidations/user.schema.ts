@@ -121,7 +121,7 @@ export const CreateUserBody = z
   .object({
     id: z.number(),
     name: z.string(),
-    email: z.string().email(),
+    email: z.string(),
     password: z.string().optional(),
     phone: z.string().optional(),
     birthday: z.string().optional(),
@@ -134,4 +134,15 @@ export type CreateUserBodyType = z.TypeOf<typeof CreateUserBody>
 
 export type CreateUserResponseType = z.infer<typeof GetUserResponse>;
 
+export const DeleteUserResponse = z
+  .object({
+    statusCode: z.number().int(), // statusCode phải là số nguyên
+    message: z.string(), // message là một chuỗi
+    content: z.null(), // content là null
+    dateTime: z.string(), // dateTime là chuỗi, có thể là ISO string
+  })
+  .strict(); // Chặn thêm bất kỳ thuộc tính nào không xác định
+
+// Type của response
+export type DeleteUserResponseType = z.TypeOf<typeof DeleteUserResponse>;
 

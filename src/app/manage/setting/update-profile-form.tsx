@@ -41,7 +41,7 @@ export default function UpdateProfileForm() {
       birthday: '',
       gender: true,
       role: 'USER',
-      // avatar: account?.avatar ?? ''
+      // avatar: undefined
     }
   })
 
