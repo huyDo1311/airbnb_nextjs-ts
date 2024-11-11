@@ -1,5 +1,5 @@
 import { z } from "zod";
-import {Role} from '../constants/type';
+import { Role } from "../constants/type";
 
 // Get User Request Body
 export const GetUserBody = z
@@ -85,7 +85,6 @@ export const UploadAvatarResponse = z
 
 export type UploadAvatarResponseType = z.TypeOf<typeof UploadAvatarResponse>;
 
-
 // // Khai báo kiểu dữ liệu cho body gửi lên server khi upload avatar
 // export const UploadAvatarBody = z.object({
 //   avatar: z.instanceof(File).refine(file =>  file.size > 0, {
@@ -94,3 +93,45 @@ export type UploadAvatarResponseType = z.TypeOf<typeof UploadAvatarResponse>;
 // });
 
 // export type UploadAvatarBodyType = z.TypeOf<typeof UploadAvatarBody>;
+
+export const UserSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  email: z.string().email(),
+  password: z.string().optional(),
+  phone: z.string().optional(),
+  birthday: z.string().optional(),
+  avatar: z.string().url().optional(),
+  gender: z.boolean(),
+  role: z.enum([Role.User, Role.Admin]),
+});
+
+export type UserType = z.TypeOf<typeof UserSchema>;
+
+export const UsertListRes = z.object({
+  data: z.array(UserSchema),
+  message: z.string(),
+});
+
+export type UserListResType = z.TypeOf<typeof UsertListRes>;
+
+
+
+export const CreateUserBody = z
+  .object({
+    id: z.number(),
+    name: z.string(),
+    email: z.string().email(),
+    password: z.string().optional(),
+    phone: z.string().optional(),
+    birthday: z.string().optional(),
+    gender: z.boolean(),
+    role: z.enum([Role.User, Role.Admin]),
+  })
+export type CreateUserBodyType = z.TypeOf<typeof CreateUserBody>
+
+//CreateUserResponseType sử dụng GetUserResponseType
+
+export type CreateUserResponseType = z.infer<typeof GetUserResponse>;
+
+

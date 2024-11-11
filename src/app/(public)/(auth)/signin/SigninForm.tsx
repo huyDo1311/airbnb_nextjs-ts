@@ -15,6 +15,7 @@ import { useSigninMutation } from '@/queries/useAuth'
 
 export default function SigninForm() {
   const signinMutation = useSigninMutation();
+  
   const form = useForm<SigninBodyType>({
     resolver: zodResolver(SigninBody),
     defaultValues: {
@@ -29,7 +30,7 @@ export default function SigninForm() {
       const result = await signinMutation.mutateAsync(data);
       const user = result.content.user;
       localStorage.setItem('user',JSON.stringify(user));
-    
+      
       
       toast({
         description: 'Xin chào ' + result.content.user.name

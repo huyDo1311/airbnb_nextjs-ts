@@ -192,7 +192,6 @@ export default function UpdateProfileForm() {
                     </div>
                   </FormItem>
                 )}
-
               />
 
               {/* Name Field */}
