@@ -44,7 +44,7 @@ export default function AutoPagination({ page, pageSize, pathname }: Props) {
       if (!dotBefore) {
         dotBefore = true
         return (
-          <PaginationItem>
+          <PaginationItem key={index}>
             <PaginationEllipsis />
           </PaginationItem>
         )
@@ -55,7 +55,7 @@ export default function AutoPagination({ page, pageSize, pathname }: Props) {
       if (!dotAfter) {
         dotAfter = true
         return (
-          <PaginationItem>
+          <PaginationItem key={index}>
             <PaginationEllipsis />
           </PaginationItem>
         )
@@ -98,7 +98,7 @@ export default function AutoPagination({ page, pageSize, pathname }: Props) {
   }
   return (
     <Pagination>
-      <PaginationContent>
+      <PaginationContent >
         <PaginationItem>
           <PaginationPrevious
             href={{

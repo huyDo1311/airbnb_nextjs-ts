@@ -43,7 +43,9 @@ import {
 } from '@/components/ui/alert-dialog'
 import { useSearchParams } from 'next/navigation'
 import AutoPagination from '@/components/auto-pagination'
-import { useGetUserList } from '@/queries/useUser'
+import { useDeleteUserMutation, useGetUserList } from '@/queries/useUser'
+import { handleErrorApi } from '@/lib/utils'
+import { toast } from '@/hooks/use-toast'
 
 type AccountItem = UserListResType['content'][0]
 
@@ -179,6 +181,23 @@ function AlertDialogDeleteAccount({
   employeeDelete: AccountItem | null
   setEmployeeDelete: (value: AccountItem | null) => void
 }) {
+
+  const {mutateAsync} = useDeleteUserMutation();
+  const deleteUser = async () => {
+    if(employeeDelete) {
+      try {
+        const result = await mutateAsync(employeeDelete.id);
+        setEmployeeDelete(null);
+        toast({
+          title: result.message
+        })
+      } catch (error) {
+        handleErrorApi({
+          error,
+        })
+      }
+    }
+  }
   return (
     <AlertDialog
       open={Boolean(employeeDelete)}
@@ -192,13 +211,13 @@ function AlertDialogDeleteAccount({
         <AlertDialogHeader>
           <AlertDialogTitle>Xóa nhân viên?</AlertDialogTitle>
           <AlertDialogDescription>
-            Tài khoản <span className='bg-foreground text-primary-foreground rounded px-1'>{employeeDelete?.name}</span>{' '}
+            Tài khoản <span className='bg text-primary-foreground rounded px-1'>{employeeDelete?.name}</span>{' '}
             sẽ bị xóa vĩnh viễn
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction>Continue</AlertDialogAction>
+          <AlertDialogAction onClick={deleteUser}>Continue</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

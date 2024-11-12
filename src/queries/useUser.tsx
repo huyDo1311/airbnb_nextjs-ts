@@ -60,7 +60,7 @@ export const useUpdateMutation = () => {
 export const useDeleteUserMutation = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: ({id}:{id:number}) => userApiRequest.NextClientToServerDeleteUser(id),
+        mutationFn: (id:number) => userApiRequest.NextClientToServerDeleteUser(id),
         onSuccess: () => {
             queryClient.invalidateQueries({
                 queryKey: ['user-list']

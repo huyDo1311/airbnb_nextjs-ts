@@ -89,6 +89,7 @@ export default function EditEmployee({
       })
       onSubmitSuccess && onSubmitSuccess();
       setId(undefined);
+      reset();
     } catch (error) {
       handleErrorApi({
         error,
@@ -103,7 +104,8 @@ export default function EditEmployee({
       open={Boolean(id)}
       onOpenChange={(value) => {
         if (!value) {
-          setId(undefined)
+          setId(undefined);
+          reset();
         }
       }}
     >

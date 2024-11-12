@@ -30,14 +30,11 @@ export default function AddEmployee() {
   const [open, setOpen] = useState(false)
   const addUserMutation = useAddUserMutation();
 
-  const new_uuid = uuidv4();
-  const uuid_hex = new_uuid.replace(/-/g, '').slice(0, 8);
-  const uuid_int = parseInt(uuid_hex, 16);
 
   const form = useForm<CreateUserBodyType>({
     resolver: zodResolver(CreateUserBody),
     defaultValues: {
-      id: uuid_int,
+      id: 0,
       name: '',
       email: '',
       phone: '',
@@ -63,7 +60,7 @@ export default function AddEmployee() {
     try {
       const result = await addUserMutation.mutateAsync(values);
       toast({
-        description: result.statusCode
+        title: 'Thêm thành công'
       })
       // reset();
       // setOpen(false);
