@@ -60,6 +60,25 @@ const AccountTableContext = createContext<{
 })
 
 export const columns: ColumnDef<UserType>[] = [
+  // {
+  //   id: 'checkbox',
+  //   header: ({ table }) => (
+  //     <input
+  //       type="checkbox"
+  //       onChange={(e) => table.toggleAllRowsSelected(e.target.checked)}
+  //       checked={table.getIsAllRowsSelected()}
+  //       className="w-4 h-4"
+  //     />
+  //   ),
+  //   cell: ({ row }) => (
+  //     <input
+  //       type="checkbox"
+  //       checked={row.getIsSelected()}
+  //       onChange={() => row.toggleSelected()}
+  //       className="w-4 h-4"
+  //     />
+  //   ),
+  // },
   {
     id: 'stt',
     header: 'STT',
@@ -84,8 +103,8 @@ export const columns: ColumnDef<UserType>[] = [
     accessorKey: 'avatar',
     header: 'Avatar',
     cell: ({ row }) => {
-      const avatarUrl = row.getValue('avatar');
-      console.log(avatarUrl);
+      // const avatarUrl = row.getValue('avatar');
+      // console.log(avatarUrl);
       return (
         <div>
           <Avatar className='aspect-square w-[100px] h-[100px] rounded-md object-cover'>
@@ -113,7 +132,7 @@ export const columns: ColumnDef<UserType>[] = [
     header: ({ column }) => {
       return (
         <Button variant='ghost' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-          Email
+          Email 
           <CaretSortIcon className='ml-2 h-4 w-4' />
         </Button>
       )
@@ -126,6 +145,7 @@ export const columns: ColumnDef<UserType>[] = [
     cell: function Actions({ row }) {
       const { setEmployeeIdEdit, setEmployeeDelete } = useContext(AccountTableContext)
       const openEditEmployee = () => {
+        // console.log(row.original.id)
         setEmployeeIdEdit(row.original.id)
       }
 

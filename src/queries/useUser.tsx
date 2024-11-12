@@ -25,10 +25,11 @@ export const useGetUserList = () => {
         queryFn: userApiRequest.NextClientToServerGetListUser
     })
 }
-export const useGetUser = ({id}:{id:number}) => {
+export const useGetUser = ({id,enabled}:{id:number,enabled:boolean}) => {
     return useQuery({
         queryKey: ['get-user',id],
-        queryFn: () => userApiRequest.NextClientToServerGetUser(id)
+        queryFn: () => userApiRequest.NextClientToServerGetUser(id),
+        enabled
     })
 }
 
