@@ -131,7 +131,7 @@ export default function UpdateProfileForm() {
       } 
       const result = await userApiRequest.NextClientToServerUserUpdateProfile(userId,values);
       toast({
-        description: result.statusCode
+        title: 'Cập nhật thông tin thành công'
       })
     } catch (error) {
       handleErrorApi({

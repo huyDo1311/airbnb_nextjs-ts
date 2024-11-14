@@ -1,6 +1,6 @@
 'use client'
 
-import { CaretSortIcon, DotsHorizontalIcon } from '@radix-ui/react-icons'
+import { DotsHorizontalIcon } from '@radix-ui/react-icons'
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -13,7 +13,6 @@ import {
   getSortedRowModel,
   useReactTable
 } from '@tanstack/react-table'
-
 import { Button } from '@/components/ui/button'
 
 import {
@@ -26,10 +25,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { UserListResType, UserType } from '@/schemaValidations/user.schema'
-import AddEmployee from '@/app/manage/accounts/add-employee'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import EditEmployee from '@/app/manage/accounts/edit-employee'
 import { createContext, useContext, useEffect, useState } from 'react'
 import {
   AlertDialog,
@@ -41,118 +37,75 @@ import {
   AlertDialogHeader,
   AlertDialogTitle
 } from '@/components/ui/alert-dialog'
+import {formatCurrency, handleErrorApi} from '@/lib/utils';
 import { useSearchParams } from 'next/navigation'
 import AutoPagination from '@/components/auto-pagination'
-import { useDeleteUserMutation, useGetUserList } from '@/queries/useUser'
-import { handleErrorApi } from '@/lib/utils'
-import { toast } from '@/hooks/use-toast'
+import EditLocation from '@/app/manage/location/edit-location'
+import AddLocation from '@/app/manage/location/add-location'
 
-type AccountItem = UserListResType['content'][0]
+import {toast} from '@/hooks/use-toast';
+import { LocationListResType } from '@/schemaValidations/location.schema'
+import { useDeleteLocationMutation, useGetLocationList } from '@/queries/useLocation'
 
-const AccountTableContext = createContext<{
-  setEmployeeIdEdit: (value: number) => void
-  employeeIdEdit: number | undefined
-  employeeDelete: AccountItem | null
-  setEmployeeDelete: (value: AccountItem | null) => void
+type LocationItem = LocationListResType['content'][0]
+
+const LocationTableContext = createContext<{
+  setLocationIdEdit: (value: number) => void
+  locationIdEdit: number | undefined
+  locationDelete: LocationItem | null
+  setLocationDelete: (value: LocationItem | null) => void
 }>({
-  setEmployeeIdEdit: (value: number | undefined) => { },
-  employeeIdEdit: undefined,
-  employeeDelete: null,
-  setEmployeeDelete: (value: AccountItem | null) => { }
+  setLocationIdEdit: (value: number | undefined) => { },
+  locationIdEdit: undefined,
+  locationDelete: null,
+  setLocationDelete: (value: LocationItem | null) => { }
 })
 
-export const columns: ColumnDef<UserType>[] = [
-  // {
-  //   id: 'checkbox',
-  //   header: ({ table }) => (
-  //     <input
-  //       type="checkbox"
-  //       onChange={(e) => table.toggleAllRowsSelected(e.target.checked)}
-  //       checked={table.getIsAllRowsSelected()}
-  //       className="w-4 h-4"
-  //     />
-  //   ),
-  //   cell: ({ row }) => (
-  //     <input
-  //       type="checkbox"
-  //       checked={row.getIsSelected()}
-  //       onChange={() => row.toggleSelected()}
-  //       className="w-4 h-4"
-  //     />
-  //   ),
-  // },
-  {
-    id: 'stt',
-    header: 'STT',
-    cell: ({ row }) => {
-      return (
-        <>{row.index + 1}</>
-      )
-    }
-  },
+export const columns: ColumnDef<LocationItem>[] = [
   {
     accessorKey: 'id',
-    header: ({ column }) => {
-      return (
-        <Button variant='ghost' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-          ID
-          <CaretSortIcon className='ml-2 h-4 w-4' />
-        </Button>
-      )
-    },
+    header: 'ID'
   },
   {
-    accessorKey: 'avatar',
-    header: 'Avatar',
-    cell: ({ row }) => {
-      // const avatarUrl = row.getValue('avatar');
-      // console.log(avatarUrl);
-      return (
-        <div>
-          <Avatar className='aspect-square w-[100px] h-[100px] rounded-md object-cover'>
-            <AvatarImage src={row.getValue('avatar')} />
-            <AvatarFallback className='rounded-none'>{row.original.name}</AvatarFallback>
-          </Avatar>
-        </div>
-      )
-    }
+    accessorKey: 'hinhAnh',
+    header: 'Ảnh',
+    cell: ({ row }) => (
+      <div>
+        <Avatar className='aspect-square w-[100px] h-[100px] rounded-md object-cover'>
+          <AvatarImage src={row.getValue('hinhAnh')} />
+          <AvatarFallback className='rounded-none'>{row.original.hinhAnh}</AvatarFallback>
+        </Avatar>
+      </div>
+    )
   },
   {
-    accessorKey: 'name',
-    header: ({ column }) => {
-      return (
-        <Button variant='ghost' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-          Tên
-          <CaretSortIcon className='ml-2 h-4 w-4' />
-        </Button>
-      )
-    },
-    cell: ({ row }) => <div className='capitalize'>{row.getValue('name')}</div>
+    accessorKey: 'tenViTri',
+    header: 'Tên',
+    cell: ({ row }) => <div className='capitalize'>{row.getValue('tenViTri')}</div>
   },
   {
-    accessorKey: 'email',
-    header: ({ column }) => {
-      return (
-        <Button variant='ghost' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-          Email 
-          <CaretSortIcon className='ml-2 h-4 w-4' />
-        </Button>
-      )
-    },
-    cell: ({ row }) => <div className='lowercase'>{row.getValue('email')}</div>
+    accessorKey: 'tinhThanh',
+    header: 'Tỉnh thành',
+    cell: ({ row }) => <div className='capitalize'>{row.getValue('tinhThanh')}</div>
   },
+  // {
+  //   accessorKey: 'moTa',
+  //   header: 'Mô tả',
+  //   cell: ({ row }) => (
+  //     <div dangerouslySetInnerHTML={{ __html: row.getValue('moTa') }} className='whitespace-pre-line' />
+  //   )
+  // },
   {
     id: 'actions',
     enableHiding: false,
     cell: function Actions({ row }) {
-      const { setEmployeeIdEdit, setEmployeeDelete } = useContext(AccountTableContext)
-      const openEditEmployee = () => {
-        // console.log(row.original.id)
-        setEmployeeIdEdit(row.original.id)
+      const { setLocationIdEdit, setLocationDelete } = useContext(LocationTableContext)
+      const openEditLocation = () => {
+        setLocationIdEdit(row.original.id)
       }
 
-      const openDeleteEmployee = () => {
-        setEmployeeDelete(row.original)
+      const openDeleteLocation = () => {
+        setLocationDelete(row.original)
       }
       return (
         <DropdownMenu modal={false}>
@@ -165,8 +118,8 @@ export const columns: ColumnDef<UserType>[] = [
           <DropdownMenuContent align='end'>
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={openEditEmployee}>Sửa</DropdownMenuItem>
-            <DropdownMenuItem onClick={openDeleteEmployee}>Xóa</DropdownMenuItem>
+            <DropdownMenuItem onClick={openEditLocation}>Sửa</DropdownMenuItem>
+            <DropdownMenuItem onClick={openDeleteLocation}>Xóa</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )
@@ -174,20 +127,22 @@ export const columns: ColumnDef<UserType>[] = [
   }
 ]
 
-function AlertDialogDeleteAccount({
-  employeeDelete,
-  setEmployeeDelete
+function AlertDialogDeleteLocation({
+  locationDelete,
+  setLocationDelete
 }: {
-  employeeDelete: AccountItem | null
-  setEmployeeDelete: (value: AccountItem | null) => void
+  locationDelete: LocationItem | null
+  setLocationDelete: (value: LocationItem | null) => void
 }) {
+  // console.log("🚀 ~ locationDelete id:", locationDelete);
 
-  const {mutateAsync} = useDeleteUserMutation();
-  const deleteUser = async () => {
-    if(employeeDelete) {
+
+  const {mutateAsync} = useDeleteLocationMutation();
+  const deleteLocation = async () => {
+    if(locationDelete) {
       try {
-        const result = await mutateAsync(employeeDelete.id);
-        setEmployeeDelete(null);
+        const result = await mutateAsync(locationDelete.id);
+        setLocationDelete(null);
         toast({
           title: result.message
         })
@@ -200,24 +155,24 @@ function AlertDialogDeleteAccount({
   }
   return (
     <AlertDialog
-      open={Boolean(employeeDelete)}
+      open={Boolean(locationDelete)}
       onOpenChange={(value) => {
         if (!value) {
-          setEmployeeDelete(null)
+          setLocationDelete(null)
         }
       }}
     >
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Xóa nhân viên?</AlertDialogTitle>
+          <AlertDialogTitle>Xóa location?</AlertDialogTitle>
           <AlertDialogDescription>
-            Tài khoản <span className='bg text-primary-foreground rounded px-1'>{employeeDelete?.name}</span>{' '}
-            sẽ bị xóa vĩnh viễn
+            Location <span className='bg text-primary-foreground rounded px-1'>{locationDelete?.tenViTri}</span> sẽ bị xóa
+            vĩnh viễn
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={deleteUser}>Continue</AlertDialogAction>
+          <AlertDialogAction onClick={deleteLocation}>Continue</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
@@ -225,18 +180,16 @@ function AlertDialogDeleteAccount({
 }
 // Số lượng item trên 1 trang
 const PAGE_SIZE = 10
-export default function AccountTable() {
+export default function LocationTable() {
   const searchParam = useSearchParams()
   const page = searchParam.get('page') ? Number(searchParam.get('page')) : 1
   const pageIndex = page - 1
-  // const params = Object.fromEntries(searchParam.entries())
-  const [employeeIdEdit, setEmployeeIdEdit] = useState<number | undefined>()
-  const [employeeDelete, setEmployeeDelete] = useState<AccountItem | null>(null)
-
-
-  const userListQuery = useGetUserList();
-  const data = userListQuery.data?.content ?? [];
+  const [locationIdEdit, setLocationIdEdit] = useState<number | undefined>()
+  const [locationDelete, setLocationDelete] = useState<LocationItem | null>(null)
   
+  const locationListQuery = useGetLocationList();
+  const data = locationListQuery.data?.content ?? [];
+
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
@@ -276,19 +229,19 @@ export default function AccountTable() {
   }, [table, pageIndex])
 
   return (
-    <AccountTableContext.Provider value={{ employeeIdEdit, setEmployeeIdEdit, employeeDelete, setEmployeeDelete }}>
+    <LocationTableContext.Provider value={{ locationIdEdit, setLocationIdEdit, locationDelete, setLocationDelete }}>
       <div className='w-full'>
-        <EditEmployee id={employeeIdEdit} setId={setEmployeeIdEdit} onSubmitSuccess={() => { }} />
-        <AlertDialogDeleteAccount employeeDelete={employeeDelete} setEmployeeDelete={setEmployeeDelete} />
+        <EditLocation id={locationIdEdit} setId={setLocationIdEdit} />
+        <AlertDialogDeleteLocation locationDelete={locationDelete} setLocationDelete={setLocationDelete} />
         <div className='flex items-center py-4'>
           <Input
-            placeholder='Filter emails...'
-            value={(table.getColumn('email')?.getFilterValue() as string) ?? ''}
-            onChange={(event) => table.getColumn('email')?.setFilterValue(event.target.value)}
+            placeholder='Lọc tên'
+            value={(table.getColumn('tenViTri')?.getFilterValue() as string) ?? ''}
+            onChange={(event) => table.getColumn('tenViTri')?.setFilterValue(event.target.value)}
             className='max-w-sm'
           />
           <div className='ml-auto flex items-center gap-2'>
-            <AddEmployee />
+            <AddLocation />
           </div>
         </div>
         <div className='rounded-md border'>
@@ -334,11 +287,11 @@ export default function AccountTable() {
             <AutoPagination
               page={table.getState().pagination.pageIndex + 1}
               pageSize={table.getPageCount()}
-              pathname='/manage/accounts'
+              pathname='/manage/location'
             />
           </div>
         </div>
       </div>
-    </AccountTableContext.Provider>
+    </LocationTableContext.Provider>
   )
 }

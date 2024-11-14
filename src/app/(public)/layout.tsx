@@ -34,7 +34,7 @@ export default function Layout({
                 <span className='sr-only'>Big boy</span>
                 
               </Link>
-              <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+              <SheetTitle hidden className="sr-only">Navigation Menu</SheetTitle>
               <NavItems className='text-muted-foreground transition-colors hover:text-foreground' />
             </nav>
           </SheetContent>

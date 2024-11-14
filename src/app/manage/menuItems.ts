@@ -1,4 +1,4 @@
-import { Home, LineChart, ShoppingCart, Users2, Salad, Table } from 'lucide-react'
+import { Home, LineChart, Users2, LayoutList, NotebookPen,MapPinned } from 'lucide-react'
 
 const menuItems = [
   {
@@ -7,25 +7,24 @@ const menuItems = [
     href: '/manage/dashboard'
   },
   {
-    title: 'Đơn hàng',
-    Icon: ShoppingCart,
-    href: '/manage/orders'
-  },
-  {
-    title: 'Bàn ăn',
-    Icon: Table,
-    href: '/manage/tables'
-  },
-  {
-    title: 'Món ăn',
-    Icon: Salad,
-    href: '/manage/dishes'
-  },
-
-  {
     title: 'Phân tích',
     Icon: LineChart,
     href: '/manage/analytics'
+  },
+  {
+    title: 'Booking',
+    Icon: NotebookPen,
+    href: '/manage/booking'
+  },
+  {
+    title: 'Phòng',
+    Icon: LayoutList,
+    href: '/manage/room'
+  },
+  {
+    title: 'Vị trí',
+    Icon: MapPinned,
+    href: '/manage/location'
   },
   {
     title: 'Nhân viên',

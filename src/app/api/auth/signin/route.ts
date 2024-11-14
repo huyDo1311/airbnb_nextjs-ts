@@ -5,7 +5,7 @@ import { HttpError } from "@/lib/http";
 
 export async function POST(request: Request) {
   const body = (await request.json()) as SigninBodyType;
-    const cookieStore = await cookies();
+  const cookieStore = await cookies();
   try {
     const  payload  = await authApiRequest.NextServerToServerSignin(body);
     console.log('payload', payload);

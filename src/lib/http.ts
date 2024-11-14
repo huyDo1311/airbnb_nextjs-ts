@@ -97,8 +97,8 @@ const request = async <Response>(
   // // Nếu truyền baseUrl thì lấy giá trị truyền vào, truyền vào '' thì đồng nghĩa với việc chúng ta gọi API đến Next.js Server
   const baseUrl =
     options?.baseUrl === undefined
-      ? envConfig.NEXT_PUBLIC_API_ENDPOINT
-      : options.baseUrl;
+      ? envConfig.NEXT_PUBLIC_API_ENDPOINT // server backend
+      : options.baseUrl;  // next server locahost:3000
   // const fullUrl = url.startsWith("/") ? `${baseUrl}${url}` : `${baseUrl}/${url}`;
   const fullUrl = `${baseUrl}/${normalizePath(url)}`;
 

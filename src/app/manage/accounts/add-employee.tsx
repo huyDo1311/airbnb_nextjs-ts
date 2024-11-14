@@ -13,18 +13,14 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { CreateUserBody, CreateUserBodyType, UserUpdateBodyType } from '@/schemaValidations/user.schema';
 import { zodResolver } from '@hookform/resolvers/zod'
-import { PlusCircle, Upload } from 'lucide-react'
-import { useMemo, useRef, useState, useEffect } from 'react';
+import { PlusCircle } from 'lucide-react'
+import {  useState } from 'react';
 import { useForm } from 'react-hook-form'
 import { Form, FormField, FormItem, FormMessage } from '@/components/ui/form'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useAddUserMutation } from '@/queries/useUser'
 import dayjs from 'dayjs';
-import { userApiRequest } from '@/apiRequests/user';
 import { handleErrorApi } from '@/lib/utils';
-import { mediaApiRequest } from '@/apiRequests/media';
 import { toast } from '@/hooks/use-toast';
-import { v4 as uuidv4 } from 'uuid';
 
 export default function AddEmployee() {
   const [open, setOpen] = useState(false)
@@ -93,41 +89,7 @@ export default function AddEmployee() {
             })}
           >
             <div className='grid gap-4 py-4'>
-              {/* <FormField
-                control={form.control}
-                name={'avatar'}
-                render={({ field }) => (
-                  <FormItem>
-                    <div className='flex gap-2 items-start justify-start'>
-                      <Avatar className='aspect-square w-[100px] h-[100px] rounded-md object-cover'>
-                        <AvatarImage src={previewAvatar()} />
-                        <AvatarFallback className='rounded-none'>{name}</AvatarFallback>
-                      </Avatar>
-                      <input
-                        type='file'
-                        accept='image/*'
-                        ref={avatarInputRef}
-                        onChange={(e) => {
-                          const file = e.target.files?.[0]
-                          if (file) {
-                            setFile(file)
-                            field.onChange('http://localhost:3000/' + file.name)
-                          }
-                        }}
-                        className='hidden'
-                      />
-                      <button
-                        className='flex aspect-square w-[100px] items-center justify-center rounded-md border border-dashed'
-                        type='button'
-                        onClick={() => avatarInputRef.current?.click()}
-                      >
-                        <Upload className='h-4 w-4 text-muted-foreground' />
-                        <span className='sr-only'>Upload</span>
-                      </button>
-                    </div>
-                  </FormItem>
-                )}
-              /> */}
+             
 
               <FormField
                 control={form.control}

@@ -13,18 +13,12 @@ import { Label } from '@/components/ui/label'
 import { UserUpdateBody, UserUpdateBodyType } from '@/schemaValidations/user.schema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Upload } from 'lucide-react'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Form, FormField, FormItem, FormMessage } from '@/components/ui/form'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Switch } from '@/components/ui/switch'
-import { useUploadMediaMutation } from '@/queries/useMedia';
 import { useGetUser, useUpdateMutation } from '@/queries/useUser'
-import { boolean } from 'zod'
 import dayjs from 'dayjs';
-import { userApiRequest } from '@/apiRequests/user';
 import { handleErrorApi } from '@/lib/utils';
-import { mediaApiRequest } from '@/apiRequests/media';
 import { toast } from '@/hooks/use-toast';
 
 export default function EditEmployee({
