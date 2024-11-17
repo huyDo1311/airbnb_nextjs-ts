@@ -1,19 +1,19 @@
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
-import {toast} from '../../../../nextjs/client/src/hooks/use-toast';
-import {UseFormSetError} from 'react-hook-form';
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+import { toast } from "@/hooks/use-toast";
+import { UseFormSetError } from "react-hook-form";
 // import {RoomStatus, OrderStatus, TableStatus} from '../../../../NextJs-Super-Template-main/src/constants/type';
 // import envConfig from '../../';
 // import {format} from 'date-fns';
 // import jwt from 'jsonwebtoken';
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
 export const normalizePath = (path: string) => {
-  return path.startsWith('/') ? path.slice(1) : path
-}
+  return path.startsWith("/") ? path.slice(1) : path;
+};
 
 // export const decodeJWT = <Payload = any>(token: string) => {
 //   return jwt.decode(token) as Payload
@@ -21,16 +21,16 @@ export const normalizePath = (path: string) => {
 export const handleErrorApi = ({
   error,
   setError,
-  duration
+  duration,
 }: {
-  error: any
-  setError?: UseFormSetError<any>
-  duration?: number
+  error: any;
+  setError?: UseFormSetError<any>;
+  duration?: number;
 }) => {
   // console.log(error.payload);
-  error?.payload?.errors?.forEach((item:any) => {
+  error?.payload?.errors?.forEach((item: any) => {
     setError?.(item.field, {
-      type: 'server',
+      type: "server",
       message: item.message,
     });
   });
@@ -38,9 +38,9 @@ export const handleErrorApi = ({
   // Handle generic errors
   if (!error?.payload?.errors) {
     toast({
-      title: 'Lỗi',
-      description: error?.payload?.message ?? 'Lỗi không xác định',
-      variant: 'destructive',
+      title: "Lỗi",
+      description: error?.payload?.message ?? "Lỗi không xác định",
+      variant: "destructive",
       duration: duration ?? 5000,
     });
   }
@@ -61,19 +61,18 @@ export const handleErrorApi = ({
   //     duration: duration ?? 5000
   //   })
   // }
-}
+};
 
-const isBrowser = typeof window !== 'undefined';
-export const getTokenCybersoftFromLocalStorage = () => (isBrowser ? localStorage.getItem('tokenCybersoft') : null);
-
-
+const isBrowser = typeof window !== "undefined";
+export const getTokenCybersoftFromLocalStorage = () =>
+  isBrowser ? localStorage.getItem("tokenCybersoft") : null;
 
 export const formatCurrency = (number: number) => {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD'
-  }).format(number)
-}
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  }).format(number);
+};
 
 // export const getVietnameseRoomStatus = (status: (typeof RoomStatus)[keyof typeof RoomStatus]) => {
 //   switch (status) {
