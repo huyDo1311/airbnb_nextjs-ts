@@ -112,7 +112,6 @@ export const UsertListRes = z.object({
     statusCode: z.number(), // Mã trạng thái HTTP
     content: z.array(UserSchema),
     dateTime: z.string().datetime(), // ISO 8601 datetime format
-  
 });
 
 export type UserListResType = z.TypeOf<typeof UsertListRes>;
