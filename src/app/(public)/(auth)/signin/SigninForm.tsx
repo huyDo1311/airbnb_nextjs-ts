@@ -10,6 +10,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from '@/hooks/use-toast'
 import { handleErrorApi } from '@/lib/utils'
 import { useSigninMutation } from '@/queries/useAuth'
+import { Role } from '@/constants/type'
 
 
 
@@ -33,10 +34,15 @@ export default function SigninForm() {
       
       
       toast({
-        description: 'Xin chào ' + result.content.user.name
+        description: 'Xin chào ' + result.content.user.role + ' ' + result.content.user.name
       })
+
+      if(result.content.user.role === 'ADMIN'){
+        window.location.href = '/manage/dashboard';
+      } else {
+        window.location.href = '/user/dashboard';
+      }
     
-      window.location.href = '/manage/dashboard';
     } catch (error: any) {
       handleErrorApi({
         error,
