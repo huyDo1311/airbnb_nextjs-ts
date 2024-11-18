@@ -2,6 +2,8 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { toast } from "@/hooks/use-toast";
 import { UseFormSetError } from "react-hook-form";
+import jwt from 'jsonwebtoken';
+import {TokenPayload} from '@/types/jwt.types';
 // import {RoomStatus, OrderStatus, TableStatus} from '../../../../NextJs-Super-Template-main/src/constants/type';
 // import envConfig from '../../';
 // import {format} from 'date-fns';
@@ -18,6 +20,9 @@ export const normalizePath = (path: string) => {
 // export const decodeJWT = <Payload = any>(token: string) => {
 //   return jwt.decode(token) as Payload
 
+export const decodeToken = (token: string) => {
+  return jwt.decode(token) as TokenPayload
+}
 export const handleErrorApi = ({
   error,
   setError,

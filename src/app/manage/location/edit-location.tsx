@@ -105,7 +105,7 @@ export default function EditLocation({
           await useUploadMedia.mutateAsync(uploadMedia)
         }
         toast({
-          title: 'Thêm thành công'
+          title: 'Update thành công'
         })
         reset();
         setOpen(false);

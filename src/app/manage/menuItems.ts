@@ -4,7 +4,7 @@ const menuItems = [
   {
     title: 'Dashboard',
     Icon: Home,
-    href: '/manage/dashboard'
+    href: '/'
   },
   {
     title: 'Phân tích',
@@ -27,7 +27,7 @@ const menuItems = [
     href: '/manage/location'
   },
   {
-    title: 'Nhân viên',
+    title: 'Người dùng',
     Icon: Users2,
     href: '/manage/accounts'
   }
