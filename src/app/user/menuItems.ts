@@ -11,7 +11,7 @@ const menuItems = [
   {
     title: "Dashboard",
     Icon: Home,
-    href: "/user/dashboard",
+    href: "/",
   },
   {
     title: "Booking",
