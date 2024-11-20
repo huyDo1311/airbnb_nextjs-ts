@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { handleErrorApi } from '@/lib/utils';
 import { useSignoutMutation } from '@/queries/useAuth';
 import { useRouter } from 'next/navigation';
+import {useAppStore} from '@/components/app-provider';
 
 const menuItems: {
   title: string,
@@ -38,7 +39,9 @@ const menuItems: {
 
 export default function NavItems({ className }: { className?: string }) {
 
-  const [role, setRole] = useState<RoleType | null>(null);
+  // const [role, setRole] = useState<RoleType | null>(null);
+  const role = useAppStore((state) => state.role)
+  const setRole = useAppStore((state) => state.setRole)
   useEffect(() => {
     const local = localStorage.getItem('userProfile');
     if (local) {
@@ -50,6 +53,7 @@ export default function NavItems({ className }: { className?: string }) {
       }
     }
   }, []);
+
   const signOutMutation = useSignoutMutation();
   const router = useRouter();
   const signout = async () => {

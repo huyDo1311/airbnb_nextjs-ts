@@ -71,7 +71,7 @@ export default function DropdownAvatar() {
         <DropdownMenuLabel>{account?.name}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href={'/manage/setting'} className='cursor-pointer'>
+          <Link href={'/user/setting'} className='cursor-pointer'>
             Cài đặt
           </Link>
         </DropdownMenuItem>

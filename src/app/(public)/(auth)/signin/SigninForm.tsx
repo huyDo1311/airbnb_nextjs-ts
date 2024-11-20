@@ -14,11 +14,12 @@ import { Form, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { SigninBody, SigninBodyType } from "@/schemaValidations/auth.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "@/hooks/use-toast";
-import { handleErrorApi } from "@/lib/utils";
+import {handleErrorApi, setUserToLocalStorage} from '@/lib/utils';
 import { useSigninMutation } from "@/queries/useAuth";
 
 export default function SigninForm() {
   const signinMutation = useSigninMutation();
+  // const setRole = useAppStore((state) => state.setRole);
 
   const form = useForm<SigninBodyType>({
     resolver: zodResolver(SigninBody),
@@ -33,8 +34,8 @@ export default function SigninForm() {
     try {
       const result = await signinMutation.mutateAsync(data);
       const user = result.content.user;
-      localStorage.setItem("user", JSON.stringify(user));
-
+      // localStorage.setItem("user", JSON.stringify(user));
+      setUserToLocalStorage(user);
       toast({
         description: "Xin chào " + result.content.user.name,
       });

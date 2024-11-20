@@ -68,12 +68,15 @@ export default async function ListRoom() {
   console.log("data", data);
   let renderRooms = () => {
     return data.content.map((item, index) => {
+
+      const imageUrl = item.hinhAnh ? item.hinhAnh : '/banner.png';
+
       return item.hinhAnh ? (
         <div key={item.id} className="relative">
           <div className="h-[300px]">
             <Image
               className="h-full object-left object-cover rounded-xl"
-              src={item.hinhAnh}
+              src={imageUrl}
               width={1000}
               height={1000}
               alt="ks"

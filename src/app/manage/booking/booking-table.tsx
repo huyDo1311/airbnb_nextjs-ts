@@ -26,7 +26,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useRef, useState } from 'react'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -37,18 +37,19 @@ import {
   AlertDialogHeader,
   AlertDialogTitle
 } from '@/components/ui/alert-dialog'
-import {  handleErrorApi } from '@/lib/utils';
+import { handleErrorApi } from '@/lib/utils';
 import { useSearchParams } from 'next/navigation'
 import AutoPagination from '@/components/auto-pagination'
 import EditBooking from '@/app/manage/booking/edit-booking'
 
 import { toast } from '@/hooks/use-toast';
-import {  ListBookingUserBodyType } from '@/schemaValidations/booking.schema';
-import { useDeleteBookingMutation, useGetBookingList } from '@/queries/useBooking'
+import { ListBookingUserBodyType } from '@/schemaValidations/booking.schema';
+import { useDeleteBookingMutation, useDeleteSingleBookingMutation, useGetBookingList } from '@/queries/useBooking'
 import AddBooking from './add-booking'
 import dayjs from 'dayjs'
 import { useGetUserList } from '@/queries/useUser';
 import { useGetRoomList } from '@/queries/useRoom';
+import { Checkbox } from '@/components/ui/checkbox'
 
 type ListBookingUser = ListBookingUserBodyType['content'][0]
 
@@ -57,16 +58,126 @@ const BookingTableContext = createContext<{
   BookingIdEdit: number | undefined
   BookingDelete: ListBookingUser | null
   setBookingDelete: (value: ListBookingUser | null) => void
+  rowSelectionIdArray: number[]
+  setRowSelectionIdArray: (value: number[]) => void
 }>({
   setBookingIdEdit: (value: number | undefined) => { },
   BookingIdEdit: undefined,
   BookingDelete: null,
-  setBookingDelete: (value: ListBookingUser | null) => { }
+  setBookingDelete: (value: ListBookingUser | null) => { },
+  rowSelectionIdArray: [],
+  setRowSelectionIdArray: (value: number[]) => { },
 })
+
+
+interface RowData {
+  original: {
+    id: number;
+  };
+}
+
+
+const HeaderCheckbox = ({ table }: { table: any }) => {
+  const { rowSelectionIdArray, setRowSelectionIdArray } = useContext(BookingTableContext);
+
+  const handleSelectAllChange = (value: boolean) => {
+    const newSelection = value
+      ? table.getRowModel().rows.map((row: RowData) => row.original.id)
+      : [];
+
+    table.toggleAllRowsSelected(!!value);
+    setRowSelectionIdArray(newSelection);
+
+    console.log("🚀 ~ Select All newSelection:", newSelection);
+  };
+
+  return (
+    <Checkbox
+      checked={table.getIsAllRowsSelected()}
+      onCheckedChange={handleSelectAllChange}
+      aria-label="Select All"
+    />
+  );
+};
+
+const CellCheckbox = ({ row }: { row: any }) => {
+  const { rowSelectionIdArray, setRowSelectionIdArray } = useContext(BookingTableContext);
+
+  const handleCheckedChange = (value: boolean) => {
+    row.toggleSelected(!!value);
+
+    const updatedSelection = value
+      ? [...rowSelectionIdArray, row.original.id]
+      : rowSelectionIdArray.filter((id: number) => id !== row.original.id);
+
+    setRowSelectionIdArray(updatedSelection);
+    console.log("🚀 ~ rowSelectionIdArray:", updatedSelection);
+  };
+
+  return (
+    <Checkbox
+      checked={row.getIsSelected()}
+      onCheckedChange={handleCheckedChange}
+      aria-label={`Select Booking ${row.original.id}`}
+    />
+  );
+};
 
 
 
 export const columns: ColumnDef<ListBookingUser>[] = [
+  {
+    id: 'select',
+    // header: ({ table }) => {
+    //   const { rowSelectionIdArray, setRowSelectionIdArray } = useContext(BookingTableContext);
+
+    //   return (
+    //     <Checkbox
+    //       checked={table.getIsAllRowsSelected()}
+    //       onCheckedChange={(value: boolean) => {
+    //         const newSelection = value
+    //           ? []
+    //           : table.getRowModel().rows.map(row => row.original.id);
+
+    //         table.toggleAllRowsSelected(!!value);
+
+    //         setRowSelectionIdArray(newSelection);
+    //         console.log("🚀 ~ Select All newSelection:", rowSelectionIdArray);
+    //       }}
+    //       aria-label="Select All"
+    //     />
+    //   );
+    // },
+    header: ({ table }) => <HeaderCheckbox table={table} />,
+    // cell: ({ row }) => {
+    //   const { rowSelectionIdArray, setRowSelectionIdArray } = useContext(BookingTableContext);
+
+    //   return (
+    //     <Checkbox
+    //       checked={row.getIsSelected()}  // Individual row checkbox state
+    //       onCheckedChange={(value) => {
+    //         row.toggleSelected(!!value);
+    //         // const selectedRowIds = value
+    //         //   ? [...rowSelectionIdArray, row.original.id]
+    //         //   : rowSelectionIdArray.filter(id => id !== row.original.id);
+    //         const updatedSelection = value
+    //           ? [...rowSelectionIdArray, row.original.id]
+    //           : rowSelectionIdArray.filter((id: number) => id !== row.original.id);
+    //         // setRowSelectionIdArray(selectedRowIds);
+    //         // console.log("🚀 ~ selectedRowIds after toggle:", selectedRowIds);
+
+    //         setRowSelectionIdArray(updatedSelection);
+    //         console.log("🚀 ~ rowSelectionIdArray:", rowSelectionIdArray)
+    //       }}
+
+    //       aria-label={`Select Booking ${row.original.id}`}
+    //     />
+    //   );
+    // },
+    cell: ({ row }) => <CellCheckbox row={row} />,
+    enableSorting: false,
+    enableHiding: false,
+  },
   {
     accessorKey: 'id',
     header: 'ID'
@@ -116,7 +227,7 @@ export const columns: ColumnDef<ListBookingUser>[] = [
         const nameMatch = String(user?.name || "").toLowerCase().includes(value.toLowerCase());
         const emailMatch = String(user?.email || "").toLowerCase().includes(value.toLowerCase());
         // const phoneMatch = String(user.phone || "").toLowerCase().includes(value.toLowerCase());
-        return nameMatch || emailMatch; 
+        return nameMatch || emailMatch;
       }
       return false; // Return false if no user data exists
     }
@@ -164,6 +275,7 @@ function AlertDialogDeleteBooking({
 
 
   const { mutateAsync } = useDeleteBookingMutation();
+
   const deleteBooking = async () => {
     if (BookingDelete) {
       try {
@@ -179,6 +291,7 @@ function AlertDialogDeleteBooking({
       }
     }
   }
+
   return (
     <AlertDialog
       open={Boolean(BookingDelete)}
@@ -204,14 +317,23 @@ function AlertDialogDeleteBooking({
     </AlertDialog>
   )
 }
+
+
+
+
+
+
+
 // Số lượng item trên 1 trang
 const PAGE_SIZE = 10
+
+
 export default function BookingTable() {
-  const searchParam = useSearchParams()
-  const page = searchParam.get('page') ? Number(searchParam.get('page')) : 1
-  const pageIndex = page - 1
-  const [BookingIdEdit, setBookingIdEdit] = useState<number | undefined>()
-  const [BookingDelete, setBookingDelete] = useState<ListBookingUser | null>(null)
+  const searchParam = useSearchParams();
+  const page = searchParam.get('page') ? Number(searchParam.get('page')) : 1;
+  const pageIndex = page - 1;
+  const [BookingIdEdit, setBookingIdEdit] = useState<number | undefined>();
+  const [BookingDelete, setBookingDelete] = useState<ListBookingUser | null>(null);
 
   const bookingListQuery = useGetBookingList();
   const bookingList = bookingListQuery.data?.content ?? [];
@@ -248,6 +370,8 @@ export default function BookingTable() {
     pageSize: PAGE_SIZE //default page size
   })
 
+  const { rowSelectionIdArray, setRowSelectionIdArray } = useContext(BookingTableContext);
+
   const table = useReactTable({
     data: validBookingData,
     columns,
@@ -277,11 +401,50 @@ export default function BookingTable() {
     })
   }, [table, pageIndex])
 
+  // Custom hook to handle booking deletion
+
+  const { mutateAsync } = useDeleteBookingMutation();
+
+  const deleteBookingAll = async (
+    rowSelectionIdArray: number[],
+    setRowSelectionIdArray: (value: number[]) => void
+  ) => {
+    console.log("🚀 ~ deleteBookingAll ~ rowSelectionIdArray:", rowSelectionIdArray);
+
+    if (rowSelectionIdArray.length === 0) {
+      toast({ title: 'Please select at least one booking to delete' });
+      return;
+    }
+
+    try {
+      // Loop through selected booking IDs and delete
+      await Promise.all(
+        rowSelectionIdArray.map(async (id) => {
+          await mutateAsync(id);
+        })
+      );
+      toast({ title: 'Successfully deleted selected bookings!' });
+
+      // Reset selected rows state
+      setRowSelectionIdArray([]);
+    } catch (error) {
+      handleErrorApi({ error });
+    }
+  };
+
+
+
+
+
+
+
   return (
-    <BookingTableContext.Provider value={{ BookingIdEdit, setBookingIdEdit, BookingDelete, setBookingDelete }}>
+    // <BookingTableContext.Provider value={{ BookingIdEdit, setBookingIdEdit, BookingDelete, setBookingDelete}}>
+    <BookingTableContext.Provider value={{ setBookingIdEdit, BookingIdEdit, BookingDelete, setBookingDelete, rowSelectionIdArray, setRowSelectionIdArray }}>
       <div className='w-full'>
         <EditBooking id={BookingIdEdit} setId={setBookingIdEdit} />
         <AlertDialogDeleteBooking BookingDelete={BookingDelete} setBookingDelete={setBookingDelete} />
+
         <div className='flex items-center py-4'>
           <Input
             placeholder="Lọc theo tên khách hoặc số điện thoại"
@@ -295,6 +458,13 @@ export default function BookingTable() {
           />
 
           <div className='ml-auto flex items-center gap-2'>
+            <Button
+              variant="destructive"
+              onClick={() => deleteBookingAll(rowSelectionIdArray, setRowSelectionIdArray)}
+              disabled={Object.keys(rowSelection).length === 0}
+            >
+              Xóa đã chọn
+            </Button>
             <AddBooking />
           </div>
         </div>
@@ -349,3 +519,7 @@ export default function BookingTable() {
     </BookingTableContext.Provider>
   )
 }
+
+
+
+
