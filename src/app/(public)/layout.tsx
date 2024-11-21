@@ -10,7 +10,7 @@ import {
 import DarkModeToggle from "@/components/dark-mode-toggle";
 import NavItems from "@/app/(public)/nav-items";
 import Image from "next/image";
-import NavAirbnb from "@/app/(public)/NavAirbnb";
+import QuickSearch from "@/app/(public)/QuickSearch";
 
 export default function Layout({
   children,
@@ -19,7 +19,7 @@ export default function Layout({
 }>) {
   return (
     <div className="flex  flex-col relative">
-      <header className="sticky top-0 flex justify-between items-center p-4   bg-white z-20 ">
+      <header className="sticky top-0 flex justify-between items-center p-4   z-20 ">
         <Link href="/">
           <Image
             alt="logo"
@@ -28,7 +28,9 @@ export default function Layout({
             height={100}
           />
         </Link>
-        <NavAirbnb />
+        <div className="focus:bg-black">
+          <QuickSearch />
+        </div>
         {/* <Sheet>
           <SheetTrigger asChild>
             <Button
