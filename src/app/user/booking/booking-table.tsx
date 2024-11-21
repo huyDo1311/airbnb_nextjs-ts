@@ -37,18 +37,19 @@ import {
   AlertDialogHeader,
   AlertDialogTitle
 } from '@/components/ui/alert-dialog'
-import {  handleErrorApi } from '@/lib/utils';
+import { handleErrorApi } from '@/lib/utils';
 import { useSearchParams } from 'next/navigation'
 import AutoPagination from '@/components/auto-pagination'
-import EditBooking from '@/app/manage/booking/edit-booking'
+import EditBooking from '@/app/user/booking/edit-booking'
 
 import { toast } from '@/hooks/use-toast';
-import {  ListBookingUserBodyType } from '@/schemaValidations/booking.schema';
+import { ListBookingUserBodyType } from '@/schemaValidations/booking.schema';
 import { useDeleteBookingMutation, useGetBookingList } from '@/queries/useBooking'
 import AddBooking from './add-booking'
 import dayjs from 'dayjs'
 import { useGetUserList } from '@/queries/useUser';
 import { useGetRoomList } from '@/queries/useRoom';
+import { RoleType } from '@/types/jwt.types';
 
 type ListBookingUser = ListBookingUserBodyType['content'][0]
 
@@ -116,7 +117,7 @@ export const columns: ColumnDef<ListBookingUser>[] = [
         const nameMatch = String(user?.name || "").toLowerCase().includes(value.toLowerCase());
         const emailMatch = String(user?.email || "").toLowerCase().includes(value.toLowerCase());
         // const phoneMatch = String(user.phone || "").toLowerCase().includes(value.toLowerCase());
-        return nameMatch || emailMatch; 
+        return nameMatch || emailMatch;
       }
       return false; // Return false if no user data exists
     }
@@ -222,17 +223,34 @@ export default function BookingTable() {
   const roomListQuery = useGetRoomList();
   const roomList = roomListQuery.data?.content ?? [];
 
-  const mergedBookingData = bookingList.map((booking) => {
-    const user = userList.find((user) => user.id === booking.maNguoiDung);
-    const room = roomList.find((room) => room.id === booking.maPhong);
+  const [userid, setUserId] = useState<Number | null>(0);
+  console.log("🚀 ~ BookingTable ~ userid:", userid)
+  useEffect(() => {
+    const local = localStorage.getItem('userProfile');
+    if (local) {
+      try {
+        const parsed = JSON.parse(local);
+        setUserId(parsed.id);
+      } catch (error) {
+        console.error('Failed to parse userProfile from localStorage:', error);
+      }
+    }
+  }, []);
 
-    return {
-      ...booking,
-      user: user || null, // Thông tin người dùng hoặc null nếu không tìm thấy
-      room: room || null, // Thông tin phòng hoặc null nếu không tìm thấy
-    };
-  });
+  const mergedBookingData = bookingList
+    .filter((booking) => booking.maNguoiDung === userid) // Only include bookings for the current user
+    .map((booking) => {
+      const user = userList.find((user) => user.id === userid);
+      const room = roomList.find((room) => room.id === booking.maPhong);
 
+      return {
+        ...booking,
+        user: user || null, // User data if found, or null
+        room: room || null, // Room data if found, or null
+      };
+    });
+
+  // Filter valid bookings to avoid displaying incomplete data
   const validBookingData = mergedBookingData.filter(
     (booking) => booking.user !== null && booking.room !== null
   );

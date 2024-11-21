@@ -1,6 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Suspense } from 'react'
-import BookingTable from './booking-table'
+import BookingTable from './booking-table';
 
 export default function LocationPage() {
   return (
@@ -13,8 +13,9 @@ export default function LocationPage() {
           </CardHeader>
           <CardContent>
             <Suspense>
-              <BookingTable/>
+              <BookingTable />
             </Suspense>
+            
           </CardContent>
         </Card>
       </div>

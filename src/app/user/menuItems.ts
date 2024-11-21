@@ -18,11 +18,6 @@ const menuItems = [
     Icon: NotebookPen,
     href: "/user/booking",
   },
-  {
-    title: "Phòng",
-    Icon: LayoutList,
-    href: "/user/room",
-  },
 ];
 
 export default menuItems;

@@ -61,3 +61,22 @@ export const useGetBookingByUser = ({id,enabled}:{id:number,enabled:boolean}) =>
         enabled
     })
 }
+
+
+export const useDeleteSingleBookingMutation = () => {
+    const queryClient = useQueryClient();
+    
+    return useMutation({
+      mutationFn: (id: number) => bookingApiRequest.NextClientToServerDeleteBooking(id),
+      onSuccess: () => {
+        // Invalidate the booking list to fetch the updated data
+        queryClient.invalidateQueries({
+          queryKey: ['booking-list'],
+        });
+      },
+      onError: (error: any) => {
+        // Optionally handle errors here or propagate them to handle globally
+        console.error('Error deleting booking:', error);
+      },
+    });
+  };

@@ -1,5 +1,5 @@
 // import ChangePasswordForm from '@/app/manage/setting/change-password-form'
-import UpdateProfileForm from '@/app/manage/setting/update-profile-form'
+import UpdateProfileForm from '@/app/user/setting/update-profile-form'
 import { Badge } from '@/components/ui/badge'
 
 export default function Setting() {

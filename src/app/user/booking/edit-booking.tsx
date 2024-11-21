@@ -157,7 +157,7 @@ export default function EditBooking({
           >
             <div className="grid gap-4 py-4">
               {/* User Selection */}
-              <FormField
+              {/* <FormField
                 control={form.control}
                 name="maNguoiDung"
                 render={({ field }) => (
@@ -198,7 +198,7 @@ export default function EditBooking({
                     <FormMessage />
                   </FormItem>
                 )}
-              />
+              /> */}
 
               {/* Room Selection */}
               <FormField

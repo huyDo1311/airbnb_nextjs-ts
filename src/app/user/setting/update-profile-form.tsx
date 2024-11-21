@@ -357,7 +357,7 @@ export default function UpdateProfileForm() {
 
 
               {/* Role Field */}
-              <FormField
+              {/* <FormField
                 control={form.control}
                 name="role"
                 render={({ field }) => (
@@ -378,7 +378,7 @@ export default function UpdateProfileForm() {
                     </div>
                   </FormItem>
                 )}
-              />
+              /> */}
 
               {/* Submit Button */}
               <div className="items-center gap-2 md:ml-auto flex">
