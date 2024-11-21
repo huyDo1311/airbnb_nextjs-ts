@@ -1,6 +1,6 @@
 'use client'
 
-import { DotsHorizontalIcon } from '@radix-ui/react-icons'
+import { DotsHorizontalIcon, CaretSortIcon } from '@radix-ui/react-icons';
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -21,6 +21,7 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
+  DropdownMenuCheckboxItem,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
@@ -38,6 +39,7 @@ import {
   AlertDialogTitle
 } from '@/components/ui/alert-dialog'
 import { handleErrorApi } from '@/lib/utils';
+import { ArrowBigDown, ArrowBigUp, ChevronDown, } from "lucide-react"
 import { useSearchParams } from 'next/navigation'
 import AutoPagination from '@/components/auto-pagination'
 import EditBooking from '@/app/manage/booking/edit-booking'
@@ -50,6 +52,9 @@ import dayjs from 'dayjs'
 import { useGetUserList } from '@/queries/useUser';
 import { useGetRoomList } from '@/queries/useRoom';
 import { Checkbox } from '@/components/ui/checkbox'
+import { Label } from '@/components/ui/label';
+import UploadExcelForm from './upload-excel-form';
+import { BsArrowUp } from 'react-icons/bs';
 
 type ListBookingUser = ListBookingUserBodyType['content'][0]
 
@@ -60,6 +65,7 @@ const BookingTableContext = createContext<{
   setBookingDelete: (value: ListBookingUser | null) => void
   rowSelectionIdArray: number[]
   setRowSelectionIdArray: (value: number[]) => void
+  setIsDialogOpen: (value: boolean) => void
 }>({
   setBookingIdEdit: (value: number | undefined) => { },
   BookingIdEdit: undefined,
@@ -67,6 +73,7 @@ const BookingTableContext = createContext<{
   setBookingDelete: (value: ListBookingUser | null) => { },
   rowSelectionIdArray: [],
   setRowSelectionIdArray: (value: number[]) => { },
+  setIsDialogOpen: () => { }
 })
 
 
@@ -76,8 +83,36 @@ interface RowData {
   };
 }
 
+const calculatePrice = (row: any) => {
+  const giaMotNgay = row.room?.giaTien || 0;
+  const ngayDen = dayjs(row.ngayDen, 'DD-MM-YYYY');
+  const ngayDi = dayjs(row.ngayDi, 'DD-MM-YYYY');
+  let soNgay = ngayDi.diff(ngayDen, 'day'); // Tính số ngày thuê
+  let totalPrice = 0;
+
+  // Kiểm tra ngày trong khoảng từ ngày đi đến ngày đến có phải là cuối tuần hoặc ngày lễ
+  for (let i = 0; i <= soNgay; i++) {
+    const currentDate = ngayDen.add(i, 'day');
+
+    // Kiểm tra ngày cuối tuần (thứ 7 và chủ nhật)
+    const isWeekend = currentDate.day() === 0 || currentDate.day() === 6; // Chủ nhật (0) hoặc thứ 7 (6)
+
+    // Kiểm tra ngày lễ (giả sử ngày lễ là 01/01 và 30/04 - bạn có thể thêm nhiều ngày lễ khác)
+    const isHoliday = currentDate.isSame(dayjs('01-01-YYYY', 'DD-MM-YYYY'), 'day') || currentDate.isSame(dayjs('30-04-YYYY', 'DD-MM-YYYY'), 'day');
+
+    if (isWeekend) {
+      totalPrice += (giaMotNgay * 10) / 100; // Nhân 2 cho cuối tuần
+    } else if (isHoliday) {
+      totalPrice += (giaMotNgay * 20) / 100; // Nhân 3 cho ngày lễ
+    } else {
+      totalPrice += giaMotNgay;
+    }
+  }
+  return totalPrice;
+};
 
 const HeaderCheckbox = ({ table }: { table: any }) => {
+  // const [rowSelectionIdArray, setRowSelectionIdArray] = useState<number[]>([]);
   const { rowSelectionIdArray, setRowSelectionIdArray } = useContext(BookingTableContext);
 
   const handleSelectAllChange = (value: boolean) => {
@@ -88,8 +123,8 @@ const HeaderCheckbox = ({ table }: { table: any }) => {
     table.toggleAllRowsSelected(!!value);
     setRowSelectionIdArray(newSelection);
 
-    console.log("🚀 ~ Select All newSelection:", newSelection);
   };
+  console.log("rowSelectionIdArray:", rowSelectionIdArray);
 
   return (
     <Checkbox
@@ -102,7 +137,7 @@ const HeaderCheckbox = ({ table }: { table: any }) => {
 
 const CellCheckbox = ({ row }: { row: any }) => {
   const { rowSelectionIdArray, setRowSelectionIdArray } = useContext(BookingTableContext);
-
+  // const [rowSelectionIdArray, setRowSelectionIdArray] = useState<number[]>([]);
   const handleCheckedChange = (value: boolean) => {
     row.toggleSelected(!!value);
 
@@ -111,8 +146,16 @@ const CellCheckbox = ({ row }: { row: any }) => {
       : rowSelectionIdArray.filter((id: number) => id !== row.original.id);
 
     setRowSelectionIdArray(updatedSelection);
-    console.log("🚀 ~ rowSelectionIdArray:", updatedSelection);
+    // console.log("🚀 ~ rowSelectionIdArray:", updatedSelection);
+    // setRowSelectionIdArray((prevSelection) => {
+    //   const updatedSelection = value
+    //     ? [...prevSelection, row.original.id]
+    //     : prevSelection.filter((id) => id !== row.original.id);
+
+    //   return updatedSelection;
+    // });
   };
+  console.log("rowSelectionIdArray:", rowSelectionIdArray);
 
   return (
     <Checkbox
@@ -128,59 +171,21 @@ const CellCheckbox = ({ row }: { row: any }) => {
 export const columns: ColumnDef<ListBookingUser>[] = [
   {
     id: 'select',
-    // header: ({ table }) => {
-    //   const { rowSelectionIdArray, setRowSelectionIdArray } = useContext(BookingTableContext);
-
-    //   return (
-    //     <Checkbox
-    //       checked={table.getIsAllRowsSelected()}
-    //       onCheckedChange={(value: boolean) => {
-    //         const newSelection = value
-    //           ? []
-    //           : table.getRowModel().rows.map(row => row.original.id);
-
-    //         table.toggleAllRowsSelected(!!value);
-
-    //         setRowSelectionIdArray(newSelection);
-    //         console.log("🚀 ~ Select All newSelection:", rowSelectionIdArray);
-    //       }}
-    //       aria-label="Select All"
-    //     />
-    //   );
-    // },
     header: ({ table }) => <HeaderCheckbox table={table} />,
-    // cell: ({ row }) => {
-    //   const { rowSelectionIdArray, setRowSelectionIdArray } = useContext(BookingTableContext);
-
-    //   return (
-    //     <Checkbox
-    //       checked={row.getIsSelected()}  // Individual row checkbox state
-    //       onCheckedChange={(value) => {
-    //         row.toggleSelected(!!value);
-    //         // const selectedRowIds = value
-    //         //   ? [...rowSelectionIdArray, row.original.id]
-    //         //   : rowSelectionIdArray.filter(id => id !== row.original.id);
-    //         const updatedSelection = value
-    //           ? [...rowSelectionIdArray, row.original.id]
-    //           : rowSelectionIdArray.filter((id: number) => id !== row.original.id);
-    //         // setRowSelectionIdArray(selectedRowIds);
-    //         // console.log("🚀 ~ selectedRowIds after toggle:", selectedRowIds);
-
-    //         setRowSelectionIdArray(updatedSelection);
-    //         console.log("🚀 ~ rowSelectionIdArray:", rowSelectionIdArray)
-    //       }}
-
-    //       aria-label={`Select Booking ${row.original.id}`}
-    //     />
-    //   );
-    // },
     cell: ({ row }) => <CellCheckbox row={row} />,
     enableSorting: false,
     enableHiding: false,
   },
   {
     accessorKey: 'id',
-    header: 'ID'
+    header: ({ column }) => {
+      return (
+        <Button variant='ghost' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+          ID
+          <CaretSortIcon className='ml-2 h-4 w-4' />
+        </Button>
+      )
+    },
   },
   {
     accessorKey: 'hinhAnh',
@@ -199,22 +204,217 @@ export const columns: ColumnDef<ListBookingUser>[] = [
   },
   {
     accessorKey: 'ngayDen',
-    header: 'Check in',
+    header: ({ column }) => {
+      return (
+        <Button variant='ghost' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+          Check in
+          <CaretSortIcon className='ml-2 h-4 w-4' />
+        </Button>
+      )
+    },
     cell: ({ row }) => <div className='capitalize'>{dayjs(row.getValue<string>('ngayDen'), 'DD-MM-YYYY').format('DD-MM-YYYY')}</div>
   },
   {
     accessorKey: 'ngayDi',
-    header: 'Check out',
+    header: ({ column }) => {
+      return (
+        <Button variant='ghost' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+          Check out
+          <CaretSortIcon className='ml-2 h-4 w-4' />
+        </Button>
+      )
+    },
     cell: ({ row }) => <div className='capitalize'>{dayjs(row.getValue<string>('ngayDi'), 'DD-MM-YYYY').format('DD-MM-YYYY')}</div>
   },
   {
+    accessorKey: 'songay',
+    header: ({ column }) => {
+      return (
+        <Button variant='ghost' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+          Số ngày thuê
+          <CaretSortIcon className='ml-2 h-4 w-4' />
+        </Button>
+      )
+    },
+    cell: ({ row }) => {
+      const ngayDen = dayjs(row.getValue<string>('ngayDen'), 'DD-MM-YYYY');
+      const ngayDi = dayjs(row.getValue<string>('ngayDi'), 'DD-MM-YYYY');
+      const soNgay = ngayDi.diff(ngayDen, 'day'); // Tính số ngày
+      return <div className='text-center'>{soNgay >= 0 ? soNgay : 'N/A'}</div>;
+    },
+    sortingFn: (rowA, rowB) => {
+      const ngayDenA = dayjs(rowA.original.ngayDen, 'DD-MM-YYYY');
+      const ngayDiA = dayjs(rowA.original.ngayDi, 'DD-MM-YYYY');
+      const soNgayA = ngayDiA.diff(ngayDenA, 'day'); // Số ngày thuê dòng A
+
+      const ngayDenB = dayjs(rowB.original.ngayDen, 'DD-MM-YYYY');
+      const ngayDiB = dayjs(rowB.original.ngayDi, 'DD-MM-YYYY');
+      const soNgayB = ngayDiB.diff(ngayDenB, 'day'); // Số ngày thuê dòng B
+
+      return soNgayA - soNgayB; // Sắp xếp theo số ngày thuê
+    }
+  },
+  {
+    accessorKey: 'gia',
+    header: ({ column }) => {
+      return (
+        <Button variant='ghost' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+          Giá
+          <CaretSortIcon className='ml-2 h-4 w-4' />
+        </Button>
+      )
+    },
+    cell: ({ row }) => {
+      const giaMotNgay = row.original.room?.giaTien;
+      const ngayDen = dayjs(row.getValue<string>('ngayDen'), 'DD-MM-YYYY');
+      const ngayDi = dayjs(row.getValue<string>('ngayDi'), 'DD-MM-YYYY');
+      const soNgay = ngayDi.diff(ngayDen, 'day'); // Tính số ngày thuê
+      // Tính giá với các ngày cuối tuần và ngày lễ
+      const gia = calculatePrice(row.original);
+
+      // Hiển thị thông tin với mũi tên
+      let displayPrice = gia.toLocaleString() + ' $';
+      // displayPrice += <br />;
+
+      return <div>{displayPrice}</div>;
+    },
+    sortingFn: (rowA, rowB) => {
+      const giaA = calculatePrice(rowA.original);
+      const giaB = calculatePrice(rowB.original);
+      return giaA - giaB;
+    }
+  },
+  // {
+  //   accessorKey: '%',
+  //   header: ({ column }) => {
+  //     return (
+  //       <Button variant='ghost' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+  //         %
+  //         <CaretSortIcon className='ml-2 h-4 w-4' />
+  //       </Button>
+  //     )
+  //   },
+  //   cell: ({ row }) => {
+  //     const giaMotNgay = row.original.room?.giaTien;
+  //     const ngayDen = dayjs(row.getValue<string>('ngayDen'), 'DD-MM-YYYY');
+  //     const ngayDi = dayjs(row.getValue<string>('ngayDi'), 'DD-MM-YYYY');
+  //     const soNgay = ngayDi.diff(ngayDen, 'day'); // Tính số ngày thuê
+  //     // Tính giá với các ngày cuối tuần và ngày lễ
+  //     const gia = calculatePrice(row.original);
+
+  //     // Hiển thị thông tin với mũi tên
+  //     let displayPrice = gia.toLocaleString() + ' $';
+  //     // displayPrice += <br />;
+  //     if (soNgay > 0) {
+  //       const isWeekend = dayjs(ngayDi).day() === 0 || dayjs(ngayDi).day() === 6;
+  //       const isHoliday = dayjs(ngayDi).isSame(dayjs('01-01-YYYY', 'DD-MM-YYYY'), 'day') || dayjs(ngayDi).isSame(dayjs('30-04-YYYY', 'DD-MM-YYYY'), 'day');
+  //       if (isWeekend) {
+  //         return (
+  //           <div className="flex justify-between items-center">
+  //             <p className='text-red-500'>10%</p>
+  //             <ArrowBigUp className='text-red-500' />
+  //           </div>);
+  //       } else if (isHoliday) {
+  //         return (
+  //           <div className="flex justify-between items-center">
+  //             <p className='text-red-900'>20%</p>
+  //             <ArrowBigUp className='text-red-900' />
+  //           </div>);
+  //       } else {
+  //         return <></>
+  //       }
+  //     }
+  //     // return <div>{displayPrice}<ArrowBigUp/></div>;
+  //   },
+  //   sortingFn: (rowA, rowB) => {
+  //     const giaA = calculatePrice(rowA.original);
+  //     const giaB = calculatePrice(rowB.original);
+  //     return giaA - giaB;
+  //   }
+  // },
+  {
+    accessorKey: '%',
+    header: ({ column }) => {
+      return (
+        <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+          %
+          <CaretSortIcon className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const ngayDen = dayjs(row.getValue<string>('ngayDen'), 'DD-MM-YYYY');
+      const ngayDi = dayjs(row.getValue<string>('ngayDi'), 'DD-MM-YYYY');
+      const soNgay = ngayDi.diff(ngayDen, 'day'); // Tính số ngày thuê
+
+      // Xác định % tăng giá
+      let percentage = 0;
+      const isWeekend = dayjs(ngayDi).day() === 0 || dayjs(ngayDi).day() === 6;
+      const isHoliday =
+        dayjs(ngayDi).isSame(dayjs('01-01-YYYY', 'DD-MM-YYYY'), 'day') ||
+        dayjs(ngayDi).isSame(dayjs('30-04-YYYY', 'DD-MM-YYYY'), 'day');
+
+      if (isWeekend) {
+        percentage = 10; // Ngày cuối tuần tăng 10%
+      } else if (isHoliday) {
+        percentage = 20; // Ngày lễ tăng 20%
+      }
+
+      return (
+        <div className="flex justify-between items-center">
+          {percentage > 0 ? (
+            <>
+              <p className={percentage === 10 ? 'text-red-300' : 'text-red-500'}>{percentage}%</p>
+              <ArrowBigUp className={percentage === 10 ? 'text-red-300' : 'text-red-00'} />
+            </>
+          ) : (
+            <p>0%</p>
+          )}
+        </div>
+      );
+    },
+    sortingFn: (rowA, rowB) => {
+      // Lấy giá trị % từ hàm tính toán
+      const calculatePercentage = (row: any) => {
+        const ngayDi = dayjs(row.ngayDi, 'DD-MM-YYYY');
+        const isWeekend = dayjs(ngayDi).day() === 0 || dayjs(ngayDi).day() === 6;
+        const isHoliday =
+          dayjs(ngayDi).isSame(dayjs('01-01-YYYY', 'DD-MM-YYYY'), 'day') ||
+          dayjs(ngayDi).isSame(dayjs('30-04-YYYY', 'DD-MM-YYYY'), 'day');
+        if (isWeekend) return 10;
+        if (isHoliday) return 20;
+        return 0;
+      };
+
+      const percentageA = calculatePercentage(rowA.original);
+      const percentageB = calculatePercentage(rowB.original);
+
+      return percentageA - percentageB;
+    },
+  },
+
+  {
     accessorKey: 'soLuongKhach',
-    header: 'Số lượng khách',
-    cell: ({ row }) => <div className='capitalize'>{row.getValue('soLuongKhach')}</div>
+    header: ({ column }) => {
+      return (
+        <Button variant='ghost' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+          Số lượng khách
+          <CaretSortIcon className='ml-2 h-4 w-4' />
+        </Button>
+      )
+    },
+    cell: ({ row }) => <div className='capitalize text-center'>{row.getValue('soLuongKhach')}</div>
   },
   {
     accessorKey: 'user',
-    header: 'Tên khách',
+    header: ({ column }) => {
+      return (
+        <Button variant='ghost' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+          Tên khách
+          <CaretSortIcon className='ml-2 h-4 w-4' />
+        </Button>
+      )
+    },
     cell: ({ row }) => {
       const user = row.original.user;
       return (<div className='capitalize'>{user?.name || 'N/A'}</div>)
@@ -318,6 +518,72 @@ function AlertDialogDeleteBooking({
   )
 }
 
+interface AlertDialogDeleteAllProps {
+  rowSelectionIdArray: number[];
+  setRowSelectionIdArray: (value: number[]) => void;
+  isDialogOpen: boolean;
+  setIsDialogOpen: (value: boolean) => void;
+}
+
+const AlertDialogDeleteAllBookings: React.FC<AlertDialogDeleteAllProps> = ({
+  rowSelectionIdArray,
+  setRowSelectionIdArray,
+  isDialogOpen,
+  setIsDialogOpen,
+}) => {
+
+  const { mutateAsync } = useDeleteBookingMutation();
+
+  const deleteBookingAll = async (
+    rowSelectionIdArray: number[],
+    setRowSelectionIdArray: (value: number[]) => void
+  ) => {
+    if (rowSelectionIdArray.length === 0) {
+      toast({ title: 'Please select at least one booking to delete' });
+      return;
+    }
+
+    try {
+      // Loop through selected booking IDs and delete
+      await Promise.all(
+        rowSelectionIdArray.map(async (id) => {
+          await mutateAsync(id);
+        })
+      );
+      toast({ title: 'Xoá chọn thành công' });
+
+      // Reset selected rows state
+      setRowSelectionIdArray([]);
+    } catch (error) {
+      handleErrorApi({ error });
+    }
+  };
+
+  return (
+    <>
+      <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete All Bookings?</AlertDialogTitle>
+            <AlertDialogDescription>
+            Booking <span className='bg text-primary-foreground rounded px-1'>{rowSelectionIdArray.join(', ')}</span> sẽ bị xóa
+            vĩnh viễn
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setIsDialogOpen(false)}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={() => deleteBookingAll(rowSelectionIdArray, setRowSelectionIdArray)}>
+              Confirm
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
+  );
+};
+
 
 
 
@@ -370,8 +636,9 @@ export default function BookingTable() {
     pageSize: PAGE_SIZE //default page size
   })
 
-  const { rowSelectionIdArray, setRowSelectionIdArray } = useContext(BookingTableContext);
-
+  // const { rowSelectionIdArray, setRowSelectionIdArray } = useContext(BookingTableContext);
+  const [rowSelectionIdArray, setRowSelectionIdArray] = useState<number[]>([]);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const table = useReactTable({
     data: validBookingData,
     columns,
@@ -403,51 +670,50 @@ export default function BookingTable() {
 
   // Custom hook to handle booking deletion
 
-  const { mutateAsync } = useDeleteBookingMutation();
+  // const { mutateAsync } = useDeleteBookingMutation();
 
-  const deleteBookingAll = async (
-    rowSelectionIdArray: number[],
-    setRowSelectionIdArray: (value: number[]) => void
-  ) => {
-    console.log("🚀 ~ deleteBookingAll ~ rowSelectionIdArray:", rowSelectionIdArray);
+  // const deleteBookingAll = async (
+  //   rowSelectionIdArray: number[],
+  //   setRowSelectionIdArray: (value: number[]) => void
+  // ) => {
+  //   if (rowSelectionIdArray.length === 0) {
+  //     toast({ title: 'Please select at least one booking to delete' });
+  //     return;
+  //   }
 
-    if (rowSelectionIdArray.length === 0) {
-      toast({ title: 'Please select at least one booking to delete' });
-      return;
-    }
+  //   try {
+  //     // Loop through selected booking IDs and delete
+  //     await Promise.all(
+  //       rowSelectionIdArray.map(async (id) => {
+  //         await mutateAsync(id);
+  //       })
+  //     );
+  //     toast({ title: 'Xoá chọn thành công' });
 
-    try {
-      // Loop through selected booking IDs and delete
-      await Promise.all(
-        rowSelectionIdArray.map(async (id) => {
-          await mutateAsync(id);
-        })
-      );
-      toast({ title: 'Successfully deleted selected bookings!' });
-
-      // Reset selected rows state
-      setRowSelectionIdArray([]);
-    } catch (error) {
-      handleErrorApi({ error });
-    }
-  };
-
-
-
-
+  //     // Reset selected rows state
+  //     setRowSelectionIdArray([]);
+  //   } catch (error) {
+  //     handleErrorApi({ error });
+  //   }
+  // };
 
 
 
   return (
     // <BookingTableContext.Provider value={{ BookingIdEdit, setBookingIdEdit, BookingDelete, setBookingDelete}}>
-    <BookingTableContext.Provider value={{ setBookingIdEdit, BookingIdEdit, BookingDelete, setBookingDelete, rowSelectionIdArray, setRowSelectionIdArray }}>
+    <BookingTableContext.Provider value={{ setBookingIdEdit, BookingIdEdit, BookingDelete, setBookingDelete, rowSelectionIdArray, setRowSelectionIdArray, setIsDialogOpen }}>
       <div className='w-full'>
         <EditBooking id={BookingIdEdit} setId={setBookingIdEdit} />
         <AlertDialogDeleteBooking BookingDelete={BookingDelete} setBookingDelete={setBookingDelete} />
-
+        <AlertDialogDeleteAllBookings
+          rowSelectionIdArray={rowSelectionIdArray}
+          setRowSelectionIdArray={setRowSelectionIdArray}
+          isDialogOpen={isDialogOpen} 
+          setIsDialogOpen={setIsDialogOpen}
+        />
         <div className='flex items-center py-4'>
           <Input
-            placeholder="Lọc theo tên khách hoặc số điện thoại"
+            placeholder="Lọc theo tên khách"
             value={(table.getColumn('user')?.getFilterValue() as string) ?? ''}
             onChange={(e) => {
               const filterValue = e.target.value.trim();
@@ -458,14 +724,55 @@ export default function BookingTable() {
           />
 
           <div className='ml-auto flex items-center gap-2'>
-            <Button
+
+
+            {/* <Button
               variant="destructive"
               onClick={() => deleteBookingAll(rowSelectionIdArray, setRowSelectionIdArray)}
               disabled={Object.keys(rowSelection).length === 0}
             >
               Xóa đã chọn
+            </Button> */}
+
+            <Button
+              className="btn btn-danger"
+              onClick={() => setIsDialogOpen(true)}
+              disabled={rowSelectionIdArray.length === 0}
+            >
+              Delete All
             </Button>
+
+            {/* <Label htmlFor="picture">Import</Label> */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button className="ml-auto">
+                  Columns <ChevronDown />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                {table
+                  .getAllColumns()
+                  .filter((column) => column.getCanHide())
+                  .map((column) => {
+                    return (
+                      <DropdownMenuCheckboxItem
+                        key={column.id}
+                        className="capitalize"
+                        checked={column.getIsVisible()}
+                        onCheckedChange={(value) =>
+                          column.toggleVisibility(!!value)
+                        }
+                      >
+                        {column.id}
+                      </DropdownMenuCheckboxItem>
+                    )
+                  })}
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <UploadExcelForm />
+
             <AddBooking />
+
           </div>
         </div>
         <div className='rounded-md border'>
