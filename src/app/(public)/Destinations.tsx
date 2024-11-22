@@ -72,5 +72,7 @@ export default function Destinations() {
       );
     });
   };
-  return <div className="grid grid-cols-4 gap-5">{renderDestination()}</div>;
+  return (
+    <div className="grid grid-cols-4 gap-5">{/* {renderDestination()} */}1</div>
+  );
 }
