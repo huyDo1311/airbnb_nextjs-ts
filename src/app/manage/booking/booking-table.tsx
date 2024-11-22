@@ -83,33 +83,33 @@ interface RowData {
   };
 }
 
-const calculatePrice = (row: any) => {
-  const giaMotNgay = row.room?.giaTien || 0;
-  const ngayDen = dayjs(row.ngayDen, 'DD-MM-YYYY');
-  const ngayDi = dayjs(row.ngayDi, 'DD-MM-YYYY');
-  let soNgay = ngayDi.diff(ngayDen, 'day'); // Tính số ngày thuê
-  let totalPrice = 0;
+// const calculatePrice = (row: any) => {
+//   const giaMotNgay = row.room?.giaTien || 0;
+//   const ngayDen = dayjs(row.ngayDen, 'DD-MM-YYYY');
+//   const ngayDi = dayjs(row.ngayDi, 'DD-MM-YYYY');
+//   let soNgay = ngayDi.diff(ngayDen, 'day'); // Tính số ngày thuê
+//   let totalPrice = 0;
 
-  // Kiểm tra ngày trong khoảng từ ngày đi đến ngày đến có phải là cuối tuần hoặc ngày lễ
-  for (let i = 0; i <= soNgay; i++) {
-    const currentDate = ngayDen.add(i, 'day');
+//   // Kiểm tra ngày trong khoảng từ ngày đi đến ngày đến có phải là cuối tuần hoặc ngày lễ
+//   for (let i = 0; i <= soNgay; i++) {
+//     const currentDate = ngayDen.add(i, 'day');
 
-    // Kiểm tra ngày cuối tuần (thứ 7 và chủ nhật)
-    const isWeekend = currentDate.day() === 0 || currentDate.day() === 6; // Chủ nhật (0) hoặc thứ 7 (6)
+//     // Kiểm tra ngày cuối tuần (thứ 7 và chủ nhật)
+//     const isWeekend = currentDate.day() === 0 || currentDate.day() === 6; // Chủ nhật (0) hoặc thứ 7 (6)
 
-    // Kiểm tra ngày lễ (giả sử ngày lễ là 01/01 và 30/04 - bạn có thể thêm nhiều ngày lễ khác)
-    const isHoliday = currentDate.isSame(dayjs('01-01-YYYY', 'DD-MM-YYYY'), 'day') || currentDate.isSame(dayjs('30-04-YYYY', 'DD-MM-YYYY'), 'day');
+//     // Kiểm tra ngày lễ (giả sử ngày lễ là 01/01 và 30/04 - bạn có thể thêm nhiều ngày lễ khác)
+//     const isHoliday = currentDate.isSame(dayjs('01-01-YYYY', 'DD-MM-YYYY'), 'day') || currentDate.isSame(dayjs('30-04-YYYY', 'DD-MM-YYYY'), 'day');
 
-    if (isWeekend) {
-      totalPrice += (giaMotNgay * 10) / 100; // Nhân 2 cho cuối tuần
-    } else if (isHoliday) {
-      totalPrice += (giaMotNgay * 20) / 100; // Nhân 3 cho ngày lễ
-    } else {
-      totalPrice += giaMotNgay;
-    }
-  }
-  return totalPrice;
-};
+//     if (isWeekend) {
+//       totalPrice += (giaMotNgay * 10) / 100; // Nhân 2 cho cuối tuần
+//     } else if (isHoliday) {
+//       totalPrice += (giaMotNgay * 20) / 100; // Nhân 3 cho ngày lễ
+//     } else {
+//       totalPrice += giaMotNgay;
+//     }
+//   }
+//   return totalPrice;
+// };
 
 const HeaderCheckbox = ({ table }: { table: any }) => {
   // const [rowSelectionIdArray, setRowSelectionIdArray] = useState<number[]>([]);
@@ -265,12 +265,13 @@ export const columns: ColumnDef<ListBookingUser>[] = [
       )
     },
     cell: ({ row }) => {
-      const giaMotNgay = row.original.room?.giaTien;
+      const giaMotNgay = row.original.room?.giaTien ?? 0;
       const ngayDen = dayjs(row.getValue<string>('ngayDen'), 'DD-MM-YYYY');
       const ngayDi = dayjs(row.getValue<string>('ngayDi'), 'DD-MM-YYYY');
       const soNgay = ngayDi.diff(ngayDen, 'day'); // Tính số ngày thuê
       // Tính giá với các ngày cuối tuần và ngày lễ
-      const gia = calculatePrice(row.original);
+      // const gia = calculatePrice(row.original);
+      const gia = giaMotNgay * soNgay;
 
       // Hiển thị thông tin với mũi tên
       let displayPrice = gia.toLocaleString() + ' $';
@@ -278,9 +279,16 @@ export const columns: ColumnDef<ListBookingUser>[] = [
 
       return <div>{displayPrice}</div>;
     },
+    // sortingFn: (rowA, rowB) => {
+    //   const giaA = calculatePrice(rowA.original);
+    //   const giaB = calculatePrice(rowB.original);
+    //   return giaA - giaB;
+    // }
     sortingFn: (rowA, rowB) => {
-      const giaA = calculatePrice(rowA.original);
-      const giaB = calculatePrice(rowB.original);
+      // Get the calculated prices for each row
+      const giaA = (rowA.original.room?.giaTien ?? 0) * dayjs(rowA.original.ngayDi).diff(dayjs(rowA.original.ngayDen), 'day');
+      const giaB = (rowB.original.room?.giaTien ?? 0) * dayjs(rowB.original.ngayDi).diff(dayjs(rowB.original.ngayDen), 'day');
+      
       return giaA - giaB;
     }
   },
@@ -332,66 +340,66 @@ export const columns: ColumnDef<ListBookingUser>[] = [
   //     return giaA - giaB;
   //   }
   // },
-  {
-    accessorKey: '%',
-    header: ({ column }) => {
-      return (
-        <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-          %
-          <CaretSortIcon className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-    cell: ({ row }) => {
-      const ngayDen = dayjs(row.getValue<string>('ngayDen'), 'DD-MM-YYYY');
-      const ngayDi = dayjs(row.getValue<string>('ngayDi'), 'DD-MM-YYYY');
-      const soNgay = ngayDi.diff(ngayDen, 'day'); // Tính số ngày thuê
+  // {
+  //   accessorKey: '%',
+  //   header: ({ column }) => {
+  //     return (
+  //       <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+  //         %
+  //         <CaretSortIcon className="ml-2 h-4 w-4" />
+  //       </Button>
+  //     );
+  //   },
+  //   cell: ({ row }) => {
+  //     const ngayDen = dayjs(row.getValue<string>('ngayDen'), 'DD-MM-YYYY');
+  //     const ngayDi = dayjs(row.getValue<string>('ngayDi'), 'DD-MM-YYYY');
+  //     const soNgay = ngayDi.diff(ngayDen, 'day'); // Tính số ngày thuê
 
-      // Xác định % tăng giá
-      let percentage = 0;
-      const isWeekend = dayjs(ngayDi).day() === 0 || dayjs(ngayDi).day() === 6;
-      const isHoliday =
-        dayjs(ngayDi).isSame(dayjs('01-01-YYYY', 'DD-MM-YYYY'), 'day') ||
-        dayjs(ngayDi).isSame(dayjs('30-04-YYYY', 'DD-MM-YYYY'), 'day');
+  //     // Xác định % tăng giá
+  //     let percentage = 0;
+  //     const isWeekend = dayjs(ngayDi).day() === 0 || dayjs(ngayDi).day() === 6;
+  //     const isHoliday =
+  //       dayjs(ngayDi).isSame(dayjs('01-01-YYYY', 'DD-MM-YYYY'), 'day') ||
+  //       dayjs(ngayDi).isSame(dayjs('30-04-YYYY', 'DD-MM-YYYY'), 'day');
 
-      if (isWeekend) {
-        percentage = 10; // Ngày cuối tuần tăng 10%
-      } else if (isHoliday) {
-        percentage = 20; // Ngày lễ tăng 20%
-      }
+  //     if (isWeekend) {
+  //       percentage = 10; // Ngày cuối tuần tăng 10%
+  //     } else if (isHoliday) {
+  //       percentage = 20; // Ngày lễ tăng 20%
+  //     }
 
-      return (
-        <div className="flex justify-between items-center">
-          {percentage > 0 ? (
-            <>
-              <p className={percentage === 10 ? 'text-red-300' : 'text-red-500'}>{percentage}%</p>
-              <ArrowBigUp className={percentage === 10 ? 'text-red-300' : 'text-red-00'} />
-            </>
-          ) : (
-            <p>0%</p>
-          )}
-        </div>
-      );
-    },
-    sortingFn: (rowA, rowB) => {
-      // Lấy giá trị % từ hàm tính toán
-      const calculatePercentage = (row: any) => {
-        const ngayDi = dayjs(row.ngayDi, 'DD-MM-YYYY');
-        const isWeekend = dayjs(ngayDi).day() === 0 || dayjs(ngayDi).day() === 6;
-        const isHoliday =
-          dayjs(ngayDi).isSame(dayjs('01-01-YYYY', 'DD-MM-YYYY'), 'day') ||
-          dayjs(ngayDi).isSame(dayjs('30-04-YYYY', 'DD-MM-YYYY'), 'day');
-        if (isWeekend) return 10;
-        if (isHoliday) return 20;
-        return 0;
-      };
+  //     return (
+  //       <div className="flex justify-between items-center">
+  //         {percentage > 0 ? (
+  //           <>
+  //             <p className={percentage === 10 ? 'text-red-300' : 'text-red-500'}>{percentage}%</p>
+  //             <ArrowBigUp className={percentage === 10 ? 'text-red-300' : 'text-red-00'} />
+  //           </>
+  //         ) : (
+  //           <p>0%</p>
+  //         )}
+  //       </div>
+  //     );
+  //   },
+  //   sortingFn: (rowA, rowB) => {
+  //     // Lấy giá trị % từ hàm tính toán
+  //     const calculatePercentage = (row: any) => {
+  //       const ngayDi = dayjs(row.ngayDi, 'DD-MM-YYYY');
+  //       const isWeekend = dayjs(ngayDi).day() === 0 || dayjs(ngayDi).day() === 6;
+  //       const isHoliday =
+  //         dayjs(ngayDi).isSame(dayjs('01-01-YYYY', 'DD-MM-YYYY'), 'day') ||
+  //         dayjs(ngayDi).isSame(dayjs('30-04-YYYY', 'DD-MM-YYYY'), 'day');
+  //       if (isWeekend) return 10;
+  //       if (isHoliday) return 20;
+  //       return 0;
+  //     };
 
-      const percentageA = calculatePercentage(rowA.original);
-      const percentageB = calculatePercentage(rowB.original);
+  //     const percentageA = calculatePercentage(rowA.original);
+  //     const percentageB = calculatePercentage(rowB.original);
 
-      return percentageA - percentageB;
-    },
-  },
+  //     return percentageA - percentageB;
+  //   },
+  // },
 
   {
     accessorKey: 'soLuongKhach',
