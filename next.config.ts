@@ -35,6 +35,11 @@ const nextConfig: NextConfig = {
         hostname: "a0.muscache.com",
         pathname: "/im/pictures/**",
       },
+      {
+        protocol: "http",
+        hostname: "robindelaporte.fr",
+        pathname: "/codepen/**",
+      },
     ],
   },
   logging: {

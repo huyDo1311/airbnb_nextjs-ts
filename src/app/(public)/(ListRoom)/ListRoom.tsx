@@ -1,7 +1,9 @@
 import roomApiRequest from "@/apiRequests/room";
 import ListRoomCsr from "@/app/(public)/(ListRoom)/ListRoomCsr";
+import { destination } from "@/app/(public)/(QuickSearch)/QuickSearch";
+import http from "@/lib/http";
 
-interface typeContent {
+export interface typeContent {
   id: number;
   tenPhong: string;
   khach: number;
@@ -28,13 +30,15 @@ export interface ListRoomProps {
   dateTime: string;
 }
 
-// Component that displays the list of rooms
 export default async function ListRoom() {
   const data: ListRoomProps =
     await roomApiRequest.NextClientToServerGetListRoom();
+  const data2: any = await http.get(
+    "/api/vi-tri/phan-trang-tim-kiem?pageIndex=1&pageSize=8"
+  );
   return (
     <div>
-      <ListRoomCsr data={data} />
+      <ListRoomCsr data={data} data2={data2} />
     </div>
   );
 }
