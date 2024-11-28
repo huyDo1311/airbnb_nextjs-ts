@@ -129,17 +129,126 @@ export const columns: ColumnDef<UserType>[] = [
     },
     cell: ({ row }) => <div className='capitalize'>{row.getValue('name')}</div>
   },
+  // {
+  //   accessorKey: 'gender',
+  //   header: ({ column }) => {
+  //     return (
+  //       <Button variant='ghost' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+  //         Gender
+  //         <CaretSortIcon className='ml-2 h-4 w-4' />
+  //       </Button>
+  //     )
+  //   },
+  //   cell: ({ row }) => {
+  //     const gender = row.getValue<boolean>('gender'); // Lấy giá trị boolean
+  //     return <div className='capitalize'>{gender ? 'Nam' : 'Nữ'}</div>;
+  //   }
+  // },
+  {
+    accessorKey: 'gender',
+    header: ({ column }) => (
+      <div className="flex flex-col">
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          Gender
+          <CaretSortIcon className="ml-2 h-4 w-4" />
+        </Button>
+        <select
+          value={(column.getFilterValue() as string) ?? ''}
+          onChange={(e) => column.setFilterValue(e.target.value)}
+          className="mt-1 border border-gray-300 rounded px-2 py-1"
+        >
+          <option value="">All</option>
+          <option value="true">Nam</option>
+          <option value="false">Nữ</option>
+        </select>
+      </div>
+    ),
+    cell: ({ row }) => {
+      const gender = row.getValue<boolean>('gender');
+      return <div className="capitalize">{gender ? 'Nam' : 'Nữ'}</div>;
+    },
+    filterFn: (row, columnId, filterValue) => {
+      if (!filterValue) return true; // Hiển thị tất cả nếu không có filter
+      return row.getValue(columnId) === (filterValue === 'true');
+    }
+  },
+  // {
+  //   accessorKey: 'role',
+  //   header: ({ column }) => {
+  //     return (
+  //       <Button variant='ghost' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+  //         Role
+  //         <CaretSortIcon className='ml-2 h-4 w-4' />
+  //       </Button>
+  //     )
+  //   },
+  //   cell: ({ row }) => <div className='capitalize'>{row.getValue('role')}</div>
+  // },
+  {
+    accessorKey: 'role',
+    header: ({ column }) => (
+      <div className="flex flex-col">
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          Role
+          <CaretSortIcon className="ml-2 h-4 w-4" />
+        </Button>
+        <select
+          value={(column.getFilterValue() as string) ?? ''}
+          onChange={(e) => column.setFilterValue(e.target.value)}
+          className="mt-1 border border-gray-300 rounded px-2 py-1"
+        >
+          <option value="">All</option>
+          <option value="admin">Admin</option>
+          <option value="user">User</option>
+        </select>
+      </div>
+    ),
+    cell: ({ row }) => <div className="capitalize">{row.getValue('role')}</div>,
+    filterFn: (row, columnId, filterValue) => {
+      if (!filterValue) return true; // Hiển thị tất cả nếu không có filter
+      return row.getValue(columnId) === filterValue;
+    }
+  },
+  
+  // {
+  //   accessorKey: 'email',
+  //   header: ({ column }) => {
+  //     return (
+  //       <Button variant='ghost' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+  //         Email 
+  //         <CaretSortIcon className='ml-2 h-4 w-4' />
+  //       </Button>
+  //     )
+  //   },
+  //   cell: ({ row }) => <div className='lowercase'>{row.getValue('email')}</div>
+  // },
   {
     accessorKey: 'email',
-    header: ({ column }) => {
-      return (
-        <Button variant='ghost' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-          Email 
-          <CaretSortIcon className='ml-2 h-4 w-4' />
+    header: ({ column }) => (
+      <div className="flex flex-col">
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          Email
+          <CaretSortIcon className="ml-2 h-4 w-4" />
         </Button>
-      )
-    },
-    cell: ({ row }) => <div className='lowercase'>{row.getValue('email')}</div>
+        <Input
+          placeholder="Filter email..."
+          value={(column.getFilterValue() as string) ?? ''}
+          onChange={(e) => column.setFilterValue(e.target.value)}
+          className="mt-1"
+        />
+      </div>
+    ),
+    cell: ({ row }) => <div className="lowercase">{row.getValue('email')}</div>,
+    filterFn: 'includesString', // Cách lọc dữ liệu
   },
   {
     id: 'actions',
@@ -265,7 +374,7 @@ export default function AccountTable() {
       columnVisibility,
       rowSelection,
       pagination
-    }
+    },
   })
 
   useEffect(() => {

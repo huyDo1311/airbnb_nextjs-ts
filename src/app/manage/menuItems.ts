@@ -2,14 +2,14 @@ import { Home, LineChart, Users2, LayoutList, NotebookPen,MapPinned } from 'luci
 
 const menuItems = [
   {
-    title: 'Dashboard',
+    title: 'Trang chủ',
     Icon: Home,
     href: '/'
   },
   {
     title: 'Phân tích',
     Icon: LineChart,
-    href: '/manage/analytics'
+    href: '/manage/dashboard'
   },
   {
     title: 'Booking',

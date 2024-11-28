@@ -1,6 +1,6 @@
 "use client";
 
-import { DotsHorizontalIcon } from "@radix-ui/react-icons";
+import {DotsHorizontalIcon, CaretSortIcon} from '@radix-ui/react-icons';
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -15,14 +15,7 @@ import {
 } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger, DropdownMenuCheckboxItem} from '@/components/ui/dropdown-menu';
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -52,6 +45,10 @@ import AddRoom from "@/app/manage/room/add-room";
 import { RoomListResType } from "@/schemaValidations/room.schema";
 import { useDeleteRoomMutation, useGetRoomList } from "@/queries/useRoom";
 import { toast } from "@/hooks/use-toast";
+import { Checkbox } from '@/components/ui/checkbox';
+import React from 'react';
+import { useDeleteBookingMutation } from '@/queries/useBooking';
+import {ChevronDown} from 'lucide-react';
 
 type RoomItem = RoomListResType["content"][0];
 
@@ -60,14 +57,89 @@ const RoomTableContext = createContext<{
   roomIdEdit: number | undefined;
   roomDelete: RoomItem | null;
   setRoomDelete: (value: RoomItem | null) => void;
+  rowSelectionIdArray: number[];
+  setRowSelectionIdArray: (value: number[]) => void;
+  setIsDialogOpen: (value: boolean) => void;
 }>({
-  setRoomIdEdit: (value: number | undefined) => {},
+  setRoomIdEdit: (value: number | undefined) => { },
   roomIdEdit: undefined,
   roomDelete: null,
-  setRoomDelete: (value: RoomItem | null) => {},
+  setRoomDelete: (value: RoomItem | null) => { },
+  rowSelectionIdArray: [],
+  setRowSelectionIdArray: (value: number[]) => { },
+  setIsDialogOpen: () => { }
 });
 
+interface RowData {
+  original: {
+    id: number;
+  };
+}
+
+const HeaderCheckbox = ({ table }: { table: any }) => {
+  // const [rowSelectionIdArray, setRowSelectionIdArray] = useState<number[]>([]);
+  const { rowSelectionIdArray, setRowSelectionIdArray } = useContext(RoomTableContext);
+
+  const handleSelectAllChange = (value: boolean) => {
+    const newSelection = value
+      ? table.getRowModel().rows.map((row: RowData) => row.original.id)
+      : [];
+
+    table.toggleAllRowsSelected(!!value);
+    setRowSelectionIdArray(newSelection);
+
+  };
+  console.log("rowSelectionIdArray:", rowSelectionIdArray);
+
+  return (
+    <Checkbox
+      checked={table.getIsAllRowsSelected()}
+      onCheckedChange={handleSelectAllChange}
+      aria-label="Select All"
+    />
+  );
+};
+
+const CellCheckbox = ({ row }: { row: any }) => {
+  const { rowSelectionIdArray, setRowSelectionIdArray } = useContext(RoomTableContext);
+  // const [rowSelectionIdArray, setRowSelectionIdArray] = useState<number[]>([]);
+  const handleCheckedChange = (value: boolean) => {
+    row.toggleSelected(!!value);
+
+    const updatedSelection = value
+      ? [...rowSelectionIdArray, row.original.id]
+      : rowSelectionIdArray.filter((id: number) => id !== row.original.id);
+
+    setRowSelectionIdArray(updatedSelection);
+    // console.log("🚀 ~ rowSelectionIdArray:", updatedSelection);
+    // setRowSelectionIdArray((prevSelection) => {
+    //   const updatedSelection = value
+    //     ? [...prevSelection, row.original.id]
+    //     : prevSelection.filter((id) => id !== row.original.id);
+
+    //   return updatedSelection;
+    // });
+  };
+  console.log("rowSelectionIdArray:", rowSelectionIdArray);
+
+  return (
+    <Checkbox
+      checked={row.getIsSelected()}
+      onCheckedChange={handleCheckedChange}
+      aria-label={`Select Booking ${row.original.id}`}
+    />
+  );
+};
+
+
 export const columns: ColumnDef<RoomItem>[] = [
+  {
+    id: 'select',
+    header: ({ table }) => <HeaderCheckbox table={table} />,
+    cell: ({ row }) => <CellCheckbox row={row} />,
+    enableSorting: false,
+    enableHiding: false,
+  },
   {
     accessorKey: "id",
     header: "ID",
@@ -95,7 +167,14 @@ export const columns: ColumnDef<RoomItem>[] = [
   },
   {
     accessorKey: "giaTien",
-    header: "Giá cả",
+    header: ({ column }) => {
+      return (
+        <Button variant='ghost' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+          Gía tiền
+          <CaretSortIcon className='ml-2 h-4 w-4' />
+        </Button>
+      )
+    },
     cell: ({ row }) => (
       <div className="capitalize">
         {formatCurrency(row.getValue("giaTien"))}
@@ -103,12 +182,113 @@ export const columns: ColumnDef<RoomItem>[] = [
     ),
   },
   // {
-  //   accessorKey: 'moTa',
-  //   header: 'Mô tả',
+  //   accessorKey: "banUi",
+  //   header: ({ column }) => {
+  //     return (
+  //       <Button variant='ghost' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+  //         Bàn ủi
+  //         <CaretSortIcon className='ml-2 h-4 w-4' />
+  //       </Button>
+  //     )
+  //   },
   //   cell: ({ row }) => (
-  //     <div dangerouslySetInnerHTML={{ __html: row.getValue('moTa') }} className='whitespace-pre-line' />
-  //   )
+  //     <div className="capitalize">{row.getValue("banUi")}</div>
+  //   ),
   // },
+
+  {
+    accessorKey: 'wifi',
+    header: ({ column }) => (
+      <div className="flex flex-col">
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          Wi-Fi
+          <CaretSortIcon className="ml-2 h-4 w-4" />
+        </Button>
+        <select
+          value={(column.getFilterValue() as string) ?? ''}
+          onChange={(e) => column.setFilterValue(e.target.value)}
+          className="mt-1 border border-gray-300 rounded px-2 py-1"
+        >
+          <option value="">All</option>
+          <option value="true">Có</option>
+          <option value="false">Không</option>
+        </select>
+      </div>
+    ),
+    cell: ({ row }) => {
+      const value = row.getValue<boolean>('wifi');
+      return <div className="capitalize text-center">{value ? 'Có' : 'Không'}</div>;
+    },
+    filterFn: (row, columnId, filterValue) => {
+      if (!filterValue) return true;
+      return row.getValue(columnId) === (filterValue === 'true');
+    },
+  },
+  {
+    accessorKey: 'doXe',
+    header: ({ column }) => (
+      <div className="flex flex-col">
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          Đỗ xe
+          <CaretSortIcon className="ml-2 h-4 w-4" />
+        </Button>
+        <select
+          value={(column.getFilterValue() as string) ?? ''}
+          onChange={(e) => column.setFilterValue(e.target.value)}
+          className="mt-1 border border-gray-300 rounded px-2 py-1"
+        >
+          <option value="">All</option>
+          <option value="true">Có</option>
+          <option value="false">Không</option>
+        </select>
+      </div>
+    ),
+    cell: ({ row }) => {
+      const value = row.getValue<boolean>('doXe');
+      return <div className="capitalize text-center">{value ? 'Có' : 'Không'}</div>;
+    },
+    filterFn: (row, columnId, filterValue) => {
+      if (!filterValue) return true;
+      return row.getValue(columnId) === (filterValue === 'true');
+    },
+  },
+  {
+    accessorKey: 'hoBoi',
+    header: ({ column }) => (
+      <div className="flex flex-col">
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          Hồ bơi
+          <CaretSortIcon className="ml-2 h-4 w-4" />
+        </Button>
+        <select
+          value={(column.getFilterValue() as string) ?? ''}
+          onChange={(e) => column.setFilterValue(e.target.value)}
+          className="mt-1 border border-gray-300 rounded px-2 py-1"
+        >
+          <option value="">All</option>
+          <option value="true">Có</option>
+          <option value="false">Không</option>
+        </select>
+      </div>
+    ),
+    cell: ({ row }) => {
+      const value = row.getValue<boolean>('hoBoi');
+      return <div className="capitalize text-center">{value ? 'Có' : 'Không'}</div>;
+    },
+    filterFn: (row, columnId, filterValue) => {
+      if (!filterValue) return true;
+      return row.getValue(columnId) === (filterValue === 'true');
+    },
+  },
   {
     id: "actions",
     enableHiding: false,
@@ -140,6 +320,8 @@ export const columns: ColumnDef<RoomItem>[] = [
     },
   },
 ];
+
+
 
 function AlertDialogDeleteDish({
   roomDelete,
@@ -194,6 +376,75 @@ function AlertDialogDeleteDish({
     </AlertDialog>
   );
 }
+
+
+
+interface AlertDialogDeleteAllProps {
+  rowSelectionIdArray: number[];
+  setRowSelectionIdArray: (value: number[]) => void;
+  isDialogOpen: boolean;
+  setIsDialogOpen: (value: boolean) => void;
+}
+
+const AlertDialogDeleteAllBookings: React.FC<AlertDialogDeleteAllProps> = ({
+  rowSelectionIdArray,
+  setRowSelectionIdArray,
+  isDialogOpen,
+  setIsDialogOpen,
+}) => {
+
+  const { mutateAsync } = useDeleteRoomMutation();
+
+  const deleteBookingAll = async (
+    rowSelectionIdArray: number[],
+    setRowSelectionIdArray: (value: number[]) => void
+  ) => {
+    if (rowSelectionIdArray.length === 0) {
+      toast({ title: 'Please select at least one booking to delete' });
+      return;
+    }
+
+    try {
+      // Loop through selected booking IDs and delete
+      await Promise.all(
+        rowSelectionIdArray.map(async (id) => {
+          await mutateAsync(id);
+        })
+      );
+      toast({ title: 'Xoá chọn thành công' });
+
+      // Reset selected rows state
+      setRowSelectionIdArray([]);
+    } catch (error) {
+      handleErrorApi({ error });
+    }
+  };
+
+  return (
+    <>
+      <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete All Bookings?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Booking <span className='rounded px-1'>{rowSelectionIdArray.join(', ')}</span> sẽ bị xóa
+              vĩnh viễn
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setIsDialogOpen(false)}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={() => deleteBookingAll(rowSelectionIdArray, setRowSelectionIdArray)}>
+              Confirm
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
+  );
+};
+
 // Số lượng item trên 1 trang
 const PAGE_SIZE = 10;
 export default function DishTable() {
@@ -216,6 +467,9 @@ export default function DishTable() {
     pageIndex, // Gía trị mặc định ban đầu, không có ý nghĩa khi data được fetch bất đồng bộ
     pageSize: PAGE_SIZE, //default page size
   });
+
+  const [rowSelectionIdArray, setRowSelectionIdArray] = useState<number[]>([]);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const table = useReactTable({
     data,
@@ -248,13 +502,19 @@ export default function DishTable() {
 
   return (
     <RoomTableContext.Provider
-      value={{ roomIdEdit, setRoomIdEdit, roomDelete, setRoomDelete }}
+      value={{ roomIdEdit, setRoomIdEdit, roomDelete, setRoomDelete, rowSelectionIdArray, setRowSelectionIdArray, setIsDialogOpen }}
     >
       <div className="w-full">
         <EditRoom id={roomIdEdit} setId={setRoomIdEdit} />
         <AlertDialogDeleteDish
           roomDelete={roomDelete}
           setRoomDelete={setRoomDelete}
+        />
+        <AlertDialogDeleteAllBookings
+          rowSelectionIdArray={rowSelectionIdArray}
+          setRowSelectionIdArray={setRowSelectionIdArray}
+          isDialogOpen={isDialogOpen}
+          setIsDialogOpen={setIsDialogOpen}
         />
         <div className="flex items-center py-4">
           <Input
@@ -268,6 +528,39 @@ export default function DishTable() {
             className="max-w-sm"
           />
           <div className="ml-auto flex items-center gap-2">
+            <Button
+              className="btn btn-danger"
+              onClick={() => setIsDialogOpen(true)}
+              disabled={rowSelectionIdArray.length === 0}
+            >
+              Delete All
+            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button className="ml-auto">
+                  Columns <ChevronDown />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                {table
+                  .getAllColumns()
+                  .filter((column) => column.getCanHide())
+                  .map((column) => {
+                    return (
+                      <DropdownMenuCheckboxItem
+                        key={column.id}
+                        className="capitalize"
+                        checked={column.getIsVisible()}
+                        onCheckedChange={(value) =>
+                          column.toggleVisibility(!!value)
+                        }
+                      >
+                        {column.id}
+                      </DropdownMenuCheckboxItem>
+                    )
+                  })}
+              </DropdownMenuContent>
+            </DropdownMenu>
             <AddRoom />
           </div>
         </div>
@@ -282,9 +575,9 @@ export default function DishTable() {
                         {header.isPlaceholder
                           ? null
                           : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
                       </TableHead>
                     );
                   })}

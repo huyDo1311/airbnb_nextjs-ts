@@ -27,7 +27,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { createContext, useContext, useEffect, useRef, useState } from 'react'
+import React, { createContext, useContext, useEffect, useRef, useState } from 'react'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -53,7 +53,7 @@ import { useGetUserList } from '@/queries/useUser';
 import { useGetRoomList } from '@/queries/useRoom';
 import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label';
-import UploadExcelForm from './upload-excel-form';
+// import UploadExcelForm from './upload-excel-form';
 import { BsArrowUp } from 'react-icons/bs';
 
 type ListBookingUser = ListBookingUserBodyType['content'][0]
@@ -168,6 +168,8 @@ const CellCheckbox = ({ row }: { row: any }) => {
 
 
 
+
+
 export const columns: ColumnDef<ListBookingUser>[] = [
   {
     id: 'select',
@@ -226,6 +228,65 @@ export const columns: ColumnDef<ListBookingUser>[] = [
     },
     cell: ({ row }) => <div className='capitalize'>{dayjs(row.getValue<string>('ngayDi'), 'DD-MM-YYYY').format('DD-MM-YYYY')}</div>
   },
+  // {
+  //   accessorKey: 'ngayDen',
+  //   header: ({ column }) => {
+  //     return (
+  //       <div className="flex flex-col space-y-2">
+  //         <Button
+  //           variant="ghost"
+  //           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+  //         >
+  //           Check in
+  //           <CaretSortIcon className="ml-2 h-4 w-4" />
+  //         </Button>
+  //         <DatePickerWithRangeFilter column={column} columnId="ngayDen" />
+  //       </div>
+  //     );
+  //   },
+  //   cell: ({ row }) => (
+  //     <div className="capitalize">
+  //       {dayjs(row.getValue<string>('ngayDen'), 'DD-MM-YYYY').format('DD-MM-YYYY')}
+  //     </div>
+  //   ),
+  //   filterFn: (row, columnId, value) => {
+  //     if (!value) return true;
+  //     const ngayDen = dayjs(row.getValue<string>(columnId), 'DD-MM-YYYY');
+  //     if (value.from && ngayDen.isBefore(dayjs(value.from))) return false;
+  //     if (value.to && ngayDen.isAfter(dayjs(value.to))) return false;
+  //     return true;
+  //   },
+  // },
+  // {
+  //   accessorKey: 'ngayDi',
+  //   header: ({ column }) => {
+  //     return (
+  //       <div className="flex flex-col space-y-2">
+  //         <Button
+  //           variant="ghost"
+  //           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+  //         >
+  //           Check out
+  //           <CaretSortIcon className="ml-2 h-4 w-4" />
+  //         </Button>
+  //         <DatePickerWithRangeFilter column={column} columnId="ngayDi" />
+  //       </div>
+  //     );
+  //   },
+  //   cell: ({ row }) => (
+  //     <div className="capitalize">
+  //       {dayjs(row.getValue<string>('ngayDi'), 'DD-MM-YYYY').format('DD-MM-YYYY')}
+  //     </div>
+  //   ),
+  //   filterFn: (row, columnId, value) => {
+  //     if (!value) return true;
+  //     const ngayDi = dayjs(row.getValue<string>(columnId), 'DD-MM-YYYY');
+  //     if (value.from && ngayDi.isBefore(dayjs(value.from))) return false;
+  //     if (value.to && ngayDi.isAfter(dayjs(value.to))) return false;
+  //     return true;
+  //   },
+  // },
+  
   {
     accessorKey: 'songay',
     header: ({ column }) => {
@@ -777,7 +838,7 @@ export default function BookingTable() {
                   })}
               </DropdownMenuContent>
             </DropdownMenu>
-            <UploadExcelForm />
+            {/* <UploadExcelForm /> */}
 
             <AddBooking />
 
