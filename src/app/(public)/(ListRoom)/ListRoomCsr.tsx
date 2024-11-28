@@ -1,7 +1,5 @@
 "use client";
-import roomApiRequest from "@/apiRequests/room";
-import { ListRoomProps } from "@/app/(public)/(ListRoom)/ListRoom";
-import { destination } from "@/app/(public)/(QuickSearch)/QuickSearch";
+
 import { useStore } from "@/store/store";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
