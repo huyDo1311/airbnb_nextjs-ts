@@ -248,7 +248,19 @@ export const columns: ColumnDef<UserType>[] = [
       </div>
     ),
     cell: ({ row }) => <div className="lowercase">{row.getValue('email')}</div>,
-    filterFn: 'includesString', // Cách lọc dữ liệu
+    filterFn: (row, columnId, value) => {
+      const user = row.original;
+      if (user) {
+        // const nameMatch = user.name?.toLowerCase().includes(value.toLowerCase()) ?? false;
+        // const phoneMatch = user.phone?.toLowerCase().includes(value.toLowerCase()) ?? false;
+        const nameMatch = String(user?.name || "").toLowerCase().includes(value.toLowerCase());
+        const emailMatch = String(user?.email || "").toLowerCase().includes(value.toLowerCase());
+        // const phoneMatch = String(user.phone || "").toLowerCase().includes(value.toLowerCase());
+        return nameMatch || emailMatch ;
+      }
+      return false; // Return false if no user data exists
+    }
+    // filterFn: 'includesString', // Cách lọc dữ liệu
   },
   {
     id: 'actions',
@@ -391,9 +403,14 @@ export default function AccountTable() {
         <AlertDialogDeleteAccount employeeDelete={employeeDelete} setEmployeeDelete={setEmployeeDelete} />
         <div className='flex items-center py-4'>
           <Input
-            placeholder='Filter emails...'
+            placeholder='Search name or emails '
             value={(table.getColumn('email')?.getFilterValue() as string) ?? ''}
-            onChange={(event) => table.getColumn('email')?.setFilterValue(event.target.value)}
+            // onChange={(event) => table.getColumn('email')?.setFilterValue(event.target.value)}
+            onChange={(e) => {
+              const filterValue = e.target.value.trim();
+              const col = table.getColumn('email');
+              col?.setFilterValue(filterValue);
+            }}
             className='max-w-sm'
           />
           <div className='ml-auto flex items-center gap-2'>

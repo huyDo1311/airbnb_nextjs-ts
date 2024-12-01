@@ -195,8 +195,8 @@ export default function DashboardMain() {
         <div className='flex items-center'>
           <span className='mr-2'>Đến</span>
           <Input type='datetime-local' placeholder='Đến ngày'
-            value={format(fromDate, 'yyyy-MM-dd HH:mm').replace(' ', 'T')}
-            onChange={(event) => setFromDate(new Date(event.target.value))}
+            value={format(toDate, 'yyyy-MM-dd HH:mm').replace(' ', 'T')}
+            onChange={(event) => setToDate(new Date(event.target.value))}
           />
         </div>
         <Button className='' variant={'outline'} onClick={resetDateFilter}>

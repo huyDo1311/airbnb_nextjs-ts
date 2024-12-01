@@ -42,8 +42,8 @@ import { useSearchParams } from "next/navigation";
 import AutoPagination from "@/components/auto-pagination";
 import EditRoom from "@/app/manage/room/edit-room";
 import AddRoom from "@/app/manage/room/add-room";
-import { RoomListResType } from "@/schemaValidations/room.schema";
-import { useDeleteRoomMutation, useGetRoomList } from "@/queries/useRoom";
+import {CreateRoomBody, CreateRoomBodyResType, RoomListResType, CreateRoomBodyType} from '@/schemaValidations/room.schema';
+import { useAddRoomMutation, useDeleteRoomMutation, useGetRoomList, useUploadMediaMutation } from "@/queries/useRoom";
 import { toast } from "@/hooks/use-toast";
 import { Checkbox } from '@/components/ui/checkbox';
 import React from 'react';
@@ -62,7 +62,9 @@ import {
 import { X } from "lucide-react"
 import { useGetLocationList } from '@/queries/useLocation';
 import { LocationListResType } from '@/schemaValidations/location.schema';
-import { isEqual } from 'date-fns';
+import * as XLSX from 'xlsx';
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
 
 
 type RoomItem = RoomListResType["content"][0];
@@ -292,6 +294,18 @@ export const columns: ColumnDef<RoomItem>[] = [
         <div className="mt-1 text-left w-full text-sm text-gray-500 flex justify-start items-center"><MapPin size={14} /><span className='ml-1'>{locationName}</span></div>
       )
     }
+  },
+  {
+    accessorKey: 'phongNgu',
+    header: ({ column }) => {
+      return (
+        <Button variant='ghost' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+          Số phòng ngủ
+          <CaretSortIcon className='ml-2 h-4 w-4' />
+        </Button>
+      )
+    },
+    cell: ({ row }) => <div className='capitalize text-center'>{row.getValue('phongNgu')}</div>
   },
   {
     accessorKey: 'khach',
@@ -650,33 +664,32 @@ export default function DishTable() {
   };
 
 
-  const tagDropdownRef = useRef<HTMLDivElement | null>(null);
-  const locationDropdownRef = useRef<HTMLDivElement | null>(null);
+  // const tagDropdownRef = useRef<HTMLDivElement | null>(null);
+  // const locationDropdownRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      // Kiểm tra nếu click ra ngoài tagDropdownRef và locationDropdownRef
-      if (
-        tagDropdownRef.current && 
-        !tagDropdownRef.current.contains(event.target as Node) &&  // click ra ngoài dropdown tag
-        locationDropdownRef.current && 
-        !locationDropdownRef.current.contains(event.target as Node)  // click ra ngoài dropdown location
-      ) {
-        setOpen(false);  // Đóng dropdown tag
-        setOpenLocationSelect(false);  // Đóng dropdown location
-      }
-    };
-  
-    // Thêm event listener khi component được mount
-    document.addEventListener('click', handleClickOutside);
-  
-    return () => {
-      // Dọn dẹp event listener khi component bị unmount
-      document.removeEventListener('click', handleClickOutside);
-    };
-  }, []);
-  
-  
+  // useEffect(() => {
+  //   const handleClickOutside = (event: MouseEvent) => {
+  //     // Kiểm tra nếu click ra ngoài tagDropdownRef và locationDropdownRef
+  //     if (
+  //       tagDropdownRef.current &&
+  //       !tagDropdownRef.current.contains(event.target as Node) &&  // click ra ngoài dropdown tag
+  //       locationDropdownRef.current &&
+  //       !locationDropdownRef.current.contains(event.target as Node)  // click ra ngoài dropdown location
+  //     ) {
+  //       setOpen(false);  // Đóng dropdown tag
+  //       setOpenLocationSelect(false);  // Đóng dropdown location
+  //     }
+  //   };
+
+  //   // Thêm event listener khi component được mount
+  //   document.addEventListener('click', handleClickOutside);
+
+  //   return () => {
+  //     // Dọn dẹp event listener khi component bị unmount
+  //     document.removeEventListener('click', handleClickOutside);
+  //   };
+  // }, []);
+
 
 
 
@@ -795,7 +808,7 @@ export default function DishTable() {
                   {/* Dropdown content */}
                   {open && (
                     <div
-                      ref={tagDropdownRef}
+                      // ref={tagDropdownRef}
                       className="mt-2 p-2 border rounded-md w-full max-w-[200px] absolute z-10 bg-white shadow-md">
                       <Command>
                         <CommandInput placeholder="Search tag..." />
@@ -867,7 +880,7 @@ export default function DishTable() {
                   )} */}
                   {openLocationSelect && (
                     <div
-                      ref={locationDropdownRef}
+                      // ref={locationDropdownRef}
                       className="mt-2 p-2 border rounded-md w-full max-w-[200px] absolute z-10 bg-white shadow-md">
                       {/* Search input for filtering location */}
                       <input
@@ -899,7 +912,7 @@ export default function DishTable() {
                           ))}
                       </div>
                     </div>
-                  )}
+                  ) }
 
                 </div>
 
@@ -908,7 +921,8 @@ export default function DishTable() {
             </div>
           </div>
 
-          <div className="w-1/2">
+          <div className="w-1/2 flex-col">
+
             {/* Other layout part */}
             <div className="w-full flex justify-end">
               <div className="ml-auto flex items-center gap-2">
@@ -946,8 +960,13 @@ export default function DishTable() {
                   </DropdownMenuContent>
                 </DropdownMenu>
                 <AddRoom />
+
               </div>
             </div>
+
+
+            
+
           </div>
         </div>
 
