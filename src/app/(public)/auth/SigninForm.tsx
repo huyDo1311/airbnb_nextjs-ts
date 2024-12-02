@@ -14,13 +14,16 @@ import { Form, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { SigninBody, SigninBodyType } from "@/schemaValidations/auth.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "@/hooks/use-toast";
-import {handleErrorApi, setUserToLocalStorage} from '@/lib/utils';
+import { handleErrorApi, setUserToLocalStorage } from "@/lib/utils";
 import { useSigninMutation } from "@/queries/useAuth";
+import Image from "next/image";
+import { Eye, EyeClosed } from "lucide-react";
+import { useState } from "react";
 
 export default function SigninForm() {
   const signinMutation = useSigninMutation();
   // const setRole = useAppStore((state) => state.setRole);
-
+  const [show, setShow] = useState(true);
   const form = useForm<SigninBodyType>({
     resolver: zodResolver(SigninBody),
     defaultValues: {
@@ -28,7 +31,7 @@ export default function SigninForm() {
       password: "",
     },
   });
-
+  let displayPassword = () => {};
   const onSubmit = async (data: SigninBodyType) => {
     if (signinMutation.isPending) return;
     try {
@@ -40,7 +43,7 @@ export default function SigninForm() {
         description: "Xin chào " + result.content.user.name,
       });
 
-      window.location.href = "/manage/dashboard";
+      // window.location.href = "/manage/dashboard";
     } catch (error: any) {
       handleErrorApi({
         error,
@@ -50,8 +53,8 @@ export default function SigninForm() {
   };
 
   return (
-    <div className="flex">
-      <Card className="mx-auto max-w-sm w-1/3">
+    <div className="w-full">
+      <Card className=" w-full shadow-none border-0">
         <CardHeader>
           <CardTitle className="text-2xl">Đăng nhập</CardTitle>
           <CardDescription>
@@ -94,14 +97,34 @@ export default function SigninForm() {
                     <FormItem>
                       <div className="grid gap-2">
                         <div className="flex items-center">
-                          <Label htmlFor="password">Password</Label>
+                          <Label htmlFor="password">Mật khẩu</Label>
                         </div>
-                        <Input
-                          id="password"
-                          type="password"
-                          required
-                          {...field}
-                        />
+                        <div className="relative">
+                          <Input
+                            id="password"
+                            type={!show ? "text" : "password"}
+                            required
+                            {...field}
+                          />
+                          <Eye
+                            onClick={() => {
+                              setShow(true);
+                            }}
+                            className={`${
+                              show ? "hidden" : "block"
+                            } me-3 absolute right-1 top-2 cursor-pointer`}
+                            size={20}
+                          />
+                          <EyeClosed
+                            onClick={() => {
+                              setShow(false);
+                            }}
+                            className={`${
+                              show ? "block" : "hidden"
+                            } me-3 absolute right-1 top-2 cursor-pointer`}
+                            size={20}
+                          />
+                        </div>
                         <FormMessage />
                       </div>
                     </FormItem>
@@ -111,16 +134,32 @@ export default function SigninForm() {
                   Đăng nhập
                 </Button>
                 <Button variant="outline" className="w-full" type="button">
-                  Đăng nhập bằng Google
+                  <div className="w-52 flex justify-start space-x-4 items-center ">
+                    <Image
+                      src="/assets/google.png"
+                      width={16}
+                      height={16}
+                      alt="google"
+                    />{" "}
+                    <span> Đăng nhập bằng Google</span>
+                  </div>
+                </Button>
+                <Button variant="outline" className="w-full" type="button">
+                  <div className="w-52 flex justify-start space-x-4 items-center ">
+                    <Image
+                      src="/assets/facebook.png"
+                      width={16}
+                      height={16}
+                      alt="google"
+                    />{" "}
+                    <span>Đăng nhập bằng Facebook</span>
+                  </div>
                 </Button>
               </div>
             </form>
           </Form>
         </CardContent>
       </Card>
-      <div className="w-1/2 h-full">
-        <img src="/loginImg.jpg" alt="" />
-      </div>
     </div>
   );
 }

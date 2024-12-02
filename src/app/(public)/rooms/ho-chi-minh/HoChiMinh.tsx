@@ -6,7 +6,7 @@ import React from "react";
 import FormatTime from "@/app/(public)/rooms/FormatTime";
 export default function HoChiMinh() {
   let { resultSearch, dataStoreDestination2 } = useStore();
-
+  console.log("resultSearch", resultSearch);
   let renderRooms = () => {
     return resultSearch?.map((item: any, index: any) => {
       return (

@@ -4,6 +4,7 @@ import { SigninResponseType } from "@/schemaValidations/auth.schema";
 // import { normalizePath } from "./utils";
 import { redirect } from "next/navigation";
 import { normalizePath } from "@/lib/utils";
+import { toast } from "@/hooks/use-toast";
 
 type CustomOptions = RequestInit & {
   baseUrl?: string;
@@ -13,7 +14,6 @@ type CustomOptions = RequestInit & {
 
 const ENTITY_ERROR_STATUS = 422;
 const AUTHENTICATION_ERROR_STATUS = 401;
-
 type EntityErrorPayload = {
   message: string;
   errors: {
@@ -143,17 +143,15 @@ const request = async <Response>(
     method,
   });
 
-  const payload: Response = await res.json();
+  const payload = await res.json();
   //
-
-  if (!res.ok) {
+  if (!res.ok && payload?.statusCode !== 400) {
     throw new Error(`HTTP error! Status: ${res.status}`);
   }
 
   if (isClient) {
     const normalizeURL = normalizePath(url);
     if (normalizeURL === "api/auth/signin") {
-      console.log("🚀 ~ payload:", payload);
       const { token } = (payload as SigninResponseType).content;
       localStorage.setItem("userToken", token);
       // clienttokenCybersoft.value = (payload as SigninResponseType).content.token;

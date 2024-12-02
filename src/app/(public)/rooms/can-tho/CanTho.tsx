@@ -4,14 +4,25 @@ import { useStore } from "@/store/store";
 import Image from "next/image";
 import React from "react";
 import FormatTime from "@/app/(public)/rooms/FormatTime";
+import { useRouter } from "next/navigation";
 export default function CanTho() {
   let { resultSearch, dataStoreDestination2 } = useStore();
+  let router = useRouter();
+  console.log("resultSearch", resultSearch);
+  let handleDetail = (id: number) => {
+    router.push(`/room-detail/id?name=${id}`);
+  };
   let renderRooms = () => {
     return resultSearch?.map((item: any, index: any) => {
       return (
         <div key={item.id}>
           {item.hinhAnh && (
-            <div className="relative p-2">
+            <div
+              className="relative p-2 cursor-pointer"
+              onClick={() => {
+                handleDetail(item.id);
+              }}
+            >
               <div className="h-[400px] ">
                 <Image
                   className="h-full object-left object-cover rounded-xl w-full"
@@ -64,12 +75,12 @@ export default function CanTho() {
           <div className="w-2/3">{renderRooms()}</div>
         </div>
       </div>
-      <div>
+      <div className="relative">
         <iframe
           src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d502746.6398270655!2d105.20595098340893!3d10.122960264489622!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31a0629f927382cd%3A0x72a463d91109ec67!2zQ-G6p24gVGjGoSwgVmnhu4d0IE5hbQ!5e0!3m2!1svi!2s!4v1732357073988!5m2!1svi!2s"
           width={700}
           height={700}
-          className="sticky top-0 "
+          className="sticky top-24 "
           style={{ border: 0 }}
           allowFullScreen
           loading="lazy"

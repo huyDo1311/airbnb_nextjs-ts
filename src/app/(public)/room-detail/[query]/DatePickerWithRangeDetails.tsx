@@ -19,7 +19,6 @@ export function DatePickerWithRangeDetails({
   className,
 }: React.HTMLAttributes<HTMLDivElement>) {
   const [date, setDate] = React.useState<DateRange | undefined>();
-  console.log("date", date);
   let { NextStep, setDataCalendar, dataCalendar } = useStore();
 
   const [active, setActive] = React.useState(false);
@@ -34,7 +33,6 @@ export function DatePickerWithRangeDetails({
           ref2.current &&
           !ref2.current.contains(event.target)
         ) {
-          console.log("1");
           setActive(false);
           setClick(null);
         }
@@ -46,10 +44,7 @@ export function DatePickerWithRangeDetails({
       };
     }, [ref, ref2]);
   }
-  React.useEffect(() => {
-    if (NextStep === 1) setActive(true);
-    else setActive(false);
-  }, [NextStep]);
+
   let handleClick = (id: string) => {
     if (id === click) {
       setActive(false);

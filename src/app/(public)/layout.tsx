@@ -1,16 +1,26 @@
 import Link from "next/link";
 import { Menu, Package2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
+import {
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import DarkModeToggle from "@/components/dark-mode-toggle";
 import NavItems from "@/app/(public)/nav-items";
 import Image from "next/image";
 import QuickSearch from "@/app/(public)/(QuickSearch)/QuickSearch";
+import Logo from "@/app/(public)/Logo";
+import MenuDropDown from "@/app/(public)/MenuDropDown";
+import { Dialog, DialogTrigger } from "@radix-ui/react-dialog";
+import Signin from "@/app/(public)/auth/AuthBox";
 
 export default function Layout({
   children,
@@ -19,15 +29,9 @@ export default function Layout({
 }>) {
   return (
     <div className="flex  flex-col relative">
-      <header className="sticky top-0 flex justify-between items-center p-4   z-20 ">
-        <Link href="/">
-          <Image
-            alt="logo"
-            src="/assets/airbnb-desktop.png"
-            width={100}
-            height={100}
-          />
-        </Link>
+      <header className="sticky top-0 flex justify-between items-center p-4   z-10 ">
+        <Logo />
+
         <div className="focus:bg-black">
           <QuickSearch />
         </div>
@@ -59,7 +63,8 @@ export default function Layout({
           </SheetContent>
         </Sheet> */}
         <div>
-          <DarkModeToggle />
+          {/* <DarkModeToggle /> */}
+          <MenuDropDown />
         </div>
       </header>
       <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8 ">

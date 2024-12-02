@@ -1,6 +1,7 @@
 import roomApiRequest from "@/apiRequests/room";
 import Rooms from "@/app/(public)/rooms/Rooms";
 import http from "@/lib/http";
+import { Suspense } from "react";
 
 interface typeContent {
   id: number;
@@ -29,7 +30,6 @@ export interface ListRoomProps {
   dateTime: string;
 }
 
-// Component that displays the lis  t of rooms
 export default async function Page() {
   const data2: any = await http.get(
     "/api/vi-tri/phan-trang-tim-kiem?pageIndex=1&pageSize=8"

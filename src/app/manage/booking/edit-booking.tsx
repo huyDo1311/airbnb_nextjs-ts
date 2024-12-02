@@ -1,86 +1,114 @@
-'use client'
-import { Button } from '@/components/ui/button'
+"use client";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle
-} from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Upload } from 'lucide-react'
-import { useEffect, useMemo, useRef, useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Upload } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 // import { toast } from '@radix-ui/react-toast'
-import { handleErrorApi } from '@/lib/utils'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Textarea } from '@/components/ui/textarea'
-import { toast } from '@/hooks/use-toast';
-import { Switch } from '@/components/ui/switch';
-import { useGetLocation, useUpdateLocationMutation, useUploadMediaMutation, useGetLocationList } from '@/queries/useLocation';
-import { CreateLocationBody, CreateLocationBodyType } from '@/schemaValidations/location.schema'
-import dayjs from 'dayjs';
-import { CreateBookingBody, CreateBookingBodyType } from '@/schemaValidations/booking.schema';
-import { useAddBookingMutation, useGetBooking, useUpdateBookingMutation } from '@/queries/useBooking';
-import { useGetRoomList } from '@/queries/useRoom';
-import { useGetUserList } from '@/queries/useUser';
+import { handleErrorApi } from "@/lib/utils";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { toast } from "@/hooks/use-toast";
+import { Switch } from "@/components/ui/switch";
+import {
+  useGetLocation,
+  useUpdateLocationMutation,
+  useUploadMediaMutation,
+  useGetLocationList,
+} from "@/queries/useLocation";
+import {
+  CreateLocationBody,
+  CreateLocationBodyType,
+} from "@/schemaValidations/location.schema";
+import dayjs from "dayjs";
+import {
+  CreateBookingBody,
+  CreateBookingBodyType,
+} from "@/schemaValidations/booking.schema";
+import {
+  useAddBookingMutation,
+  useGetBooking,
+  useUpdateBookingMutation,
+} from "@/queries/useBooking";
+import { useGetRoomList } from "@/queries/useRoom";
+import { useGetUserList } from "@/queries/useUser";
 
 export default function EditBooking({
   id,
   setId,
-  onSubmitSuccess
+  onSubmitSuccess,
 }: {
-  id?: number | undefined
-  setId: (value: number | undefined) => void
-  onSubmitSuccess?: () => void
+  id?: number | undefined;
+  setId: (value: number | undefined) => void;
+  onSubmitSuccess?: () => void;
 }) {
   const [open, setOpen] = useState(false);
-  const inputRef = useRef<HTMLInputElement | null>(null)
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
-  const addBookingMutation = useAddBookingMutation()
-  const userListQuery = useGetUserList()
-  const roomListQuery = useGetRoomList()
+  const addBookingMutation = useAddBookingMutation();
+  const userListQuery = useGetUserList();
+  const roomListQuery = useGetRoomList();
 
-  const userList = userListQuery.data?.content || []
-  const roomList = roomListQuery.data?.content || []
+  const userList = userListQuery.data?.content || [];
+  const roomList = roomListQuery.data?.content || [];
 
   const form = useForm<CreateBookingBodyType>({
     resolver: zodResolver(CreateBookingBody),
     defaultValues: {
       id: 0,
       maPhong: 0,
-      ngayDen: '',
-      ngayDi: '',
+      ngayDen: "",
+      ngayDi: "",
       soLuongKhach: 1,
       maNguoiDung: 0,
     },
-  })
+  });
 
   const useUpdateBooking = useUpdateBookingMutation();
   const { data } = useGetBooking({
     id: id as number,
-    enabled: Boolean(id)
-  })
+    enabled: Boolean(id),
+  });
 
   useEffect(() => {
     if (data) {
-      const { maPhong, ngayDen, ngayDi, soLuongKhach, maNguoiDung } = data.content;
-      console.log('data.content', data.content);
+      const { maPhong, ngayDen, ngayDi, soLuongKhach, maNguoiDung } =
+        data.content;
+      console.log("data.content", data.content);
       form.reset({
         id: id,
         maPhong,
-        ngayDen: dayjs(ngayDen).toISOString(), 
+        ngayDen: dayjs(ngayDen).toISOString(),
         ngayDi: dayjs(ngayDi).toISOString(),
         soLuongKhach,
-        maNguoiDung
-      })
+        maNguoiDung,
+      });
     }
-  }, [data, form])
+  }, [data, form]);
 
   // useEffect(() => {
   //   if (inputRef.current && open) {
@@ -89,50 +117,47 @@ export default function EditBooking({
   // }, [open])
 
   const reset = () => {
-    form.reset()
-  }
+    form.reset();
+  };
 
   const onSubmit = async (values: CreateBookingBodyType) => {
-    if (useUpdateBooking.isPending) return
+    if (useUpdateBooking.isPending) return;
     if (id) {
       try {
-        let body = values
+        let body = values;
         body = {
           ...values,
-          id: id
-        }
+          id: id,
+        };
         await useUpdateBooking.mutateAsync(body);
         // reset();
         setOpen(false);
         toast({
-          title: 'Update thành công'
-        })
+          title: "Update thành công",
+        });
       } catch (error) {
         handleErrorApi({
           error,
-          setError: form.setError
-        })
+          setError: form.setError,
+        });
       }
     }
-  }
+  };
 
   // User filter state
-  const [userFilter, setUserFilter] = useState('')
-  const filteredUsers = userList.filter((user) =>
+  const [userFilter, setUserFilter] = useState("");
+  const filteredUsers = userList.filter((user: any) =>
     user.name.toLowerCase().includes(userFilter.toLowerCase())
-  )
+  );
 
   // Room filter state
-  const [roomFilter, setRoomFilter] = useState('')
-  const filteredRooms = roomList.filter((room) =>
+  const [roomFilter, setRoomFilter] = useState("");
+  const filteredRooms = roomList.filter((room: any) =>
     room.tenPhong.toLowerCase().includes(roomFilter.toLowerCase())
-  )
+  );
 
   const locationListQuery = useGetLocationList();
   const locationList = locationListQuery.data?.content ?? [];
-
-
-
 
   return (
     <Dialog
@@ -144,13 +169,18 @@ export default function EditBooking({
         }
       }}
     >
-      <DialogContent className='sm:max-w-[600px] max-h-screen overflow-auto'>
+      <DialogContent className="sm:max-w-[600px] max-h-screen overflow-auto">
         <DialogHeader>
           <DialogTitle>Cập nhật vị trí</DialogTitle>
-          <DialogDescription>Các trường sau đây là bắ buộc: Tên, ảnh</DialogDescription>
+          <DialogDescription>
+            Các trường sau đây là bắ buộc: Tên, ảnh
+          </DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form noValidate className='grid auto-rows-max items-start gap-4 md:gap-8' id='edit-dish-form'
+          <form
+            noValidate
+            className="grid auto-rows-max items-start gap-4 md:gap-8"
+            id="edit-dish-form"
             onSubmit={form.handleSubmit(onSubmit, (e) => {
               console.log(e);
             })}
@@ -168,7 +198,7 @@ export default function EditBooking({
                         value={String(field.value)}
                         onValueChange={(value) => {
                           field.onChange(Number(value));
-                          console.log('User:', value);
+                          console.log("User:", value);
                         }}
                       >
                         <SelectTrigger>
@@ -179,18 +209,24 @@ export default function EditBooking({
                             type="text"
                             placeholder="Search for user"
                             value={userFilter}
-                            onChange={(e) => { setUserFilter(e.target.value) }}
+                            onChange={(e) => {
+                              setUserFilter(e.target.value);
+                            }}
                             ref={inputRef}
                             className="p-2 mb-2"
                           />
                           {filteredUsers.length > 0 ? (
-                            filteredUsers.map((user) => (
+                            filteredUsers.map((user: any) => (
                               <SelectItem key={user.id} value={String(user.id)}>
-                                <p>{user.name}&emsp;/&emsp;{user.email}</p>
+                                <p>
+                                  {user.name}&emsp;/&emsp;{user.email}
+                                </p>
                               </SelectItem>
                             ))
                           ) : (
-                            <div className="text-gray-500 p-2">No user found</div>
+                            <div className="text-gray-500 p-2">
+                              No user found
+                            </div>
                           )}
                         </SelectContent>
                       </Select>
@@ -212,7 +248,7 @@ export default function EditBooking({
                         value={String(field.value)}
                         onValueChange={(value) => {
                           field.onChange(Number(value));
-                          console.log('Room:', value);
+                          console.log("Room:", value);
                         }}
                       >
                         <SelectTrigger>
@@ -230,16 +266,26 @@ export default function EditBooking({
                           />
                           {/* Render filtered room options */}
                           {filteredRooms.length > 0 ? (
-                            filteredRooms.map((room) => {
-                              const location = locationList.find((loc) => loc.id === room.maViTri);
-                              const locationName = location ? location.tenViTri : 'Vị trí không có';
+                            filteredRooms.map((room: any) => {
+                              const location = locationList.find(
+                                (loc: any) => loc.id === room.maViTri
+                              );
+                              const locationName = location
+                                ? location.tenViTri
+                                : "Vị trí không có";
                               return (
-                                <SelectItem className="w-full" key={room.id} value={String(room.id)}>
+                                <SelectItem
+                                  className="w-full"
+                                  key={room.id}
+                                  value={String(room.id)}
+                                >
                                   <div className="flex items-center justify-end w-full">
-                                    <div>{locationName}&emsp;/&emsp;{room.tenPhong}</div>
+                                    <div>
+                                      {locationName}&emsp;/&emsp;{room.tenPhong}
+                                    </div>
                                     <div className="ml-2">
                                       <img
-                                        style={{ float: 'right' }}
+                                        style={{ float: "right" }}
                                         src={room.hinhAnh || undefined}
                                         alt={room.tenPhong}
                                         className="w-8 h-8 object-cover rounded-md"
@@ -247,10 +293,12 @@ export default function EditBooking({
                                     </div>
                                   </div>
                                 </SelectItem>
-                              )
+                              );
                             })
                           ) : (
-                            <div className="text-gray-500 p-2">No room found</div>
+                            <div className="text-gray-500 p-2">
+                              No room found
+                            </div>
                           )}
                         </SelectContent>
                       </Select>
@@ -272,10 +320,16 @@ export default function EditBooking({
                         type="date"
                         {...field}
                         placeholder="Check in"
-                        value={field.value ? dayjs(field.value).format('YYYY-MM-DD') : ''}
+                        value={
+                          field.value
+                            ? dayjs(field.value).format("YYYY-MM-DD")
+                            : ""
+                        }
                         onChange={(e) => {
                           const dateValue = e.target.value;
-                          const isoDate = dateValue ? new Date(dateValue).toISOString() : '';
+                          const isoDate = dateValue
+                            ? new Date(dateValue).toISOString()
+                            : "";
                           field.onChange(isoDate);
                           console.log("Checkin:", isoDate);
                         }}
@@ -297,10 +351,16 @@ export default function EditBooking({
                         type="date"
                         {...field}
                         placeholder="Check out"
-                        value={field.value ? dayjs(field.value).format('YYYY-MM-DD') : ''}
+                        value={
+                          field.value
+                            ? dayjs(field.value).format("YYYY-MM-DD")
+                            : ""
+                        }
                         onChange={(e) => {
                           const dateValue = e.target.value;
-                          const isoDate = dateValue ? new Date(dateValue).toISOString() : '';
+                          const isoDate = dateValue
+                            ? new Date(dateValue).toISOString()
+                            : "";
                           field.onChange(isoDate);
                           console.log("Checkout:", isoDate);
                         }}
@@ -337,11 +397,11 @@ export default function EditBooking({
           </form>
         </Form>
         <DialogFooter>
-          <Button type='submit' form='edit-dish-form'>
+          <Button type="submit" form="edit-dish-form">
             Cập nhật
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

@@ -13,7 +13,6 @@ export default function Rooms({ data2 }: any) {
   let handleDetail = (id: number, star: number, tinhThanh: string) => {
     setStar(star);
     setDataLocation(tinhThanh);
-    console.log(tinhThanh, "tinh thanh dc");
     router.push(`/room-detail/id?name=${id}`);
   };
   let renderRooms = () => {

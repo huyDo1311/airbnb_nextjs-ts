@@ -1,6 +1,6 @@
-'use client'
+"use client";
 
-import { DotsHorizontalIcon, CaretSortIcon } from '@radix-ui/react-icons';
+import { DotsHorizontalIcon, CaretSortIcon } from "@radix-ui/react-icons";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -11,9 +11,9 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  useReactTable
-} from '@tanstack/react-table'
-import { Button } from '@/components/ui/button'
+  useReactTable,
+} from "@tanstack/react-table";
+import { Button } from "@/components/ui/button";
 
 import {
   DropdownMenu,
@@ -22,12 +22,19 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuCheckboxItem,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
-import { Input } from '@/components/ui/input'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { createContext, useContext, useEffect, useRef, useState } from 'react'
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -36,46 +43,49 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle
-} from '@/components/ui/alert-dialog'
-import { handleErrorApi } from '@/lib/utils';
-import { ArrowBigDown, ArrowBigUp, ChevronDown, } from "lucide-react"
-import { useSearchParams } from 'next/navigation'
-import AutoPagination from '@/components/auto-pagination'
-import EditBooking from '@/app/manage/booking/edit-booking'
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { handleErrorApi } from "@/lib/utils";
+import { ArrowBigDown, ArrowBigUp, ChevronDown } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import AutoPagination from "@/components/auto-pagination";
+import EditBooking from "@/app/manage/booking/edit-booking";
 
-import { toast } from '@/hooks/use-toast';
-import { ListBookingUserBodyType } from '@/schemaValidations/booking.schema';
-import { useDeleteBookingMutation, useDeleteSingleBookingMutation, useGetBookingList } from '@/queries/useBooking'
-import AddBooking from './add-booking'
-import dayjs from 'dayjs'
-import { useGetUserList } from '@/queries/useUser';
-import { useGetRoomList } from '@/queries/useRoom';
-import { Checkbox } from '@/components/ui/checkbox'
-import { Label } from '@/components/ui/label';
-import UploadExcelForm from './upload-excel-form';
-import { BsArrowUp } from 'react-icons/bs';
+import { toast } from "@/hooks/use-toast";
+import { ListBookingUserBodyType } from "@/schemaValidations/booking.schema";
+import {
+  useDeleteBookingMutation,
+  useDeleteSingleBookingMutation,
+  useGetBookingList,
+} from "@/queries/useBooking";
+import AddBooking from "./add-booking";
+import dayjs from "dayjs";
+import { useGetUserList } from "@/queries/useUser";
+import { useGetRoomList } from "@/queries/useRoom";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import UploadExcelForm from "./upload-excel-form";
+import { BsArrowUp } from "react-icons/bs";
 
-type ListBookingUser = ListBookingUserBodyType['content'][0]
+type ListBookingUser = ListBookingUserBodyType["content"][0];
 
 const BookingTableContext = createContext<{
-  setBookingIdEdit: (value: number) => void
-  BookingIdEdit: number | undefined
-  BookingDelete: ListBookingUser | null
-  setBookingDelete: (value: ListBookingUser | null) => void
-  rowSelectionIdArray: number[]
-  setRowSelectionIdArray: (value: number[]) => void
-  setIsDialogOpen: (value: boolean) => void
+  setBookingIdEdit: (value: number) => void;
+  BookingIdEdit: number | undefined;
+  BookingDelete: ListBookingUser | null;
+  setBookingDelete: (value: ListBookingUser | null) => void;
+  rowSelectionIdArray: number[];
+  setRowSelectionIdArray: (value: number[]) => void;
+  setIsDialogOpen: (value: boolean) => void;
 }>({
-  setBookingIdEdit: (value: number | undefined) => { },
+  setBookingIdEdit: (value: number | undefined) => {},
   BookingIdEdit: undefined,
   BookingDelete: null,
-  setBookingDelete: (value: ListBookingUser | null) => { },
+  setBookingDelete: (value: ListBookingUser | null) => {},
   rowSelectionIdArray: [],
-  setRowSelectionIdArray: (value: number[]) => { },
-  setIsDialogOpen: () => { }
-})
-
+  setRowSelectionIdArray: (value: number[]) => {},
+  setIsDialogOpen: () => {},
+});
 
 interface RowData {
   original: {
@@ -113,7 +123,8 @@ interface RowData {
 
 const HeaderCheckbox = ({ table }: { table: any }) => {
   // const [rowSelectionIdArray, setRowSelectionIdArray] = useState<number[]>([]);
-  const { rowSelectionIdArray, setRowSelectionIdArray } = useContext(BookingTableContext);
+  const { rowSelectionIdArray, setRowSelectionIdArray } =
+    useContext(BookingTableContext);
 
   const handleSelectAllChange = (value: boolean) => {
     const newSelection = value
@@ -122,7 +133,6 @@ const HeaderCheckbox = ({ table }: { table: any }) => {
 
     table.toggleAllRowsSelected(!!value);
     setRowSelectionIdArray(newSelection);
-
   };
   console.log("rowSelectionIdArray:", rowSelectionIdArray);
 
@@ -136,7 +146,8 @@ const HeaderCheckbox = ({ table }: { table: any }) => {
 };
 
 const CellCheckbox = ({ row }: { row: any }) => {
-  const { rowSelectionIdArray, setRowSelectionIdArray } = useContext(BookingTableContext);
+  const { rowSelectionIdArray, setRowSelectionIdArray } =
+    useContext(BookingTableContext);
   // const [rowSelectionIdArray, setRowSelectionIdArray] = useState<number[]>([]);
   const handleCheckedChange = (value: boolean) => {
     row.toggleSelected(!!value);
@@ -166,115 +177,142 @@ const CellCheckbox = ({ row }: { row: any }) => {
   );
 };
 
-
-
 export const columns: ColumnDef<ListBookingUser>[] = [
   {
-    id: 'select',
+    id: "select",
     header: ({ table }) => <HeaderCheckbox table={table} />,
     cell: ({ row }) => <CellCheckbox row={row} />,
     enableSorting: false,
     enableHiding: false,
   },
   {
-    accessorKey: 'id',
+    accessorKey: "id",
     header: ({ column }) => {
       return (
-        <Button variant='ghost' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
           ID
-          <CaretSortIcon className='ml-2 h-4 w-4' />
+          <CaretSortIcon className="ml-2 h-4 w-4" />
         </Button>
-      )
+      );
     },
   },
   {
-    accessorKey: 'hinhAnh',
-    header: 'Room',
+    accessorKey: "hinhAnh",
+    header: "Room",
     cell: ({ row }) => {
       const room = row.original.room;
       return (
         <div>
-          <Avatar className='aspect-square w-[100px] h-[100px] rounded-md object-cover'>
+          <Avatar className="aspect-square w-[100px] h-[100px] rounded-md object-cover">
             <AvatarImage src={room?.hinhAnh} />
-            <AvatarFallback className='rounded-none'>{room?.hinhAnh}</AvatarFallback>
+            <AvatarFallback className="rounded-none">
+              {room?.hinhAnh}
+            </AvatarFallback>
           </Avatar>
         </div>
-      )
-    }
+      );
+    },
   },
   {
-    accessorKey: 'ngayDen',
+    accessorKey: "ngayDen",
     header: ({ column }) => {
       return (
-        <Button variant='ghost' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
           Check in
-          <CaretSortIcon className='ml-2 h-4 w-4' />
+          <CaretSortIcon className="ml-2 h-4 w-4" />
         </Button>
-      )
+      );
     },
-    cell: ({ row }) => <div className='capitalize'>{dayjs(row.getValue<string>('ngayDen'), 'DD-MM-YYYY').format('DD-MM-YYYY')}</div>
+    cell: ({ row }) => (
+      <div className="capitalize">
+        {dayjs(row.getValue<string>("ngayDen"), "DD-MM-YYYY").format(
+          "DD-MM-YYYY"
+        )}
+      </div>
+    ),
   },
   {
-    accessorKey: 'ngayDi',
+    accessorKey: "ngayDi",
     header: ({ column }) => {
       return (
-        <Button variant='ghost' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
           Check out
-          <CaretSortIcon className='ml-2 h-4 w-4' />
+          <CaretSortIcon className="ml-2 h-4 w-4" />
         </Button>
-      )
+      );
     },
-    cell: ({ row }) => <div className='capitalize'>{dayjs(row.getValue<string>('ngayDi'), 'DD-MM-YYYY').format('DD-MM-YYYY')}</div>
+    cell: ({ row }) => (
+      <div className="capitalize">
+        {dayjs(row.getValue<string>("ngayDi"), "DD-MM-YYYY").format(
+          "DD-MM-YYYY"
+        )}
+      </div>
+    ),
   },
   {
-    accessorKey: 'songay',
+    accessorKey: "songay",
     header: ({ column }) => {
       return (
-        <Button variant='ghost' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
           Số ngày thuê
-          <CaretSortIcon className='ml-2 h-4 w-4' />
+          <CaretSortIcon className="ml-2 h-4 w-4" />
         </Button>
-      )
+      );
     },
     cell: ({ row }) => {
-      const ngayDen = dayjs(row.getValue<string>('ngayDen'), 'DD-MM-YYYY');
-      const ngayDi = dayjs(row.getValue<string>('ngayDi'), 'DD-MM-YYYY');
-      const soNgay = ngayDi.diff(ngayDen, 'day'); // Tính số ngày
-      return <div className='text-center'>{soNgay >= 0 ? soNgay : 'N/A'}</div>;
+      const ngayDen = dayjs(row.getValue<string>("ngayDen"), "DD-MM-YYYY");
+      const ngayDi = dayjs(row.getValue<string>("ngayDi"), "DD-MM-YYYY");
+      const soNgay = ngayDi.diff(ngayDen, "day"); // Tính số ngày
+      return <div className="text-center">{soNgay >= 0 ? soNgay : "N/A"}</div>;
     },
     sortingFn: (rowA, rowB) => {
-      const ngayDenA = dayjs(rowA.original.ngayDen, 'DD-MM-YYYY');
-      const ngayDiA = dayjs(rowA.original.ngayDi, 'DD-MM-YYYY');
-      const soNgayA = ngayDiA.diff(ngayDenA, 'day'); // Số ngày thuê dòng A
+      const ngayDenA = dayjs(rowA.original.ngayDen, "DD-MM-YYYY");
+      const ngayDiA = dayjs(rowA.original.ngayDi, "DD-MM-YYYY");
+      const soNgayA = ngayDiA.diff(ngayDenA, "day"); // Số ngày thuê dòng A
 
-      const ngayDenB = dayjs(rowB.original.ngayDen, 'DD-MM-YYYY');
-      const ngayDiB = dayjs(rowB.original.ngayDi, 'DD-MM-YYYY');
-      const soNgayB = ngayDiB.diff(ngayDenB, 'day'); // Số ngày thuê dòng B
+      const ngayDenB = dayjs(rowB.original.ngayDen, "DD-MM-YYYY");
+      const ngayDiB = dayjs(rowB.original.ngayDi, "DD-MM-YYYY");
+      const soNgayB = ngayDiB.diff(ngayDenB, "day"); // Số ngày thuê dòng B
 
       return soNgayA - soNgayB; // Sắp xếp theo số ngày thuê
-    }
+    },
   },
   {
-    accessorKey: 'gia',
+    accessorKey: "gia",
     header: ({ column }) => {
       return (
-        <Button variant='ghost' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
           Giá
-          <CaretSortIcon className='ml-2 h-4 w-4' />
+          <CaretSortIcon className="ml-2 h-4 w-4" />
         </Button>
-      )
+      );
     },
     cell: ({ row }) => {
       const giaMotNgay = row.original.room?.giaTien ?? 0;
-      const ngayDen = dayjs(row.getValue<string>('ngayDen'), 'DD-MM-YYYY');
-      const ngayDi = dayjs(row.getValue<string>('ngayDi'), 'DD-MM-YYYY');
-      const soNgay = ngayDi.diff(ngayDen, 'day'); // Tính số ngày thuê
+      const ngayDen = dayjs(row.getValue<string>("ngayDen"), "DD-MM-YYYY");
+      const ngayDi = dayjs(row.getValue<string>("ngayDi"), "DD-MM-YYYY");
+      const soNgay = ngayDi.diff(ngayDen, "day"); // Tính số ngày thuê
       // Tính giá với các ngày cuối tuần và ngày lễ
       // const gia = calculatePrice(row.original);
       const gia = giaMotNgay * soNgay;
 
       // Hiển thị thông tin với mũi tên
-      let displayPrice = gia.toLocaleString() + ' $';
+      let displayPrice = gia.toLocaleString() + " $";
       // displayPrice += <br />;
 
       return <div>{displayPrice}</div>;
@@ -286,11 +324,15 @@ export const columns: ColumnDef<ListBookingUser>[] = [
     // }
     sortingFn: (rowA, rowB) => {
       // Get the calculated prices for each row
-      const giaA = (rowA.original.room?.giaTien ?? 0) * dayjs(rowA.original.ngayDi).diff(dayjs(rowA.original.ngayDen), 'day');
-      const giaB = (rowB.original.room?.giaTien ?? 0) * dayjs(rowB.original.ngayDi).diff(dayjs(rowB.original.ngayDen), 'day');
-      
+      const giaA =
+        (rowA.original.room?.giaTien ?? 0) *
+        dayjs(rowA.original.ngayDi).diff(dayjs(rowA.original.ngayDen), "day");
+      const giaB =
+        (rowB.original.room?.giaTien ?? 0) *
+        dayjs(rowB.original.ngayDi).diff(dayjs(rowB.original.ngayDen), "day");
+
       return giaA - giaB;
-    }
+    },
   },
   // {
   //   accessorKey: '%',
@@ -402,85 +444,99 @@ export const columns: ColumnDef<ListBookingUser>[] = [
   // },
 
   {
-    accessorKey: 'soLuongKhach',
+    accessorKey: "soLuongKhach",
     header: ({ column }) => {
       return (
-        <Button variant='ghost' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
           Số lượng khách
-          <CaretSortIcon className='ml-2 h-4 w-4' />
+          <CaretSortIcon className="ml-2 h-4 w-4" />
         </Button>
-      )
+      );
     },
-    cell: ({ row }) => <div className='capitalize text-center'>{row.getValue('soLuongKhach')}</div>
+    cell: ({ row }) => (
+      <div className="capitalize text-center">
+        {row.getValue("soLuongKhach")}
+      </div>
+    ),
   },
   {
-    accessorKey: 'user',
+    accessorKey: "user",
     header: ({ column }) => {
       return (
-        <Button variant='ghost' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
           Tên khách
-          <CaretSortIcon className='ml-2 h-4 w-4' />
+          <CaretSortIcon className="ml-2 h-4 w-4" />
         </Button>
-      )
+      );
     },
     cell: ({ row }) => {
       const user = row.original.user;
-      return (<div className='capitalize'>{user?.name || 'N/A'}</div>)
+      return <div className="capitalize">{user?.name || "N/A"}</div>;
     },
     filterFn: (row, columnId, value) => {
       const user = row.original.user;
       if (user) {
         // const nameMatch = user.name?.toLowerCase().includes(value.toLowerCase()) ?? false;
         // const phoneMatch = user.phone?.toLowerCase().includes(value.toLowerCase()) ?? false;
-        const nameMatch = String(user?.name || "").toLowerCase().includes(value.toLowerCase());
-        const emailMatch = String(user?.email || "").toLowerCase().includes(value.toLowerCase());
+        const nameMatch = String(user?.name || "")
+          .toLowerCase()
+          .includes(value.toLowerCase());
+        const emailMatch = String(user?.email || "")
+          .toLowerCase()
+          .includes(value.toLowerCase());
         // const phoneMatch = String(user.phone || "").toLowerCase().includes(value.toLowerCase());
         return nameMatch || emailMatch;
       }
       return false; // Return false if no user data exists
-    }
+    },
   },
   {
-    id: 'actions',
+    id: "actions",
     enableHiding: false,
     cell: function Actions({ row }) {
-      const { setBookingIdEdit, setBookingDelete } = useContext(BookingTableContext)
+      const { setBookingIdEdit, setBookingDelete } =
+        useContext(BookingTableContext);
       const openEditBooking = () => {
-        setBookingIdEdit(row.original.id)
-      }
+        setBookingIdEdit(row.original.id);
+      };
 
       const opendeleteBooking = () => {
-        setBookingDelete(row.original)
-      }
+        setBookingDelete(row.original);
+      };
       return (
         <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
-            <Button variant='ghost' className='h-8 w-8 p-0'>
-              <span className='sr-only'>Open menu</span>
-              <DotsHorizontalIcon className='h-4 w-4' />
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <span className="sr-only">Open menu</span>
+              <DotsHorizontalIcon className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align='end'>
+          <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={openEditBooking}>Sửa</DropdownMenuItem>
             <DropdownMenuItem onClick={opendeleteBooking}>Xóa</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      )
-    }
-  }
-]
+      );
+    },
+  },
+];
 
 function AlertDialogDeleteBooking({
   BookingDelete,
-  setBookingDelete
+  setBookingDelete,
 }: {
-  BookingDelete: ListBookingUser | null
-  setBookingDelete: (value: ListBookingUser | null) => void
+  BookingDelete: ListBookingUser | null;
+  setBookingDelete: (value: ListBookingUser | null) => void;
 }) {
   // console.log("🚀 ~ BookingDelete id:", BookingDelete);
-
 
   const { mutateAsync } = useDeleteBookingMutation();
 
@@ -490,22 +546,22 @@ function AlertDialogDeleteBooking({
         const result = await mutateAsync(BookingDelete.id);
         setBookingDelete(null);
         toast({
-          title: result.message
-        })
+          title: result.message,
+        });
       } catch (error) {
         handleErrorApi({
           error,
-        })
+        });
       }
     }
-  }
+  };
 
   return (
     <AlertDialog
       open={Boolean(BookingDelete)}
       onOpenChange={(value) => {
         if (!value) {
-          setBookingDelete(null)
+          setBookingDelete(null);
         }
       }}
     >
@@ -513,17 +569,22 @@ function AlertDialogDeleteBooking({
         <AlertDialogHeader>
           <AlertDialogTitle>Xóa booking?</AlertDialogTitle>
           <AlertDialogDescription>
-            Booking <span className='bg text-primary-foreground rounded px-1'>{BookingDelete?.id}</span> sẽ bị xóa
-            vĩnh viễn
+            Booking{" "}
+            <span className="bg text-primary-foreground rounded px-1">
+              {BookingDelete?.id}
+            </span>{" "}
+            sẽ bị xóa vĩnh viễn
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={deleteBooking}>Continue</AlertDialogAction>
+          <AlertDialogAction onClick={deleteBooking}>
+            Continue
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
-  )
+  );
 }
 
 interface AlertDialogDeleteAllProps {
@@ -539,7 +600,6 @@ const AlertDialogDeleteAllBookings: React.FC<AlertDialogDeleteAllProps> = ({
   isDialogOpen,
   setIsDialogOpen,
 }) => {
-
   const { mutateAsync } = useDeleteBookingMutation();
 
   const deleteBookingAll = async (
@@ -547,7 +607,7 @@ const AlertDialogDeleteAllBookings: React.FC<AlertDialogDeleteAllProps> = ({
     setRowSelectionIdArray: (value: number[]) => void
   ) => {
     if (rowSelectionIdArray.length === 0) {
-      toast({ title: 'Please select at least one booking to delete' });
+      toast({ title: "Please select at least one booking to delete" });
       return;
     }
 
@@ -558,7 +618,7 @@ const AlertDialogDeleteAllBookings: React.FC<AlertDialogDeleteAllProps> = ({
           await mutateAsync(id);
         })
       );
-      toast({ title: 'Xoá chọn thành công' });
+      toast({ title: "Xoá chọn thành công" });
 
       // Reset selected rows state
       setRowSelectionIdArray([]);
@@ -574,15 +634,22 @@ const AlertDialogDeleteAllBookings: React.FC<AlertDialogDeleteAllProps> = ({
           <AlertDialogHeader>
             <AlertDialogTitle>Delete All Bookings?</AlertDialogTitle>
             <AlertDialogDescription>
-            Booking <span className='bg text-primary-foreground rounded px-1'>{rowSelectionIdArray.join(', ')}</span> sẽ bị xóa
-            vĩnh viễn
+              Booking{" "}
+              <span className="bg text-primary-foreground rounded px-1">
+                {rowSelectionIdArray.join(", ")}
+              </span>{" "}
+              sẽ bị xóa vĩnh viễn
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel onClick={() => setIsDialogOpen(false)}>
               Cancel
             </AlertDialogCancel>
-            <AlertDialogAction onClick={() => deleteBookingAll(rowSelectionIdArray, setRowSelectionIdArray)}>
+            <AlertDialogAction
+              onClick={() =>
+                deleteBookingAll(rowSelectionIdArray, setRowSelectionIdArray)
+              }
+            >
               Confirm
             </AlertDialogAction>
           </AlertDialogFooter>
@@ -592,22 +659,17 @@ const AlertDialogDeleteAllBookings: React.FC<AlertDialogDeleteAllProps> = ({
   );
 };
 
-
-
-
-
-
-
 // Số lượng item trên 1 trang
-const PAGE_SIZE = 10
-
+const PAGE_SIZE = 10;
 
 export default function BookingTable() {
   const searchParam = useSearchParams();
-  const page = searchParam.get('page') ? Number(searchParam.get('page')) : 1;
+  const page = searchParam.get("page") ? Number(searchParam.get("page")) : 1;
   const pageIndex = page - 1;
   const [BookingIdEdit, setBookingIdEdit] = useState<number | undefined>();
-  const [BookingDelete, setBookingDelete] = useState<ListBookingUser | null>(null);
+  const [BookingDelete, setBookingDelete] = useState<ListBookingUser | null>(
+    null
+  );
 
   const bookingListQuery = useGetBookingList();
   const bookingList = bookingListQuery.data?.content ?? [];
@@ -618,9 +680,9 @@ export default function BookingTable() {
   const roomListQuery = useGetRoomList();
   const roomList = roomListQuery.data?.content ?? [];
 
-  const mergedBookingData = bookingList.map((booking) => {
-    const user = userList.find((user) => user.id === booking.maNguoiDung);
-    const room = roomList.find((room) => room.id === booking.maPhong);
+  const mergedBookingData = bookingList.map((booking: any) => {
+    const user = userList.find((user: any) => user.id === booking.maNguoiDung);
+    const room = roomList.find((room: any) => room.id === booking.maPhong);
 
     return {
       ...booking,
@@ -630,19 +692,17 @@ export default function BookingTable() {
   });
 
   const validBookingData = mergedBookingData.filter(
-    (booking) => booking.user !== null && booking.room !== null
+    (booking: any) => booking.user !== null && booking.room !== null
   );
 
-
-
-  const [sorting, setSorting] = useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
-  const [rowSelection, setRowSelection] = useState({})
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = useState({});
   const [pagination, setPagination] = useState({
     pageIndex, // Gía trị mặc định ban đầu, không có ý nghĩa khi data được fetch bất đồng bộ
-    pageSize: PAGE_SIZE //default page size
-  })
+    pageSize: PAGE_SIZE, //default page size
+  });
 
   // const { rowSelectionIdArray, setRowSelectionIdArray } = useContext(BookingTableContext);
   const [rowSelectionIdArray, setRowSelectionIdArray] = useState<number[]>([]);
@@ -665,16 +725,16 @@ export default function BookingTable() {
       columnFilters,
       columnVisibility,
       rowSelection,
-      pagination
-    }
-  })
+      pagination,
+    },
+  });
 
   useEffect(() => {
     table.setPagination({
       pageIndex,
-      pageSize: PAGE_SIZE
-    })
-  }, [table, pageIndex])
+      pageSize: PAGE_SIZE,
+    });
+  }, [table, pageIndex]);
 
   // Custom hook to handle booking deletion
 
@@ -705,35 +765,44 @@ export default function BookingTable() {
   //   }
   // };
 
-
-
   return (
     // <BookingTableContext.Provider value={{ BookingIdEdit, setBookingIdEdit, BookingDelete, setBookingDelete}}>
-    <BookingTableContext.Provider value={{ setBookingIdEdit, BookingIdEdit, BookingDelete, setBookingDelete, rowSelectionIdArray, setRowSelectionIdArray, setIsDialogOpen }}>
-      <div className='w-full'>
+    <BookingTableContext.Provider
+      value={{
+        setBookingIdEdit,
+        BookingIdEdit,
+        BookingDelete,
+        setBookingDelete,
+        rowSelectionIdArray,
+        setRowSelectionIdArray,
+        setIsDialogOpen,
+      }}
+    >
+      <div className="w-full">
         <EditBooking id={BookingIdEdit} setId={setBookingIdEdit} />
-        <AlertDialogDeleteBooking BookingDelete={BookingDelete} setBookingDelete={setBookingDelete} />
+        <AlertDialogDeleteBooking
+          BookingDelete={BookingDelete}
+          setBookingDelete={setBookingDelete}
+        />
         <AlertDialogDeleteAllBookings
           rowSelectionIdArray={rowSelectionIdArray}
           setRowSelectionIdArray={setRowSelectionIdArray}
-          isDialogOpen={isDialogOpen} 
+          isDialogOpen={isDialogOpen}
           setIsDialogOpen={setIsDialogOpen}
         />
-        <div className='flex items-center py-4'>
+        <div className="flex items-center py-4">
           <Input
             placeholder="Lọc theo tên khách"
-            value={(table.getColumn('user')?.getFilterValue() as string) ?? ''}
+            value={(table.getColumn("user")?.getFilterValue() as string) ?? ""}
             onChange={(e) => {
               const filterValue = e.target.value.trim();
-              const col = table.getColumn('user');
+              const col = table.getColumn("user");
               col?.setFilterValue(filterValue);
             }}
             className="max-w-sm"
           />
 
-          <div className='ml-auto flex items-center gap-2'>
-
-
+          <div className="ml-auto flex items-center gap-2">
             {/* <Button
               variant="destructive"
               onClick={() => deleteBookingAll(rowSelectionIdArray, setRowSelectionIdArray)}
@@ -773,17 +842,16 @@ export default function BookingTable() {
                       >
                         {column.id}
                       </DropdownMenuCheckboxItem>
-                    )
+                    );
                   })}
               </DropdownMenuContent>
             </DropdownMenu>
             <UploadExcelForm />
 
             <AddBooking />
-
           </div>
         </div>
-        <div className='rounded-md border'>
+        <div className="rounded-md border">
           <Table>
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (
@@ -791,9 +859,14 @@ export default function BookingTable() {
                   {headerGroup.headers.map((header) => {
                     return (
                       <TableHead key={header.id}>
-                        {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
                       </TableHead>
-                    )
+                    );
                   })}
                 </TableRow>
               ))}
@@ -801,15 +874,26 @@ export default function BookingTable() {
             <TableBody>
               {table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map((row) => (
-                  <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && "selected"}
+                  >
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                      <TableCell key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
                     ))}
                   </TableRow>
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={columns.length} className='h-24 text-center'>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center"
+                  >
                     No results.
                   </TableCell>
                 </TableRow>
@@ -817,24 +901,21 @@ export default function BookingTable() {
             </TableBody>
           </Table>
         </div>
-        <div className='flex items-center justify-end space-x-2 py-4'>
-          <div className='text-xs text-muted-foreground py-4 flex-1 '>
-            Hiển thị <strong>{table.getPaginationRowModel().rows.length}</strong> trong <strong>{validBookingData.length}</strong>{' '}
-            kết quả
+        <div className="flex items-center justify-end space-x-2 py-4">
+          <div className="text-xs text-muted-foreground py-4 flex-1 ">
+            Hiển thị{" "}
+            <strong>{table.getPaginationRowModel().rows.length}</strong> trong{" "}
+            <strong>{validBookingData.length}</strong> kết quả
           </div>
           <div>
             <AutoPagination
               page={table.getState().pagination.pageIndex + 1}
               pageSize={table.getPageCount()}
-              pathname='/manage/booking'
+              pathname="/manage/booking"
             />
           </div>
         </div>
       </div>
     </BookingTableContext.Provider>
-  )
+  );
 }
-
-
-
-

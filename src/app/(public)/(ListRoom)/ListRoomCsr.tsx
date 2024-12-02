@@ -1,13 +1,23 @@
 "use client";
-
+import Signin from "@/app/(public)/auth/AuthBox";
+import { Button } from "@/components/ui/button";
+import {
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogPortal,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { useStore } from "@/store/store";
+import { Dialog, DialogTrigger } from "@radix-ui/react-dialog";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 export interface Location {
   star: number;
 }
+
 export const vietnamLocations: Location[] = [
   { star: 4.2 },
   { star: 5.0 },
@@ -47,14 +57,22 @@ export const vietnamLocations: Location[] = [
 ];
 
 export default function ListRoomCsr({ data, data2 }: any) {
+  let handleOpen = (): void => {
+    setOpen(!open);
+  };
   const router = useRouter();
   let { setStar, setDataLocation } = useStore();
+  const [open, setOpen] = useState(false);
   useEffect(() => {}, []);
+
   let handleDetail = (id: number, star: number, tinhThanh: string) => {
     setStar(star);
     setDataLocation(tinhThanh);
-    console.log(tinhThanh, "tinh thanh dc");
     router.push(`/room-detail/id?name=${id}`);
+  };
+
+  const formatStar = (star: number) => {
+    return star.toFixed(1).replace(".", ",");
   };
 
   let renderRooms = () => {
@@ -95,7 +113,8 @@ export default function ListRoomCsr({ data, data2 }: any) {
                         </div>
                         <div className="flex items-center space-x-2">
                           <p className="text-sm">
-                            {vietnamLocations[index]?.star}
+                            {formatStar(vietnamLocations[index]?.star)}{" "}
+                            {/* Display star with comma */}
                           </p>
                           <i className="fa fa-star text-sm"></i>
                         </div>
@@ -143,6 +162,7 @@ export default function ListRoomCsr({ data, data2 }: any) {
   return (
     <div>
       <h1>List of Rooms</h1>
+
       <div className="grid grid-cols-4 gap-5">{renderRooms()}</div>
     </div>
   );

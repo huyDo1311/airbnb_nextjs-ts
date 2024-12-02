@@ -42,6 +42,7 @@ export const handleErrorApi = ({
 
   // Handle generic errors
   if (!error?.payload?.errors) {
+    console.log("err", error.payload);
     toast({
       title: "Lỗi",
       description: error?.payload?.message ?? "Lỗi không xác định",
@@ -67,7 +68,6 @@ export const handleErrorApi = ({
   //   })
   // }
 };
-
 
 export const formatCurrency = (number: number) => {
   return new Intl.NumberFormat("en-US", {
@@ -117,45 +117,45 @@ export const formatCurrency = (number: number) => {
 //   return envConfig.NEXT_PUBLIC_URL + '/tables/' + tableNumber + '?token=' + token
 // }
 
-const isBrowser = typeof window !== 'undefined'
+const isBrowser = typeof window !== "undefined";
 
 //user
 export const getUserFromLocalStorage = () => {
-  return isBrowser ? JSON.parse(localStorage.getItem('user') || 'null') : null;
+  return isBrowser ? JSON.parse(localStorage.getItem("user") || "null") : null;
 };
 
 export const setUserToLocalStorage = (value: object) => {
-  isBrowser && localStorage.setItem('user', JSON.stringify(value));
+  isBrowser && localStorage.setItem("user", JSON.stringify(value));
 };
 
 export const removeUserFromLocalStorage = () => {
-  isBrowser && localStorage.removeItem('user');
+  isBrowser && localStorage.removeItem("user");
 };
 
 //userToken
 export const getUserTokenFromLocalStorage = () => {
-  return isBrowser ? localStorage.getItem('userToken') : null;
+  return isBrowser ? localStorage.getItem("userToken") : null;
 };
 
 export const setUserTokenToLocalStorage = (value: string) => {
-  isBrowser && localStorage.setItem('userToken', value);
+  isBrowser && localStorage.setItem("userToken", value);
 };
 
 export const removeUserTokenFromLocalStorage = () => {
-  isBrowser && localStorage.removeItem('userToken');
+  isBrowser && localStorage.removeItem("userToken");
 };
 
 //userProfile
 export const getUserProfileFromLocalStorage = () => {
-  return isBrowser ? JSON.parse(localStorage.getItem('userProfile') || 'null') : null;
+  return isBrowser
+    ? JSON.parse(localStorage.getItem("userProfile") || "null")
+    : null;
 };
 
 export const setUserProfileToLocalStorage = (value: object) => {
-  isBrowser && localStorage.setItem('userProfile', JSON.stringify(value));
+  isBrowser && localStorage.setItem("userProfile", JSON.stringify(value));
 };
 
 export const removeUserProfileFromLocalStorage = () => {
-  isBrowser && localStorage.removeItem('userProfile');
+  isBrowser && localStorage.removeItem("userProfile");
 };
-
-

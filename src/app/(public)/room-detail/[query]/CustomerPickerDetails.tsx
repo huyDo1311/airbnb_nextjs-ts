@@ -16,17 +16,18 @@ interface DataDetail {
 }
 
 export function CustomerPickerDetails({ dataDetail }: DataDetail) {
-  const { customers, setCustomers, increment, decrement } = useStore();
+  const {
+    customers,
+    setCustomers,
+    increment,
+    decrement,
+    total,
+    customerDetails,
+  } = useStore();
 
-  const [totalCustomer, setTotalCustomer] = useState<number>(0);
-
-  // Calculate total customers
-  useEffect(() => {
-    const total = customers.adults + customers.children;
-    setTotalCustomer(total);
-  }, [customers]);
-
-  // Customer categories
+  // useEffect(() => {
+  //   setTotal();
+  // }, [increment, decrement]);
   const dataCustomers = [
     { id: "adults", label: "Người lớn", age: "Từ 13 tuổi trở lên" },
     { id: "children", label: "Trẻ em", age: "Độ tuổi 2-12" },
@@ -61,14 +62,16 @@ export function CustomerPickerDetails({ dataDetail }: DataDetail) {
         <div className="flex space-x-2 items-center">
           {/* Decrement Button */}
           <Button
-            onClick={() => decrement(item.id)}
+            onClick={() => decrement((item.id as keyof CustomerType) ?? 0)}
             variant={
               customers[item.id as keyof CustomerType] === 0
                 ? "secondary"
                 : "ghost"
             }
             className={`rounded-full border-2 h-10 w-10 ${
-              customers[item.id as keyof CustomerType] === 0
+              customers[item.id as keyof CustomerType] === 0 ||
+              (item.id == "adults" &&
+                customers[item.id as keyof CustomerType] === 1)
                 ? "cursor-not-allowed opacity-30"
                 : ""
             }`}
@@ -76,26 +79,40 @@ export function CustomerPickerDetails({ dataDetail }: DataDetail) {
             <Minus />
           </Button>
 
-          {/* Customer count */}
           <p className="w-10 text-center text-md">
             {customers[item.id as keyof CustomerType] ?? 0}
           </p>
 
-          {/* Increment Button */}
           <Button
-            onClick={() => increment(item.id)}
+            onClick={() => increment((item.id as keyof CustomerType) ?? 0)}
             variant={
-              customers[item.id as keyof CustomerType] === 5
+              customers[item.id as keyof CustomerType] === dataDetail?.khach
                 ? "secondary"
                 : "ghost"
             }
-            className={`rounded-full border-2 h-10 w-10 ${
-              (customers[item.id as keyof CustomerType] === 3 &&
-                item.id === "pets") ||
-              customers[item.id as keyof CustomerType] === 5
-                ? "cursor-not-allowed opacity-30"
-                : ""
-            }`}
+            className={`rounded-full border-2 h-10 w-10 ${(() => {
+              if (
+                customers[item.id as keyof CustomerType] === 3 &&
+                item.id === "pets"
+              ) {
+                return "cursor-not-allowed opacity-30"; // Disable if there are 3 pets
+              } else if (
+                customers[item.id as keyof CustomerType] === 4 &&
+                item.id === "babies"
+              ) {
+                return "cursor-not-allowed opacity-30"; // Disable if there are 3 pets
+              } else if (item.id == "adults" || item.id == "children") {
+                if (
+                  total == customerDetails ||
+                  customers[item.id as keyof CustomerType] == customerDetails
+                ) {
+                  return "cursor-not-allowed opacity-30"; // Disable for other conditions
+                }
+                return "";
+              } else {
+                return "";
+              }
+            })()}`}
           >
             <Plus />
           </Button>
@@ -114,15 +131,13 @@ export function CustomerPickerDetails({ dataDetail }: DataDetail) {
           >
             <div>
               <p className="font-semibold text-xs">Khách</p>
-              <p className="text-gray-400 font-light">
-                {totalCustomer > 1 ? totalCustomer : customers.adults}
-              </p>
+              <p className="text-gray-400 font-light">{total}</p>
             </div>
             <ChevronDown className="group-focus:rotate-180 transition duration-500" />
           </Button>
         </PopoverTrigger>
 
-        <PopoverContent className="w-[450px] rounded-3xl" align="end">
+        <PopoverContent className="w-[450px] rounded-3xl" align="center">
           <div className="space-y-5 p-5">{renderCustomer()}</div>
         </PopoverContent>
       </Popover>

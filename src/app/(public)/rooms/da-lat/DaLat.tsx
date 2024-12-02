@@ -4,15 +4,25 @@ import { useStore } from "@/store/store";
 import Image from "next/image";
 import React from "react";
 import FormatTime from "@/app/(public)/rooms/FormatTime";
+import { useRouter } from "next/navigation";
 export default function DaLat() {
   let { resultSearch, dataStoreDestination2 } = useStore();
+  let router = useRouter();
 
+  let handleDetail = (id: number) => {
+    router.push(`/room-detail/id?name=${id}`);
+  };
   let renderRooms = () => {
     return resultSearch?.map((item: any, index: any) => {
       return (
         <div key={item.id}>
           {item.hinhAnh && (
-            <div className="relative p-2">
+            <div
+              className="relative p-2 cursor-pointer"
+              onClick={() => {
+                handleDetail(item.id);
+              }}
+            >
               <div className="h-[400px] ">
                 <Image
                   className="h-full object-left object-cover rounded-xl w-full"

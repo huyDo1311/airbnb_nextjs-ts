@@ -1,84 +1,106 @@
-'use client'
+"use client";
 
-import { Button } from '@/components/ui/button'
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { PlusCircle } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { handleErrorApi } from '@/lib/utils'
-import { toast } from '@/hooks/use-toast'
-import { z } from 'zod'
-import { CreateBookingBody, CreateBookingBodyType } from '@/schemaValidations/booking.schema'
-import { useAddBookingMutation } from '@/queries/useBooking'
-import { useGetRoomList } from '@/queries/useRoom'
-import { useGetUserList } from '@/queries/useUser'
-import {useGetLocationList} from '@/queries/useLocation';
-import dayjs from 'dayjs';
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { PlusCircle } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { handleErrorApi } from "@/lib/utils";
+import { toast } from "@/hooks/use-toast";
+import { z } from "zod";
+import {
+  CreateBookingBody,
+  CreateBookingBodyType,
+} from "@/schemaValidations/booking.schema";
+import { useAddBookingMutation } from "@/queries/useBooking";
+import { useGetRoomList } from "@/queries/useRoom";
+import { useGetUserList } from "@/queries/useUser";
+import { useGetLocationList } from "@/queries/useLocation";
+import dayjs from "dayjs";
 
 export default function AddBooking() {
-  const [open, setOpen] = useState(false)
-  const inputRef = useRef<HTMLInputElement | null>(null)
+  const [open, setOpen] = useState(false);
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
-  const addBookingMutation = useAddBookingMutation()
-  const userListQuery = useGetUserList()
-  const roomListQuery = useGetRoomList()
+  const addBookingMutation = useAddBookingMutation();
+  const userListQuery = useGetUserList();
+  const roomListQuery = useGetRoomList();
 
-  const userList = userListQuery.data?.content || []
-  const roomList = roomListQuery.data?.content || []
+  const userList = userListQuery.data?.content || [];
+  const roomList = roomListQuery.data?.content || [];
 
   const form = useForm<CreateBookingBodyType>({
     resolver: zodResolver(CreateBookingBody),
     defaultValues: {
       id: 0,
       maPhong: 0,
-      ngayDen: '',
-      ngayDi: '',
+      ngayDen: "",
+      ngayDi: "",
       soLuongKhach: 1,
       maNguoiDung: 0,
     },
-  })
+  });
 
   const resetForm = () => {
-    form.reset()
-  }
+    form.reset();
+  };
 
   useEffect(() => {
     if (inputRef.current && open) {
-      inputRef.current.focus()
+      inputRef.current.focus();
     }
-  }, [open])
+  }, [open]);
 
   const onSubmit = async (values: CreateBookingBodyType) => {
-    if (addBookingMutation.isPending) return
+    if (addBookingMutation.isPending) return;
     try {
-      await addBookingMutation.mutateAsync(values)
-      toast({ title: 'Thêm thành công' })
-      resetForm()
-      setOpen(false)
+      await addBookingMutation.mutateAsync(values);
+      toast({ title: "Thêm thành công" });
+      resetForm();
+      setOpen(false);
     } catch (error) {
       handleErrorApi({
         error,
         setError: form.setError,
-      })
+      });
     }
-  }
+  };
 
   // User filter state
-  const [userFilter, setUserFilter] = useState('')
-  const filteredUsers = userList.filter((user) =>
+  const [userFilter, setUserFilter] = useState("");
+  const filteredUsers = userList.filter((user: any) =>
     user.name.toLowerCase().includes(userFilter.toLowerCase())
-  )
+  );
 
   // Room filter state
-  const [roomFilter, setRoomFilter] = useState('')
-  const filteredRooms = roomList.filter((room) =>
+  const [roomFilter, setRoomFilter] = useState("");
+  const filteredRooms = roomList.filter((room: any) =>
     room.tenPhong.toLowerCase().includes(roomFilter.toLowerCase())
-  )
+  );
 
   const locationListQuery = useGetLocationList();
   const locationList = locationListQuery.data?.content ?? [];
@@ -88,7 +110,9 @@ export default function AddBooking() {
       <DialogTrigger asChild>
         <Button size="sm" className="h-7 gap-1">
           <PlusCircle className="h-3.5 w-3.5" />
-          <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Thêm booking</span>
+          <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+            Thêm booking
+          </span>
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[600px] max-h-screen overflow-auto">
@@ -114,7 +138,7 @@ export default function AddBooking() {
                         value={String(field.value)}
                         onValueChange={(value) => {
                           field.onChange(Number(value));
-                          console.log('User:', value);
+                          console.log("User:", value);
                         }}
                       >
                         <SelectTrigger>
@@ -125,18 +149,24 @@ export default function AddBooking() {
                             type="text"
                             placeholder="Search for user"
                             value={userFilter}
-                            onChange={(e) => {setUserFilter(e.target.value)}}
+                            onChange={(e) => {
+                              setUserFilter(e.target.value);
+                            }}
                             ref={inputRef}
                             className="p-2 mb-2"
                           />
                           {filteredUsers.length > 0 ? (
-                            filteredUsers.map((user) => (
+                            filteredUsers.map((user: any) => (
                               <SelectItem key={user.id} value={String(user.id)}>
-                                <p>{user.name}&emsp;/&emsp;{user.email}</p>
+                                <p>
+                                  {user.name}&emsp;/&emsp;{user.email}
+                                </p>
                               </SelectItem>
                             ))
                           ) : (
-                            <div className="text-gray-500 p-2">No user found</div>
+                            <div className="text-gray-500 p-2">
+                              No user found
+                            </div>
                           )}
                         </SelectContent>
                       </Select>
@@ -158,7 +188,7 @@ export default function AddBooking() {
                         value={String(field.value)}
                         onValueChange={(value) => {
                           field.onChange(Number(value));
-                          console.log('Room:', value);
+                          console.log("Room:", value);
                         }}
                       >
                         <SelectTrigger>
@@ -176,16 +206,26 @@ export default function AddBooking() {
                           />
                           {/* Render filtered room options */}
                           {filteredRooms.length > 0 ? (
-                            filteredRooms.map((room) => {
-                              const location = locationList.find((loc) => loc.id === room.maViTri);
-                              const locationName = location ? location.tenViTri : 'Vị trí không có';
+                            filteredRooms.map((room: any) => {
+                              const location = locationList.find(
+                                (loc: any) => loc.id === room.maViTri
+                              );
+                              const locationName = location
+                                ? location.tenViTri
+                                : "Vị trí không có";
                               return (
-                                <SelectItem className="w-full" key={room.id} value={String(room.id)}>
+                                <SelectItem
+                                  className="w-full"
+                                  key={room.id}
+                                  value={String(room.id)}
+                                >
                                   <div className="flex items-center justify-end w-full">
-                                    <div>{locationName}&emsp;/&emsp;{room.tenPhong}</div>
+                                    <div>
+                                      {locationName}&emsp;/&emsp;{room.tenPhong}
+                                    </div>
                                     <div className="ml-2">
                                       <img
-                                        style={{ float: 'right' }}
+                                        style={{ float: "right" }}
                                         src={room.hinhAnh || undefined}
                                         alt={room.tenPhong}
                                         className="w-8 h-8 object-cover rounded-md"
@@ -193,10 +233,12 @@ export default function AddBooking() {
                                     </div>
                                   </div>
                                 </SelectItem>
-                              )
+                              );
                             })
                           ) : (
-                            <div className="text-gray-500 p-2">No room found</div>
+                            <div className="text-gray-500 p-2">
+                              No room found
+                            </div>
                           )}
                         </SelectContent>
                       </Select>
@@ -214,16 +256,22 @@ export default function AddBooking() {
                   <FormItem>
                     <Label>Check-in Date</Label>
                     <FormControl>
-                      <Input 
-                      type="date" 
-                      {...field} 
-                      placeholder="Check in"
-                      value={field.value ? dayjs(field.value).format('YYYY-MM-DD') : ''}
-                      onChange={(e) => {
-                        const isoDate = new Date(e.target.value).toISOString();
-                        field.onChange(isoDate);
-                        console.log("Checkin:", isoDate);
-                      }}
+                      <Input
+                        type="date"
+                        {...field}
+                        placeholder="Check in"
+                        value={
+                          field.value
+                            ? dayjs(field.value).format("YYYY-MM-DD")
+                            : ""
+                        }
+                        onChange={(e) => {
+                          const isoDate = new Date(
+                            e.target.value
+                          ).toISOString();
+                          field.onChange(isoDate);
+                          console.log("Checkin:", isoDate);
+                        }}
                       />
                     </FormControl>
                     <FormMessage />
@@ -238,16 +286,22 @@ export default function AddBooking() {
                   <FormItem>
                     <Label>Check-out Date</Label>
                     <FormControl>
-                      <Input 
-                      type="date" 
-                      {...field} 
-                      placeholder="Check out"
-                      value={field.value ? dayjs(field.value).format('YYYY-MM-DD') : ''}
-                      onChange={(e) => {
-                        const isoDate = new Date(e.target.value).toISOString();
-                        field.onChange(isoDate);
-                        console.log("Checkout:", isoDate);
-                      }}
+                      <Input
+                        type="date"
+                        {...field}
+                        placeholder="Check out"
+                        value={
+                          field.value
+                            ? dayjs(field.value).format("YYYY-MM-DD")
+                            : ""
+                        }
+                        onChange={(e) => {
+                          const isoDate = new Date(
+                            e.target.value
+                          ).toISOString();
+                          field.onChange(isoDate);
+                          console.log("Checkout:", isoDate);
+                        }}
                       />
                     </FormControl>
                     <FormMessage />
@@ -262,15 +316,15 @@ export default function AddBooking() {
                   <FormItem>
                     <Label>Number of Guests</Label>
                     <FormControl>
-                      <Input 
-                      type="number" 
-                      min={1} 
-                      {...field} 
-                      onChange={(e) => {
-                        field.onChange(Number(e.target.value)); // Cập nhật giá trị trong form
-                        // Bạn có thể thực hiện các logic bổ sung nếu cần
-                        console.log("number",Number(e.target.value));
-                      }}
+                      <Input
+                        type="number"
+                        min={1}
+                        {...field}
+                        onChange={(e) => {
+                          field.onChange(Number(e.target.value)); // Cập nhật giá trị trong form
+                          // Bạn có thể thực hiện các logic bổ sung nếu cần
+                          console.log("number", Number(e.target.value));
+                        }}
                       />
                     </FormControl>
                     <FormMessage />
@@ -285,5 +339,5 @@ export default function AddBooking() {
         </Form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

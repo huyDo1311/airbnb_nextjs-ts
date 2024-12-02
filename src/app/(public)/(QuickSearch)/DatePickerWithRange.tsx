@@ -19,7 +19,6 @@ export function DatePickerWithRange({
   className,
 }: React.HTMLAttributes<HTMLDivElement>) {
   const [date, setDate] = React.useState<DateRange | undefined>();
-  console.log("date", date);
   let { NextStep, setDataCalendar } = useStore();
 
   React.useEffect(() => {
@@ -37,7 +36,6 @@ export function DatePickerWithRange({
           ref2.current &&
           !ref2.current.contains(event.target)
         ) {
-          console.log("1");
           setActive(false);
           setClick(null);
         }
@@ -159,7 +157,7 @@ after:h-10  after:border-r before:h-10 before:border-l
           align="center"
           ref={wrapperRef2}
         >
-          <div className="flex justify-center">
+          <div id="DatePicker" className="flex justify-center">
             <Calendar
               locale={vi}
               disabled={matcher}
