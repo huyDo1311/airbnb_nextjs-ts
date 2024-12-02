@@ -34,7 +34,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { createContext, useContext, useEffect, useRef, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -64,8 +70,9 @@ import { useGetUserList } from "@/queries/useUser";
 import { useGetRoomList } from "@/queries/useRoom";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import UploadExcelForm from "./upload-excel-form";
+// import UploadExcelForm from "./upload-excel-form";
 import { BsArrowUp } from "react-icons/bs";
+import { format, endOfDay, startOfDay } from "date-fns";
 
 type ListBookingUser = ListBookingUserBodyType["content"][0];
 
@@ -93,33 +100,8 @@ interface RowData {
   };
 }
 
-// const calculatePrice = (row: any) => {
-//   const giaMotNgay = row.room?.giaTien || 0;
-//   const ngayDen = dayjs(row.ngayDen, 'DD-MM-YYYY');
-//   const ngayDi = dayjs(row.ngayDi, 'DD-MM-YYYY');
-//   let soNgay = ngayDi.diff(ngayDen, 'day'); // Tính số ngày thuê
-//   let totalPrice = 0;
-
-//   // Kiểm tra ngày trong khoảng từ ngày đi đến ngày đến có phải là cuối tuần hoặc ngày lễ
-//   for (let i = 0; i <= soNgay; i++) {
-//     const currentDate = ngayDen.add(i, 'day');
-
-//     // Kiểm tra ngày cuối tuần (thứ 7 và chủ nhật)
-//     const isWeekend = currentDate.day() === 0 || currentDate.day() === 6; // Chủ nhật (0) hoặc thứ 7 (6)
-
-//     // Kiểm tra ngày lễ (giả sử ngày lễ là 01/01 và 30/04 - bạn có thể thêm nhiều ngày lễ khác)
-//     const isHoliday = currentDate.isSame(dayjs('01-01-YYYY', 'DD-MM-YYYY'), 'day') || currentDate.isSame(dayjs('30-04-YYYY', 'DD-MM-YYYY'), 'day');
-
-//     if (isWeekend) {
-//       totalPrice += (giaMotNgay * 10) / 100; // Nhân 2 cho cuối tuần
-//     } else if (isHoliday) {
-//       totalPrice += (giaMotNgay * 20) / 100; // Nhân 3 cho ngày lễ
-//     } else {
-//       totalPrice += giaMotNgay;
-//     }
-//   }
-//   return totalPrice;
-// };
+const initFromDate = startOfDay(new Date());
+const initToDate = endOfDay(new Date());
 
 const HeaderCheckbox = ({ table }: { table: any }) => {
   // const [rowSelectionIdArray, setRowSelectionIdArray] = useState<number[]>([]);
@@ -134,7 +116,7 @@ const HeaderCheckbox = ({ table }: { table: any }) => {
     table.toggleAllRowsSelected(!!value);
     setRowSelectionIdArray(newSelection);
   };
-  console.log("rowSelectionIdArray:", rowSelectionIdArray);
+  // console.log("rowSelectionIdArray:", rowSelectionIdArray);
 
   return (
     <Checkbox
@@ -157,16 +139,7 @@ const CellCheckbox = ({ row }: { row: any }) => {
       : rowSelectionIdArray.filter((id: number) => id !== row.original.id);
 
     setRowSelectionIdArray(updatedSelection);
-    // console.log("🚀 ~ rowSelectionIdArray:", updatedSelection);
-    // setRowSelectionIdArray((prevSelection) => {
-    //   const updatedSelection = value
-    //     ? [...prevSelection, row.original.id]
-    //     : prevSelection.filter((id) => id !== row.original.id);
-
-    //   return updatedSelection;
-    // });
   };
-  console.log("rowSelectionIdArray:", rowSelectionIdArray);
 
   return (
     <Checkbox
@@ -317,11 +290,6 @@ export const columns: ColumnDef<ListBookingUser>[] = [
 
       return <div>{displayPrice}</div>;
     },
-    // sortingFn: (rowA, rowB) => {
-    //   const giaA = calculatePrice(rowA.original);
-    //   const giaB = calculatePrice(rowB.original);
-    //   return giaA - giaB;
-    // }
     sortingFn: (rowA, rowB) => {
       // Get the calculated prices for each row
       const giaA =
@@ -334,114 +302,6 @@ export const columns: ColumnDef<ListBookingUser>[] = [
       return giaA - giaB;
     },
   },
-  // {
-  //   accessorKey: '%',
-  //   header: ({ column }) => {
-  //     return (
-  //       <Button variant='ghost' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-  //         %
-  //         <CaretSortIcon className='ml-2 h-4 w-4' />
-  //       </Button>
-  //     )
-  //   },
-  //   cell: ({ row }) => {
-  //     const giaMotNgay = row.original.room?.giaTien;
-  //     const ngayDen = dayjs(row.getValue<string>('ngayDen'), 'DD-MM-YYYY');
-  //     const ngayDi = dayjs(row.getValue<string>('ngayDi'), 'DD-MM-YYYY');
-  //     const soNgay = ngayDi.diff(ngayDen, 'day'); // Tính số ngày thuê
-  //     // Tính giá với các ngày cuối tuần và ngày lễ
-  //     const gia = calculatePrice(row.original);
-
-  //     // Hiển thị thông tin với mũi tên
-  //     let displayPrice = gia.toLocaleString() + ' $';
-  //     // displayPrice += <br />;
-  //     if (soNgay > 0) {
-  //       const isWeekend = dayjs(ngayDi).day() === 0 || dayjs(ngayDi).day() === 6;
-  //       const isHoliday = dayjs(ngayDi).isSame(dayjs('01-01-YYYY', 'DD-MM-YYYY'), 'day') || dayjs(ngayDi).isSame(dayjs('30-04-YYYY', 'DD-MM-YYYY'), 'day');
-  //       if (isWeekend) {
-  //         return (
-  //           <div className="flex justify-between items-center">
-  //             <p className='text-red-500'>10%</p>
-  //             <ArrowBigUp className='text-red-500' />
-  //           </div>);
-  //       } else if (isHoliday) {
-  //         return (
-  //           <div className="flex justify-between items-center">
-  //             <p className='text-red-900'>20%</p>
-  //             <ArrowBigUp className='text-red-900' />
-  //           </div>);
-  //       } else {
-  //         return <></>
-  //       }
-  //     }
-  //     // return <div>{displayPrice}<ArrowBigUp/></div>;
-  //   },
-  //   sortingFn: (rowA, rowB) => {
-  //     const giaA = calculatePrice(rowA.original);
-  //     const giaB = calculatePrice(rowB.original);
-  //     return giaA - giaB;
-  //   }
-  // },
-  // {
-  //   accessorKey: '%',
-  //   header: ({ column }) => {
-  //     return (
-  //       <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-  //         %
-  //         <CaretSortIcon className="ml-2 h-4 w-4" />
-  //       </Button>
-  //     );
-  //   },
-  //   cell: ({ row }) => {
-  //     const ngayDen = dayjs(row.getValue<string>('ngayDen'), 'DD-MM-YYYY');
-  //     const ngayDi = dayjs(row.getValue<string>('ngayDi'), 'DD-MM-YYYY');
-  //     const soNgay = ngayDi.diff(ngayDen, 'day'); // Tính số ngày thuê
-
-  //     // Xác định % tăng giá
-  //     let percentage = 0;
-  //     const isWeekend = dayjs(ngayDi).day() === 0 || dayjs(ngayDi).day() === 6;
-  //     const isHoliday =
-  //       dayjs(ngayDi).isSame(dayjs('01-01-YYYY', 'DD-MM-YYYY'), 'day') ||
-  //       dayjs(ngayDi).isSame(dayjs('30-04-YYYY', 'DD-MM-YYYY'), 'day');
-
-  //     if (isWeekend) {
-  //       percentage = 10; // Ngày cuối tuần tăng 10%
-  //     } else if (isHoliday) {
-  //       percentage = 20; // Ngày lễ tăng 20%
-  //     }
-
-  //     return (
-  //       <div className="flex justify-between items-center">
-  //         {percentage > 0 ? (
-  //           <>
-  //             <p className={percentage === 10 ? 'text-red-300' : 'text-red-500'}>{percentage}%</p>
-  //             <ArrowBigUp className={percentage === 10 ? 'text-red-300' : 'text-red-00'} />
-  //           </>
-  //         ) : (
-  //           <p>0%</p>
-  //         )}
-  //       </div>
-  //     );
-  //   },
-  //   sortingFn: (rowA, rowB) => {
-  //     // Lấy giá trị % từ hàm tính toán
-  //     const calculatePercentage = (row: any) => {
-  //       const ngayDi = dayjs(row.ngayDi, 'DD-MM-YYYY');
-  //       const isWeekend = dayjs(ngayDi).day() === 0 || dayjs(ngayDi).day() === 6;
-  //       const isHoliday =
-  //         dayjs(ngayDi).isSame(dayjs('01-01-YYYY', 'DD-MM-YYYY'), 'day') ||
-  //         dayjs(ngayDi).isSame(dayjs('30-04-YYYY', 'DD-MM-YYYY'), 'day');
-  //       if (isWeekend) return 10;
-  //       if (isHoliday) return 20;
-  //       return 0;
-  //     };
-
-  //     const percentageA = calculatePercentage(rowA.original);
-  //     const percentageB = calculatePercentage(rowB.original);
-
-  //     return percentageA - percentageB;
-  //   },
-  // },
 
   {
     accessorKey: "soLuongKhach",
@@ -707,8 +567,43 @@ export default function BookingTable() {
   // const { rowSelectionIdArray, setRowSelectionIdArray } = useContext(BookingTableContext);
   const [rowSelectionIdArray, setRowSelectionIdArray] = useState<number[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  //select day
+
+  const [fromDate, setFromDate] = useState(initFromDate);
+  const [toDate, setToDate] = useState(initToDate);
+
+  const resetDateFilter = () => {
+    setFromDate(initFromDate);
+    setToDate(initToDate);
+  };
+
+  // Helper function to check if a date is within the fromDate and toDate range
+  const isWithinDateRange = (booking: any) => {
+    const bookingFromDate = new Date(booking.ngayDen); // booking.ngayDen là ngày bắt đầu của booking
+    const bookingToDate = new Date(booking.ngayDi); // booking.ngayDi là ngày kết thúc của booking
+
+    // So sánh với từ ngày và đến ngày
+    const fromDateObj = new Date(fromDate);
+    const toDateObj = new Date(toDate);
+
+    return (
+      (fromDate ? bookingFromDate >= fromDateObj : true) &&
+      (toDate ? bookingToDate <= toDateObj : true)
+    );
+  };
+
+  // Lọc dữ liệu booking nếu từDate và toDate khác giá trị mặc định
+  const filteredBookingData =
+    fromDate !== initFromDate || toDate !== initToDate
+      ? validBookingData.filter(isWithinDateRange) // Dùng filter để lọc theo isWithinDateRange
+      : validBookingData;
+
+  // Dữ liệu bảng cuối cùng
+  const tableData = filteredBookingData;
+
   const table = useReactTable({
-    data: validBookingData,
+    data: tableData,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -736,35 +631,6 @@ export default function BookingTable() {
     });
   }, [table, pageIndex]);
 
-  // Custom hook to handle booking deletion
-
-  // const { mutateAsync } = useDeleteBookingMutation();
-
-  // const deleteBookingAll = async (
-  //   rowSelectionIdArray: number[],
-  //   setRowSelectionIdArray: (value: number[]) => void
-  // ) => {
-  //   if (rowSelectionIdArray.length === 0) {
-  //     toast({ title: 'Please select at least one booking to delete' });
-  //     return;
-  //   }
-
-  //   try {
-  //     // Loop through selected booking IDs and delete
-  //     await Promise.all(
-  //       rowSelectionIdArray.map(async (id) => {
-  //         await mutateAsync(id);
-  //       })
-  //     );
-  //     toast({ title: 'Xoá chọn thành công' });
-
-  //     // Reset selected rows state
-  //     setRowSelectionIdArray([]);
-  //   } catch (error) {
-  //     handleErrorApi({ error });
-  //   }
-  // };
-
   return (
     // <BookingTableContext.Provider value={{ BookingIdEdit, setBookingIdEdit, BookingDelete, setBookingDelete}}>
     <BookingTableContext.Provider
@@ -790,9 +656,35 @@ export default function BookingTable() {
           isDialogOpen={isDialogOpen}
           setIsDialogOpen={setIsDialogOpen}
         />
+        <div className="flex flex-wrap gap-2">
+          <div className="flex items-center">
+            <span className="mr-2">Từ</span>
+            <Input
+              type="datetime-local"
+              placeholder="Từ ngày"
+              className="text-sm"
+              value={format(fromDate, "yyyy-MM-dd HH:mm").replace(" ", "T")}
+              onChange={(event) => setFromDate(new Date(event.target.value))}
+              // onChange={(e) => setFromDate(e.target.value)}
+            />
+          </div>
+          <div className="flex items-center">
+            <span className="mr-2">Đến</span>
+            <Input
+              type="datetime-local"
+              placeholder="Đến ngày"
+              value={format(toDate, "yyyy-MM-dd HH:mm").replace(" ", "T")}
+              onChange={(event) => setToDate(new Date(event.target.value))}
+              // onChange={(e) => setToDate(e.target.value)}
+            />
+          </div>
+          <Button className="" variant={"outline"} onClick={resetDateFilter}>
+            Reset
+          </Button>
+        </div>
         <div className="flex items-center py-4">
           <Input
-            placeholder="Lọc theo tên khách"
+            placeholder="Search name or emails"
             value={(table.getColumn("user")?.getFilterValue() as string) ?? ""}
             onChange={(e) => {
               const filterValue = e.target.value.trim();
@@ -803,14 +695,6 @@ export default function BookingTable() {
           />
 
           <div className="ml-auto flex items-center gap-2">
-            {/* <Button
-              variant="destructive"
-              onClick={() => deleteBookingAll(rowSelectionIdArray, setRowSelectionIdArray)}
-              disabled={Object.keys(rowSelection).length === 0}
-            >
-              Xóa đã chọn
-            </Button> */}
-
             <Button
               className="btn btn-danger"
               onClick={() => setIsDialogOpen(true)}
@@ -846,7 +730,7 @@ export default function BookingTable() {
                   })}
               </DropdownMenuContent>
             </DropdownMenu>
-            <UploadExcelForm />
+            {/* <UploadExcelForm /> */}
 
             <AddBooking />
           </div>

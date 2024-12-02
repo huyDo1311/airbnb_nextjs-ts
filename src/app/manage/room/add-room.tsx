@@ -99,7 +99,7 @@ export default function AddRoom() {
   return (
     <Dialog onOpenChange={setOpen} open={open}>
       <DialogTrigger asChild>
-        <Button size='sm' className='h-7 gap-1'>
+        <Button className=''>
           <PlusCircle className='h-3.5 w-3.5' />
           {/* <span className='sr-only sm:not-sr-only sm:whitespace-nowrap'>Thêm phòng</span> */}
           <span className=''>Thêm phòng</span>
