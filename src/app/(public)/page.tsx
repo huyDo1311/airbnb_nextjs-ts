@@ -8,11 +8,10 @@ import Signin from "@/app/(public)/auth/AuthBox";
 export default function Home() {
   return (
     <div className="w-full space-y-4">
-      <Destinations />
-
       <Suspense fallback={<Loading />}>
         <ListRoom />
       </Suspense>
+      {/* <Destinations /> */}
     </div>
   );
 }

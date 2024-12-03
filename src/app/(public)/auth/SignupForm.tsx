@@ -91,13 +91,13 @@ export default function SignupForm() {
                 console.warn("loi", err);
               })}
             >
-              <div className="grid gap-4">
+              <div className="grid gap-3">
                 <FormField
                   control={form.control}
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <div className="grid gap-2">
+                      <div className="grid gap-2 ">
                         <Label htmlFor="name">Họ và Tên</Label>
                         <Input
                           id="name"
@@ -154,14 +154,14 @@ export default function SignupForm() {
                         <div className="flex items-center">
                           <Label htmlFor="phone">Số điện thoại</Label>
                         </div>
-                        <Input id="phone" type="phone" required {...field} />
+                        <Input id="phone" type="number" required {...field} />
                         <FormMessage />
                       </div>
                     </FormItem>
                   )}
                 />
 
-                <div className="flex items-center justify-start space-x-5">
+                <div className="flex justify-start space-x-5">
                   <FormField
                     control={form.control}
                     name="gender"
@@ -221,7 +221,7 @@ export default function SignupForm() {
                     name="birthday"
                     render={({ field }) => (
                       <FormItem>
-                        <div className="grid gap-2">
+                        <div className="grid gap-2 ">
                           <Label htmlFor="birthday">Sinh nhật</Label>
 
                           <BirthdayPicker field={field} />

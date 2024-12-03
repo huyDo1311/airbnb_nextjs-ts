@@ -19,7 +19,8 @@ export const SignupBody = z
     phone: z
       .string()
       .min(1, "Số điện thoại không được bỏ trống")
-      .min(10, "Số điện thoại phải có đủ 10 số"),
+      .min(10, "Số điện thoại phải có đủ 10 số")
+      .max(10, "Số điện thoại chỉ được chứa 10 chữ số"),
     birthday: z.custom((val) => val !== null, {
       message: "Không được bỏ trống",
     }),

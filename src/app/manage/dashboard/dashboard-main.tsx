@@ -1,15 +1,21 @@
-'use client'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { RevenueLineChart } from '@/app/manage/dashboard/revenue-line-chart'
-import { DishBarChart } from '@/app/manage/dashboard/dish-bar-chart'
+"use client";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { RevenueLineChart } from "@/app/manage/dashboard/revenue-line-chart";
+import { DishBarChart } from "@/app/manage/dashboard/dish-bar-chart";
 // import { formatCurrency } from '@/lib/utils'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { endOfDay, format, startOfDay, isWithinInterval, eachDayOfInterval } from 'date-fns'
-import { useState } from 'react'
-import { useGetBookingList } from '@/queries/useBooking';
-import { useGetUserList } from '@/queries/useUser';
-import { useGetRoomList } from '@/queries/useRoom';
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+  endOfDay,
+  format,
+  startOfDay,
+  isWithinInterval,
+  eachDayOfInterval,
+} from "date-fns";
+import { useState } from "react";
+import { useGetBookingList } from "@/queries/useBooking";
+import { useGetUserList } from "@/queries/useUser";
+import { useGetRoomList } from "@/queries/useRoom";
 // import { ChartConfig } from '@/components/ui/chart';
 
 const initFromDate = startOfDay(new Date());
@@ -32,12 +38,12 @@ type RoomBookingCount = {
 };
 
 const colors = [
-  'var(--color-chrome)',
-  'var(--color-safari)',
-  'var(--color-firefox)',
-  'var(--color-edge)',
-  'var(--color-other)'
-]
+  "var(--color-chrome)",
+  "var(--color-safari)",
+  "var(--color-firefox)",
+  "var(--color-edge)",
+  "var(--color-other)",
+];
 
 // const chartConfig = {
 //   visitors: {
@@ -65,17 +71,13 @@ const colors = [
 //   }
 // } satisfies ChartConfig
 
-
-
-
-
 export default function DashboardMain() {
   const [fromDate, setFromDate] = useState(initFromDate);
   const [toDate, setToDate] = useState(initToDate);
   const resetDateFilter = () => {
-    setFromDate(initFromDate)
-    setToDate(initToDate)
-  }
+    setFromDate(initFromDate);
+    setToDate(initToDate);
+  };
 
   const bookingListQuery = useGetBookingList();
   const bookingList = bookingListQuery.data?.content ?? [];
@@ -86,9 +88,9 @@ export default function DashboardMain() {
   const roomListQuery = useGetRoomList();
   const roomList = roomListQuery.data?.content ?? [];
 
-  const mergedBookingData = bookingList.map((booking) => {
-    const user = userList.find((user) => user.id === booking.maNguoiDung);
-    const room = roomList.find((room) => room.id === booking.maPhong);
+  const mergedBookingData = bookingList.map((booking: any) => {
+    const user = userList.find((user: any) => user.id === booking.maNguoiDung);
+    const room = roomList.find((room: any) => room.id === booking.maPhong);
 
     return {
       ...booking,
@@ -98,14 +100,15 @@ export default function DashboardMain() {
   });
 
   const validBookingData = mergedBookingData.filter(
-    (booking) => booking.user !== null && booking.room !== null
+    (booking: any) => booking.user !== null && booking.room !== null
   );
   // console.log("🚀 ~ DashboardMain ~ validBookingData:", validBookingData)
 
-  const updatedDataArray = validBookingData.map((item) => {
+  const updatedDataArray = validBookingData.map((item: any) => {
     const ngayDen = new Date(item.ngayDen);
     const ngayDi = new Date(item.ngayDi);
-    const soNgay = (ngayDi.getTime() - ngayDen.getTime()) / (1000 * 60 * 60 * 24);
+    const soNgay =
+      (ngayDi.getTime() - ngayDen.getTime()) / (1000 * 60 * 60 * 24);
     const giaTien = item.room?.giaTien || 0;
     const thanhTien = soNgay * giaTien;
 
@@ -118,19 +121,19 @@ export default function DashboardMain() {
   // console.log("🚀 ~ updatedDataArray ~ updatedDataArray:", updatedDataArray)
 
   // Lọc các booking theo khoảng thời gian
-  const filteredData = updatedDataArray.filter((item) => {
+  const filteredData = updatedDataArray.filter((item: any) => {
     const ngayDen = new Date(item.ngayDen);
     const ngayDi = new Date(item.ngayDi);
 
     // Kiểm tra nếu booking nằm trong khoảng thời gian
-    return isWithinInterval(ngayDen, { start: fromDate, end: toDate }) ||
-      isWithinInterval(ngayDi, { start: fromDate, end: toDate });
+    return (
+      isWithinInterval(ngayDen, { start: fromDate, end: toDate }) ||
+      isWithinInterval(ngayDi, { start: fromDate, end: toDate })
+    );
   });
 
   // Tính tổng doanh thu
   // const totalRevenue = filteredData.reduce((sum, item) => sum + item.thanhTien, 0);
-
-
 
   const totalBookings = filteredData.length;
 
@@ -140,7 +143,7 @@ export default function DashboardMain() {
   const chartData = dateRange.map((date) => {
     const currentDay = date.setHours(0, 0, 0, 0);
 
-    const dailyRevenue = updatedDataArray.reduce((total, booking) => {
+    const dailyRevenue = updatedDataArray.reduce((total: any, booking: any) => {
       const ngayDen = new Date(booking.ngayDen).setHours(0, 0, 0, 0);
       const ngayDi = new Date(booking.ngayDi).setHours(0, 0, 0, 0);
 
@@ -151,23 +154,25 @@ export default function DashboardMain() {
       return total;
     }, 0);
 
-    return { date: format(currentDay, 'dd/MM/yyyy'), revenue: dailyRevenue };
+    return { date: format(currentDay, "dd/MM/yyyy"), revenue: dailyRevenue };
   });
 
+  const totalRevenue = chartData.reduce(
+    (total, dayData) => total + dayData.revenue,
+    0
+  );
 
-  const totalRevenue = chartData.reduce((total, dayData) => total + dayData.revenue, 0);
-
-  const roomBookingCount = updatedDataArray.reduce((acc, item) => {
+  const roomBookingCount = updatedDataArray.reduce((acc: any, item: any) => {
     if (!item.room) return acc; // Bỏ qua nếu room là null
 
     const roomId = item.room.id;
     acc[roomId] = acc[roomId] || { count: 0, room: item.room };
     acc[roomId].count++;
     return acc;
-  }, {} as Record<number, { count: number; room: typeof updatedDataArray[0]['room'] }>);
+  }, {} as Record<number, { count: number; room: (typeof updatedDataArray)[0]["room"] }>);
 
   const sortedRooms = Object.values(roomBookingCount)
-    .map(({ count, room }, index) => {
+    .map(({ count, room }: any, index) => {
       if (!room) return null; // Kiểm tra room null hoặc undefined
 
       return {
@@ -176,52 +181,59 @@ export default function DashboardMain() {
         fill: colors[index % colors.length], // Lấy màu từ mảng colors
       };
     })
-    .filter(item => item !== null) // Lọc các giá trị null
-    .sort((a, b) => b.successOrders - a.successOrders); // Sắp xếp theo số lượt đặt phòng
-
-
+    .filter((item) => item !== null) // Lọc các giá trị null
+    .sort((a: any, b: any) => b.successOrders - a.successOrders); // Sắp xếp theo số lượt đặt phòng
 
   const top10Rooms = sortedRooms.slice(0, 10);
   return (
-    <div className='space-y-4'>
-      <div className='flex flex-wrap gap-2'>
-        <div className='flex items-center'>
-          <span className='mr-2'>Từ</span>
-          <Input type='datetime-local' placeholder='Từ ngày' className='text-sm'
-            value={format(fromDate, 'yyyy-MM-dd HH:mm').replace(' ', 'T')}
+    <div className="space-y-4">
+      <div className="flex flex-wrap gap-2">
+        <div className="flex items-center">
+          <span className="mr-2">Từ</span>
+          <Input
+            type="datetime-local"
+            placeholder="Từ ngày"
+            className="text-sm"
+            value={format(fromDate, "yyyy-MM-dd HH:mm").replace(" ", "T")}
             onChange={(event) => setFromDate(new Date(event.target.value))}
           />
         </div>
-        <div className='flex items-center'>
-          <span className='mr-2'>Đến</span>
-          <Input type='datetime-local' placeholder='Đến ngày'
-            value={format(toDate, 'yyyy-MM-dd HH:mm').replace(' ', 'T')}
+        <div className="flex items-center">
+          <span className="mr-2">Đến</span>
+          <Input
+            type="datetime-local"
+            placeholder="Đến ngày"
+            value={format(toDate, "yyyy-MM-dd HH:mm").replace(" ", "T")}
             onChange={(event) => setToDate(new Date(event.target.value))}
           />
         </div>
-        <Button className='' variant={'outline'} onClick={resetDateFilter}>
+        <Button className="" variant={"outline"} onClick={resetDateFilter}>
           Reset
         </Button>
       </div>
-      <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-4'>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
-          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-            <CardTitle className='text-sm font-medium'>Tổng doanh thu</CardTitle>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Tổng doanh thu
+            </CardTitle>
             <svg
-              xmlns='http://www.w3.org/2000/svg'
-              viewBox='0 0 24 24'
-              fill='none'
-              stroke='currentColor'
-              strokeLinecap='round'
-              strokeLinejoin='round'
-              strokeWidth='2'
-              className='h-4 w-4 text-muted-foreground'
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              className="h-4 w-4 text-muted-foreground"
             >
-              <path d='M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6' />
+              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
             </svg>
           </CardHeader>
           <CardContent>
-            <div className='text-2xl font-bold'>{totalRevenue.toLocaleString() + ' $'}</div>
+            <div className="text-2xl font-bold">
+              {totalRevenue.toLocaleString() + " $"}
+            </div>
           </CardContent>
         </Card>
         {/* <Card>
@@ -248,25 +260,25 @@ export default function DashboardMain() {
           </CardContent>
         </Card> */}
         <Card>
-          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-            <CardTitle className='text-sm font-medium'>Booking</CardTitle>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Booking</CardTitle>
             <svg
-              xmlns='http://www.w3.org/2000/svg'
-              viewBox='0 0 24 24'
-              fill='none'
-              stroke='currentColor'
-              strokeLinecap='round'
-              strokeLinejoin='round'
-              strokeWidth='2'
-              className='h-4 w-4 text-muted-foreground'
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              className="h-4 w-4 text-muted-foreground"
             >
-              <rect width='20' height='14' x='2' y='5' rx='2' />
-              <path d='M2 10h20' />
+              <rect width="20" height="14" x="2" y="5" rx="2" />
+              <path d="M2 10h20" />
             </svg>
           </CardHeader>
           <CardContent>
-            <div className='text-2xl font-bold'>{totalBookings}</div>
-            <p className='text-xs text-muted-foreground'>Đã thanh toán</p>
+            <div className="text-2xl font-bold">{totalBookings}</div>
+            <p className="text-xs text-muted-foreground">Đã thanh toán</p>
           </CardContent>
         </Card>
         {/* <Card>
@@ -290,14 +302,14 @@ export default function DashboardMain() {
           </CardContent>
         </Card> */}
       </div>
-      <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-7'>
-        <div className='lg:col-span-4'>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+        <div className="lg:col-span-4">
           <RevenueLineChart chartData={chartData} />
         </div>
-        <div className='lg:col-span-3'>
+        <div className="lg:col-span-3">
           <DishBarChart chartData={top10Rooms} />
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -101,3 +101,9 @@
 .space-y-4.rdp-caption_start {
   padding: 10px 20px;
 }
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

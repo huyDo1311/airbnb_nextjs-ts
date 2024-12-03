@@ -1,6 +1,6 @@
 "use client";
 
-import { DotsHorizontalIcon, CaretSortIcon } from '@radix-ui/react-icons';
+import { DotsHorizontalIcon, CaretSortIcon } from "@radix-ui/react-icons";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -15,7 +15,15 @@ import {
 } from "@tanstack/react-table";
 // import { Button } from "@/components/ui/button";
 
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger, DropdownMenuCheckboxItem } from '@/components/ui/dropdown-menu';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+  DropdownMenuCheckboxItem,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -26,7 +34,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -42,15 +57,36 @@ import { useSearchParams } from "next/navigation";
 import AutoPagination from "@/components/auto-pagination";
 import EditRoom from "@/app/manage/room/edit-room";
 import AddRoom from "@/app/manage/room/add-room";
-import {CreateRoomBody, CreateRoomBodyResType, RoomListResType, CreateRoomBodyType} from '@/schemaValidations/room.schema';
-import { useAddRoomMutation, useDeleteRoomMutation, useGetRoomList, useUploadMediaMutation } from "@/queries/useRoom";
+import {
+  CreateRoomBody,
+  CreateRoomBodyResType,
+  RoomListResType,
+  CreateRoomBodyType,
+} from "@/schemaValidations/room.schema";
+import {
+  useAddRoomMutation,
+  useDeleteRoomMutation,
+  useGetRoomList,
+  useUploadMediaMutation,
+} from "@/queries/useRoom";
 import { toast } from "@/hooks/use-toast";
-import { Checkbox } from '@/components/ui/checkbox';
-import React from 'react';
-import { useDeleteBookingMutation } from '@/queries/useBooking';
-import { ChevronDown, ChevronsUpDown } from 'lucide-react';
-import { WashingMachine, Shirt, Tv, AirVent, Wifi, CookingPot, Car, Waves, Wind, MapPin } from 'lucide-react';
-import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox";
+import React from "react";
+import { useDeleteBookingMutation } from "@/queries/useBooking";
+import { ChevronDown, ChevronsUpDown } from "lucide-react";
+import {
+  WashingMachine,
+  Shirt,
+  Tv,
+  AirVent,
+  Wifi,
+  CookingPot,
+  Car,
+  Waves,
+  Wind,
+  MapPin,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandEmpty,
@@ -58,18 +94,16 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command"
-import { X } from "lucide-react"
-import { useGetLocationList } from '@/queries/useLocation';
-import { LocationListResType } from '@/schemaValidations/location.schema';
-import * as XLSX from 'xlsx';
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-
+} from "@/components/ui/command";
+import { X } from "lucide-react";
+import { useGetLocationList } from "@/queries/useLocation";
+import { LocationListResType } from "@/schemaValidations/location.schema";
+import * as XLSX from "xlsx";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 type RoomItem = RoomListResType["content"][0];
 type LocationItem = LocationListResType["content"][0];
-
 
 const RoomTableContext = createContext<{
   setRoomIdEdit: (value: number) => void;
@@ -81,25 +115,27 @@ const RoomTableContext = createContext<{
   setRowSelectionIdArray: (value: number[]) => void;
   setIsDialogOpen: (value: boolean) => void;
   tagList: { value: string; label: string; icon: React.ReactNode }[];
-  setTagList: (value: { value: string; label: string; icon: React.ReactNode }[]) => void;
+  setTagList: (
+    value: { value: string; label: string; icon: React.ReactNode }[]
+  ) => void;
   selectedValues: string[];
   setSelectedValues: React.Dispatch<React.SetStateAction<string[]>>;
   locationList: LocationItem[];
-  setLocationList: React.Dispatch<React.SetStateAction<LocationItem[]>>
+  setLocationList: React.Dispatch<React.SetStateAction<LocationItem[]>>;
 }>({
-  setRoomIdEdit: (value: number | undefined) => { },
+  setRoomIdEdit: (value: number | undefined) => {},
   roomIdEdit: undefined,
   roomDelete: null,
-  setRoomDelete: (value: RoomItem | null) => { },
+  setRoomDelete: (value: RoomItem | null) => {},
   rowSelectionIdArray: [],
-  setRowSelectionIdArray: (value: number[]) => { },
-  setIsDialogOpen: () => { },
+  setRowSelectionIdArray: (value: number[]) => {},
+  setIsDialogOpen: () => {},
   tagList: [],
-  setTagList: () => { },
+  setTagList: () => {},
   selectedValues: [],
-  setSelectedValues: () => { },
+  setSelectedValues: () => {},
   locationList: [],
-  setLocationList: () => { },
+  setLocationList: () => {},
 });
 
 interface RowData {
@@ -110,7 +146,8 @@ interface RowData {
 
 const HeaderCheckbox = ({ table }: { table: any }) => {
   // const [rowSelectionIdArray, setRowSelectionIdArray] = useState<number[]>([]);
-  const { rowSelectionIdArray, setRowSelectionIdArray } = useContext(RoomTableContext);
+  const { rowSelectionIdArray, setRowSelectionIdArray } =
+    useContext(RoomTableContext);
 
   const handleSelectAllChange = (value: boolean) => {
     const newSelection = value
@@ -119,7 +156,6 @@ const HeaderCheckbox = ({ table }: { table: any }) => {
 
     table.toggleAllRowsSelected(!!value);
     setRowSelectionIdArray(newSelection);
-
   };
   // console.log("rowSelectionIdArray:", rowSelectionIdArray);
 
@@ -133,7 +169,8 @@ const HeaderCheckbox = ({ table }: { table: any }) => {
 };
 
 const CellCheckbox = ({ row }: { row: any }) => {
-  const { rowSelectionIdArray, setRowSelectionIdArray, tagList, setTagList } = useContext(RoomTableContext);
+  const { rowSelectionIdArray, setRowSelectionIdArray, tagList, setTagList } =
+    useContext(RoomTableContext);
   // const [rowSelectionIdArray, setRowSelectionIdArray] = useState<number[]>([]);
   const handleCheckedChange = (value: boolean) => {
     row.toggleSelected(!!value);
@@ -143,7 +180,6 @@ const CellCheckbox = ({ row }: { row: any }) => {
       : rowSelectionIdArray.filter((id: number) => id !== row.original.id);
 
     setRowSelectionIdArray(updatedSelection);
-
   };
   // console.log("rowSelectionIdArray:", rowSelectionIdArray);1
 
@@ -156,10 +192,9 @@ const CellCheckbox = ({ row }: { row: any }) => {
   );
 };
 
-
 export const columns: ColumnDef<RoomItem>[] = [
   {
-    id: 'select',
+    id: "select",
     header: ({ table }) => <HeaderCheckbox table={table} />,
     cell: ({ row }) => <CellCheckbox row={row} />,
     enableSorting: false,
@@ -190,37 +225,69 @@ export const columns: ColumnDef<RoomItem>[] = [
       const roomData = row.original; // Accessing the row data
       // console.log("🚀 ~ RoomAction ~ roomData:", roomData)
 
-
       const { selectedValues } = useContext(RoomTableContext);
 
-      const tagList: { value: string, label: string, icon: React.ReactNode }[] = [];
+      const tagList: { value: string; label: string; icon: React.ReactNode }[] =
+        [];
 
       if (roomData.mayGiat) {
-        tagList.push({ value: "mayGiat", label: "Máy giặt", icon: <WashingMachine size={16} /> });
+        tagList.push({
+          value: "mayGiat",
+          label: "Máy giặt",
+          icon: <WashingMachine size={16} />,
+        });
       }
       if (roomData.banLa) {
-        tagList.push({ value: "banLa", label: "Bàn là", icon: <Shirt size={16} /> });
+        tagList.push({
+          value: "banLa",
+          label: "Bàn là",
+          icon: <Shirt size={16} />,
+        });
       }
       if (roomData.tivi) {
         tagList.push({ value: "tivi", label: "Tivi", icon: <Tv size={16} /> });
       }
       if (roomData.dieuHoa) {
-        tagList.push({ value: "dieuHoa", label: "Điều hòa", icon: <AirVent size={16} /> });
+        tagList.push({
+          value: "dieuHoa",
+          label: "Điều hòa",
+          icon: <AirVent size={16} />,
+        });
       }
       if (roomData.wifi) {
-        tagList.push({ value: "wifi", label: "Wifi", icon: <Wifi size={16} /> });
+        tagList.push({
+          value: "wifi",
+          label: "Wifi",
+          icon: <Wifi size={16} />,
+        });
       }
       if (roomData.bep) {
-        tagList.push({ value: "bep", label: "Bếp", icon: <CookingPot size={16} /> });
+        tagList.push({
+          value: "bep",
+          label: "Bếp",
+          icon: <CookingPot size={16} />,
+        });
       }
       if (roomData.doXe) {
-        tagList.push({ value: "doXe", label: "Đỗ xe", icon: <Car size={16} /> });
+        tagList.push({
+          value: "doXe",
+          label: "Đỗ xe",
+          icon: <Car size={16} />,
+        });
       }
       if (roomData.hoBoi) {
-        tagList.push({ value: "hoBoi", label: "Hồ bơi", icon: <Waves size={16} /> });
+        tagList.push({
+          value: "hoBoi",
+          label: "Hồ bơi",
+          icon: <Waves size={16} />,
+        });
       }
       if (roomData.banUi) {
-        tagList.push({ value: "banUi", label: "Bàn ủi", icon: <Wind size={16} /> });
+        tagList.push({
+          value: "banUi",
+          label: "Bàn ủi",
+          icon: <Wind size={16} />,
+        });
       }
 
       // const location = locationList.find((loc) => loc.id === roomData.maViTri);
@@ -228,7 +295,9 @@ export const columns: ColumnDef<RoomItem>[] = [
 
       return (
         <div className="flex flex-col justify-center items-center">
-          <div className="capitalize text-left w-full">{row.getValue("tenPhong")}</div>
+          <div className="capitalize text-left w-full">
+            {row.getValue("tenPhong")}
+          </div>
           {/* <div className="mt-1 text-left w-full text-sm text-gray-500 flex justify-start items-center"><MapPin size={14} /><span className='ml-1'>{locationName}</span></div> */}
           <div className="mt-2 ml-2 flex flex-wrap gap-2 text-left w-full">
             {tagList.map((tag, index) => {
@@ -236,10 +305,11 @@ export const columns: ColumnDef<RoomItem>[] = [
                 <div key={index} className="flex items-center gap-1">
                   <span
                     className={`tag px-2 py-1 rounded text-sm flex items-center gap-1 
-              ${selectedValues.includes(tag.value)
-                        ? "bg-[hsl(var(--primary))] text-white"
-                        : "bg-[hsl(var(--secondary))] text-gray-700"
-                      }`}
+              ${
+                selectedValues.includes(tag.value)
+                  ? "bg-[hsl(var(--primary))] text-white"
+                  : "bg-[hsl(var(--secondary))] text-gray-700"
+              }`}
                   >
                     {tag.icon}
                     <span>{tag.label}</span>
@@ -249,15 +319,13 @@ export const columns: ColumnDef<RoomItem>[] = [
             })}
           </div>
         </div>
-
       );
-    }
+    },
   },
 
   {
     accessorKey: "location",
     header: function HeaderLoction({ column }) {
-
       // const roomData = column.original;
       // const locationListQuery = useGetLocationList();
       // const locationList = locationListQuery.data?.content ?? [];
@@ -266,9 +334,12 @@ export const columns: ColumnDef<RoomItem>[] = [
 
       return (
         <div className="flex flex-col">
-          <Button variant='ghost' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
             Location
-            <CaretSortIcon className='ml-2 h-4 w-2' />
+            <CaretSortIcon className="ml-2 h-4 w-2" />
           </Button>
           {/* <select
             value={(column.getFilterValue() as string) ?? ''}
@@ -280,56 +351,75 @@ export const columns: ColumnDef<RoomItem>[] = [
             <option value="false">Nữ</option>
           </select> */}
         </div>
-      )
+      );
     },
     cell: function LocationAction({ row }) {
       const roomData = row.original;
       const locationListQuery = useGetLocationList();
       const locationList = locationListQuery.data?.content ?? [];
-      const location = locationList.find((loc) => loc.id === roomData.maViTri);
-      const locationName = location ? location.tenViTri : 'Vị trí không có';
+      const location = locationList.find(
+        (loc: any) => loc.id === roomData.maViTri
+      );
+      const locationName = location ? location.tenViTri : "Vị trí không có";
 
       return (
-
-        <div className="mt-1 text-left w-full text-sm text-gray-500 flex justify-start items-center"><MapPin size={14} /><span className='ml-1'>{locationName}</span></div>
-      )
-    }
+        <div className="mt-1 text-left w-full text-sm text-gray-500 flex justify-start items-center">
+          <MapPin size={14} />
+          <span className="ml-1">{locationName}</span>
+        </div>
+      );
+    },
   },
   {
-    accessorKey: 'phongNgu',
+    accessorKey: "phongNgu",
     header: ({ column }) => {
       return (
-        <Button variant='ghost' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
           Số phòng ngủ
-          <CaretSortIcon className='ml-2 h-4 w-4' />
+          <CaretSortIcon className="ml-2 h-4 w-4" />
         </Button>
-      )
+      );
     },
-    cell: ({ row }) => <div className='capitalize text-center'>{row.getValue('phongNgu')}</div>
+    cell: ({ row }) => (
+      <div className="capitalize text-center">{row.getValue("phongNgu")}</div>
+    ),
   },
   {
-    accessorKey: 'khach',
+    accessorKey: "khach",
     header: ({ column }) => {
       return (
-        <Button variant='ghost' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
           Số khách
-          <CaretSortIcon className='ml-2 h-4 w-4' />
+          <CaretSortIcon className="ml-2 h-4 w-4" />
         </Button>
-      )
+      );
     },
-    cell: ({ row }) => <div className='capitalize text-center'>{row.getValue('khach')}</div>
+    cell: ({ row }) => (
+      <div className="capitalize text-center">{row.getValue("khach")}</div>
+    ),
   },
   {
     accessorKey: "giaTien",
     header: ({ column }) => {
       return (
-        <Button variant='ghost' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
           Gía tiền
-          <CaretSortIcon className='ml-2 h-4 w-2' />
+          <CaretSortIcon className="ml-2 h-4 w-2" />
         </Button>
-      )
+      );
     },
-    cell: ({ row }) => <div className='capitalize text-center'>{row.getValue('giaTien')}$</div>
+    cell: ({ row }) => (
+      <div className="capitalize text-center">{row.getValue("giaTien")}$</div>
+    ),
   },
   {
     id: "actions",
@@ -362,8 +452,6 @@ export const columns: ColumnDef<RoomItem>[] = [
     },
   },
 ];
-
-
 
 function AlertDialogDeleteDish({
   roomDelete,
@@ -419,8 +507,6 @@ function AlertDialogDeleteDish({
   );
 }
 
-
-
 interface AlertDialogDeleteAllProps {
   rowSelectionIdArray: number[];
   setRowSelectionIdArray: (value: number[]) => void;
@@ -434,7 +520,6 @@ const AlertDialogDeleteAllBookings: React.FC<AlertDialogDeleteAllProps> = ({
   isDialogOpen,
   setIsDialogOpen,
 }) => {
-
   const { mutateAsync } = useDeleteRoomMutation();
 
   const deleteBookingAll = async (
@@ -442,7 +527,7 @@ const AlertDialogDeleteAllBookings: React.FC<AlertDialogDeleteAllProps> = ({
     setRowSelectionIdArray: (value: number[]) => void
   ) => {
     if (rowSelectionIdArray.length === 0) {
-      toast({ title: 'Please select at least one booking to delete' });
+      toast({ title: "Please select at least one booking to delete" });
       return;
     }
 
@@ -453,7 +538,7 @@ const AlertDialogDeleteAllBookings: React.FC<AlertDialogDeleteAllProps> = ({
           await mutateAsync(id);
         })
       );
-      toast({ title: 'Xoá chọn thành công' });
+      toast({ title: "Xoá chọn thành công" });
 
       // Reset selected rows state
       setRowSelectionIdArray([]);
@@ -469,15 +554,22 @@ const AlertDialogDeleteAllBookings: React.FC<AlertDialogDeleteAllProps> = ({
           <AlertDialogHeader>
             <AlertDialogTitle>Delete All Bookings?</AlertDialogTitle>
             <AlertDialogDescription>
-              Booking <span className='rounded px-1'>{rowSelectionIdArray.join(', ')}</span> sẽ bị xóa
-              vĩnh viễn
+              Booking{" "}
+              <span className="rounded px-1">
+                {rowSelectionIdArray.join(", ")}
+              </span>{" "}
+              sẽ bị xóa vĩnh viễn
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel onClick={() => setIsDialogOpen(false)}>
               Cancel
             </AlertDialogCancel>
-            <AlertDialogAction onClick={() => deleteBookingAll(rowSelectionIdArray, setRowSelectionIdArray)}>
+            <AlertDialogAction
+              onClick={() =>
+                deleteBookingAll(rowSelectionIdArray, setRowSelectionIdArray)
+              }
+            >
               Confirm
             </AlertDialogAction>
           </AlertDialogFooter>
@@ -489,7 +581,6 @@ const AlertDialogDeleteAllBookings: React.FC<AlertDialogDeleteAllProps> = ({
 
 // Số lượng item trên 1 trang
 const PAGE_SIZE = 10;
-
 
 export default function DishTable() {
   const searchParam = useSearchParams();
@@ -515,69 +606,69 @@ export default function DishTable() {
   const [rowSelectionIdArray, setRowSelectionIdArray] = useState<number[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-
-
   //select tag
 
-
-
-  const [tagList, setTagList] = useState<{ value: string; label: string; icon: React.ReactNode }[]>([
+  const [tagList, setTagList] = useState<
+    { value: string; label: string; icon: React.ReactNode }[]
+  >([
     {
       value: "mayGiat",
       label: "Máy giặt",
-      icon: <WashingMachine size={16} />
+      icon: <WashingMachine size={16} />,
     },
     {
       value: "banLa",
       label: "Bàn là",
-      icon: <Shirt size={16} />
+      icon: <Shirt size={16} />,
     },
     {
       value: "tivi",
       label: "Tivi",
-      icon: <Tv size={16} />
+      icon: <Tv size={16} />,
     },
     {
       value: "dieuHoa",
       label: "Điều hòa",
-      icon: <AirVent size={16} />
+      icon: <AirVent size={16} />,
     },
     {
       value: "wifi",
       label: "Wifi",
-      icon: <Wifi size={16} />
+      icon: <Wifi size={16} />,
     },
     {
       value: "bep",
       label: "Bếp",
-      icon: <CookingPot size={16} />
+      icon: <CookingPot size={16} />,
     },
     {
       value: "doXe",
       label: "Đỗ xe",
-      icon: <Car size={16} />
+      icon: <Car size={16} />,
     },
     {
       value: "hoBoi",
       label: "Hồ bơi",
-      icon: <Waves size={16} />
+      icon: <Waves size={16} />,
     },
     {
       value: "banUi",
       label: "Bàn ủi",
-      icon: <Wind size={16} />
+      icon: <Wind size={16} />,
     },
   ]);
 
-
-  const [open, setOpen] = React.useState(false)
-  const [selectedValues, setSelectedValues] = React.useState<string[]>([])
+  const [open, setOpen] = React.useState(false);
+  const [selectedValues, setSelectedValues] = React.useState<string[]>([]);
 
   const handleTagRemove = (value: string) => {
-    setSelectedValues(selectedValues.filter((item) => item !== value))
-  }
+    setSelectedValues(selectedValues.filter((item) => item !== value));
+  };
 
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>, value: string) => {
+  const handleCheckboxChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    value: string
+  ) => {
     if (e.target.checked) {
       setSelectedValues((prev) => [...prev, value]); // Thêm vào selectedValues
     } else {
@@ -585,11 +676,12 @@ export default function DishTable() {
     }
   };
 
-
-  const [selectedLocationValues, setSelectedLocationValues] = React.useState<number[]>([])
+  const [selectedLocationValues, setSelectedLocationValues] = React.useState<
+    number[]
+  >([]);
 
   const filteredData = React.useMemo(() => {
-    return data.filter((room) => {
+    return data.filter((room: any) => {
       // Location filter (if any)
       const locationMatches =
         selectedLocationValues.length === 0 || // If no location filter is applied, match everything
@@ -628,12 +720,12 @@ export default function DishTable() {
     });
   }, [data, selectedLocationValues, selectedValues]);
 
-
   //location
   const [locationList, setLocationList] = React.useState<LocationItem[]>([]);
-  const [openLocationSelect, setOpenLocationSelect] = React.useState(false)
+  const [openLocationSelect, setOpenLocationSelect] = React.useState(false);
 
-  const [locationSearchTerm, setLocationSearchTerm] = React.useState<string>("");
+  const [locationSearchTerm, setLocationSearchTerm] =
+    React.useState<string>("");
   const locationListQuery = useGetLocationList();
   const locationListRes = locationListQuery.data?.content ?? [];
 
@@ -644,7 +736,6 @@ export default function DishTable() {
     }
   }, [locationListRes, locationList]);
 
-
   // const handleLocationCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>, value: string) => {
   //   if (e.target.checked) {
   //     setSelectedValues((prev) => [...prev, value]); // Thêm vào selectedValues
@@ -653,16 +744,20 @@ export default function DishTable() {
   //   }
   // };
 
-  const handleLocationCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>, value: number) => {
+  const handleLocationCheckboxChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    value: number
+  ) => {
     if (e.target.checked) {
       // Add the location ID (number) to the selected list when checked
       setSelectedLocationValues((prev) => [...prev, value]);
     } else {
       // Remove the location ID (number) when unchecked
-      setSelectedLocationValues((prev) => prev.filter((item) => item !== value));
+      setSelectedLocationValues((prev) =>
+        prev.filter((item) => item !== value)
+      );
     }
   };
-
 
   // const tagDropdownRef = useRef<HTMLDivElement | null>(null);
   // const locationDropdownRef = useRef<HTMLDivElement | null>(null);
@@ -689,13 +784,6 @@ export default function DishTable() {
   //     document.removeEventListener('click', handleClickOutside);
   //   };
   // }, []);
-
-
-
-
-
-
-
 
   const table = useReactTable({
     data: filteredData,
@@ -726,14 +814,23 @@ export default function DishTable() {
     });
   }, [table, pageIndex]);
 
-
-
-
-
-
   return (
     <RoomTableContext.Provider
-      value={{ roomIdEdit, setRoomIdEdit, roomDelete, setRoomDelete, rowSelectionIdArray, setRowSelectionIdArray, setIsDialogOpen, tagList, setTagList, selectedValues, setSelectedValues, locationList, setLocationList }}
+      value={{
+        roomIdEdit,
+        setRoomIdEdit,
+        roomDelete,
+        setRoomDelete,
+        rowSelectionIdArray,
+        setRowSelectionIdArray,
+        setIsDialogOpen,
+        tagList,
+        setTagList,
+        selectedValues,
+        setSelectedValues,
+        locationList,
+        setLocationList,
+      }}
     >
       <div className="w-full">
         <EditRoom id={roomIdEdit} setId={setRoomIdEdit} />
@@ -768,25 +865,26 @@ export default function DishTable() {
               );
             })}
           </div>
-
         </div>
-        <div className="flex justify-between py-4"> {/* Using flex-col to stack input and tags vertically */}
+        <div className="flex justify-between py-4">
+          {" "}
+          {/* Using flex-col to stack input and tags vertically */}
           <div className="w-1/2 ">
-
             <div className="flex justify-between items-start">
               <div className="w-1/2 pr-2 ">
                 <Input
                   placeholder="Lọc tên"
                   value={
-                    (table.getColumn("tenPhong")?.getFilterValue() as string) ?? ""
+                    (table.getColumn("tenPhong")?.getFilterValue() as string) ??
+                    ""
                   }
                   onChange={(event) =>
-                    table.getColumn("tenPhong")?.setFilterValue(event.target.value)
+                    table
+                      .getColumn("tenPhong")
+                      ?.setFilterValue(event.target.value)
                   }
                   className="max-w-full mb-2"
                 />
-
-
               </div>
 
               <div className="w-1/2 flex justify-between items-center text-center">
@@ -809,14 +907,13 @@ export default function DishTable() {
                   {open && (
                     <div
                       // ref={tagDropdownRef}
-                      className="mt-2 p-2 border rounded-md w-full max-w-[200px] absolute z-10 bg-white shadow-md">
+                      className="mt-2 p-2 border rounded-md w-full max-w-[200px] absolute z-10 bg-white shadow-md"
+                    >
                       <Command>
                         <CommandInput placeholder="Search tag..." />
                         <CommandList>
                           <CommandEmpty>No tag.</CommandEmpty>
-                          <CommandGroup
-
-                          >
+                          <CommandGroup>
                             {tagList.map((tagItem) => (
                               <CommandItem
                                 key={tagItem.value}
@@ -825,8 +922,12 @@ export default function DishTable() {
                                 <input
                                   type="checkbox"
                                   className="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                                  checked={selectedValues.includes(tagItem.value)}
-                                  onChange={(e) => handleCheckboxChange(e, tagItem.value)}
+                                  checked={selectedValues.includes(
+                                    tagItem.value
+                                  )}
+                                  onChange={(e) =>
+                                    handleCheckboxChange(e, tagItem.value)
+                                  }
                                 />
                                 {tagItem.label}
                               </CommandItem>
@@ -881,7 +982,8 @@ export default function DishTable() {
                   {openLocationSelect && (
                     <div
                       // ref={locationDropdownRef}
-                      className="mt-2 p-2 border rounded-md w-full max-w-[200px] absolute z-10 bg-white shadow-md">
+                      className="mt-2 p-2 border rounded-md w-full max-w-[200px] absolute z-10 bg-white shadow-md"
+                    >
                       {/* Search input for filtering location */}
                       <input
                         type="text"
@@ -893,7 +995,9 @@ export default function DishTable() {
                       <div className="max-h-60 overflow-y-auto">
                         {locationList
                           .filter((locationItem) =>
-                            locationItem.tenViTri.toLowerCase().includes(locationSearchTerm.toLowerCase())
+                            locationItem.tenViTri
+                              .toLowerCase()
+                              .includes(locationSearchTerm.toLowerCase())
                           )
                           .map((locationItem) => (
                             <div
@@ -904,25 +1008,28 @@ export default function DishTable() {
                               <input
                                 type="checkbox"
                                 className="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                                checked={selectedLocationValues.includes(locationItem.id)}
-                                onChange={(e) => handleLocationCheckboxChange(e, locationItem.id)}
+                                checked={selectedLocationValues.includes(
+                                  locationItem.id
+                                )}
+                                onChange={(e) =>
+                                  handleLocationCheckboxChange(
+                                    e,
+                                    locationItem.id
+                                  )
+                                }
                               />
-                              <span>{locationItem.tenViTri}</span> {/* Location name */}
+                              <span>{locationItem.tenViTri}</span>{" "}
+                              {/* Location name */}
                             </div>
                           ))}
                       </div>
                     </div>
-                  ) }
-
+                  )}
                 </div>
-
-
               </div>
             </div>
           </div>
-
           <div className="w-1/2 flex-col">
-
             {/* Other layout part */}
             <div className="w-full flex justify-end">
               <div className="ml-auto flex items-center gap-2">
@@ -955,23 +1062,15 @@ export default function DishTable() {
                           >
                             {column.id}
                           </DropdownMenuCheckboxItem>
-                        )
+                        );
                       })}
                   </DropdownMenuContent>
                 </DropdownMenu>
                 <AddRoom />
-
               </div>
             </div>
-
-
-            
-
           </div>
         </div>
-
-
-
 
         <div className="rounded-md border">
           <Table>
@@ -984,9 +1083,9 @@ export default function DishTable() {
                         {header.isPlaceholder
                           ? null
                           : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
                       </TableHead>
                     );
                   })}

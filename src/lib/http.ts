@@ -143,7 +143,7 @@ const request = async <Response>(
     method,
   });
 
-  const payload = await res.json();
+  const payload: Response | any = await res.json();
   //
   if (!res.ok && payload?.statusCode !== 400) {
     throw new Error(`HTTP error! Status: ${res.status}`);
