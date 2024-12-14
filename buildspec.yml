@@ -23,8 +23,8 @@ phases:
       - echo Build started on `date`
       - echo Building the Docker image...
       # Build Docker image
-      - docker build --platform linux/amd64 -t $REPOSITORY_URI:latest 
-      # - docker build -t $REPOSITORY_URI:latest .
+      # - docker build --platform linux/amd64 -t $REPOSITORY_URI:latest 
+      - docker build -t $REPOSITORY_URI:latest .
       # - docker build --build-arg NEXT_PUBLIC_API_ENDPOINT=https://airbnbnew.cybersoft.edu.vn -t $REPOSITORY_URI:latest .
       # Tag image cho phiên bản cụ thể
       - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
