@@ -1,0 +1,35 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo Connecting to Amazon ECR...
+      - aws --version
+      # Đăng nhập vào Amazon ECR
+      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 977098996062.dkr.ecr.us-east-1.amazonaws.com
+      - REPOSITORY_URI=977098996062.dkr.ecr.us-east-1.amazonaws.com/my-airbnb-app
+      # Lấy commit hash từ mã nguồn
+      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      # Tạo image tag từ build ID
+      - IMAGE_TAG=build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Building the Docker image...
+      # Build Docker image với Node 18 cho Intel platform
+      - docker build -t $REPOSITORY_URI:latest .
+      # Tag image cho Docker
+      - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Pushing the Docker images...
+      # Push image lên ECR
+      - docker push $REPOSITORY_URI:latest
+      - docker push $REPOSITORY_URI:$IMAGE_TAG
+      - echo Writing image definitions file...
+      # Tạo file image definition để sử dụng với ECS
+      - printf '[{"name":"simple-app","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
+      - cat imagedefinitions.json
+artifacts:
+  files: imagedefinitions.json
