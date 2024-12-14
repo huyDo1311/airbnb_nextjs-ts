@@ -17,7 +17,8 @@ phases:
       - echo Build started on `date`
       - echo Building the Docker image...
       # Build Docker image với Node 18 cho Intel platform
-      - docker build -t $REPOSITORY_URI:latest .
+      # - docker build -t $REPOSITORY_URI:latest .
+      - docker build -f ./Dockerfile -t $REPOSITORY_URI:latest .
       # Tag image cho Docker
       - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
   post_build:
