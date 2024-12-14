@@ -1,5 +1,5 @@
 # Sử dụng Node.js 18 để build ứng dụng
-FROM  node:18 AS builder
+FROM --platform=linux/amd64 node:18 AS builder
 
 # Thiết lập thư mục làm việc
 WORKDIR /app
