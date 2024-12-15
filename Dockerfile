@@ -1,6 +1,12 @@
 # Sử dụng Node.js 18 để build ứng dụng
 FROM node:18 AS builder
 
+# Khai báo build argument
+ARG NEXT_PUBLIC_API_ENDPOINT
+
+# Thiết lập biến môi trường cho container
+ENV NEXT_PUBLIC_API_ENDPOINT=$NEXT_PUBLIC_API_ENDPOINT
+
 # Thiết lập thư mục làm việc
 WORKDIR /app
 
@@ -12,6 +18,14 @@ RUN npm install
 
 # Sao chép toàn bộ mã nguồn vào container
 COPY . .
+
+# COPY .env .env
+
+# # Debug: Hiển thị nội dung file .env
+# RUN cat .env
+
+# Debug: Hiển thị giá trị biến môi trường (tùy chọn)
+RUN echo "NEXT_PUBLIC_API_ENDPOINT=${NEXT_PUBLIC_API_ENDPOINT}"
 
 # Build ứng dụng Next.js
 RUN npm run build
