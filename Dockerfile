@@ -1,11 +1,17 @@
 # Sử dụng Node.js 18 để build ứng dụng
 FROM node:18 AS builder
 
-# # Khai báo build argument
-# ARG NEXT_PUBLIC_API_ENDPOINT
+# Khai báo build argument
+ARG NEXT_PUBLIC_API_ENDPOINT=https://airbnbnew.cybersoft.edu.vn
+ARG NEXT_PUBLIC_URL=http://localhost:3000
 
-# # Thiết lập biến môi trường cho container
-# ENV NEXT_PUBLIC_API_ENDPOINT=$NEXT_PUBLIC_API_ENDPOINT
+# Thiết lập biến môi trường
+ENV NEXT_PUBLIC_API_ENDPOINT=$NEXT_PUBLIC_API_ENDPOINT
+ENV NEXT_PUBLIC_URL=$NEXT_PUBLIC_URL
+
+# Debug biến môi trường
+RUN echo "NEXT_PUBLIC_API_ENDPOINT=${NEXT_PUBLIC_API_ENDPOINT}" && echo "NEXT_PUBLIC_URL=${NEXT_PUBLIC_URL}"
+
 
 # Thiết lập thư mục làm việc
 WORKDIR /app
