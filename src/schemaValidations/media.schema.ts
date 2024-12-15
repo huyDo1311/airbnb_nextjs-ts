@@ -5,4 +5,4 @@ export const UploadImageRes = z.object({
   message: z.string()
 })
 
-export type UploadImageResType = z.TypeOf<typeof UploadImageRes>
+  export type UploadImageResType = z.TypeOf<typeof UploadImageRes>

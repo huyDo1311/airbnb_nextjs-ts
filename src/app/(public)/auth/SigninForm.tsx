@@ -19,10 +19,19 @@ import { useSigninMutation } from "@/queries/useAuth";
 import Image from "next/image";
 import { Eye, EyeClosed } from "lucide-react";
 import { useState } from "react";
+import { useStore } from "@/store/store";
 
-export default function SigninForm() {
+interface SigninFormProps {
+  handleClose: () => void; // Specify that handleClose is a function that takes no arguments and returns void
+  setFetchData?: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export default function SigninForm({
+  handleClose,
+  setFetchData,
+}: SigninFormProps) {
+  const { setFetchDataStore, setGetUserData } = useStore();
   const signinMutation = useSigninMutation();
-  // const setRole = useAppStore((state) => state.setRole);
   const [show, setShow] = useState(true);
   const form = useForm<SigninBodyType>({
     resolver: zodResolver(SigninBody),
@@ -31,19 +40,21 @@ export default function SigninForm() {
       password: "",
     },
   });
-  let displayPassword = () => {};
   const onSubmit = async (data: SigninBodyType) => {
     if (signinMutation.isPending) return;
     try {
       const result = await signinMutation.mutateAsync(data);
       const user = result.content.user;
-      // localStorage.setItem("user", JSON.stringify(user));
-      setUserToLocalStorage(user);
+      // setUserToLocalStorage(user);
+      setFetchDataStore();
+      handleClose();
+      setGetUserData(user);
+      if (setFetchData) {
+        setFetchData(true);
+      }
       toast({
         description: "Xin chào " + result.content.user.name,
       });
-
-      // window.location.href = "/manage/dashboard";
     } catch (error: any) {
       handleErrorApi({
         error,

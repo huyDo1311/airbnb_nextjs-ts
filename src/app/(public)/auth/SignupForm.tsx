@@ -28,7 +28,7 @@ import { useSignupMutation } from "@/queries/useAuth";
 import { BirthdayPicker } from "@/app/(public)/auth/BirthdayPicker";
 import { CircleAlert } from "lucide-react";
 
-export default function SignupForm() {
+export default function SignupForm({ handleClick }: any) {
   const signupMutation = useSignupMutation();
 
   const form = useForm<SignupBodyType>({
@@ -60,8 +60,9 @@ export default function SignupForm() {
           ),
         });
       } else {
+        handleClick();
         toast({
-          description: `Chào mừng: ${result.content.name}`,
+          description: `Đăng ký thành công`,
         });
       }
       // window.location.href = "/manage/dashboard";
@@ -74,7 +75,7 @@ export default function SignupForm() {
   };
 
   return (
-    <div className="w-full">
+    <div className="">
       <Card className=" w-full  shadow-none border-0">
         <CardHeader>
           <CardTitle className="text-2xl">Đăng Ký</CardTitle>
