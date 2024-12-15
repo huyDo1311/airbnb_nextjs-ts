@@ -30,8 +30,6 @@ phases:
       # Tag image cho phiên bản cụ thể
       - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
       # - docker tag airbnb-app-repo:latest 977098996062.dkr.ecr.ap-southeast-1.amazonaws.com/airbnb-app-repo:latest
-      - echo "REPOSITORY_URI: $REPOSITORY_URI"
-      - echo "IMAGE_TAG: $IMAGE_TAG"
   post_build:
     commands:
       - echo Build completed on `date`
