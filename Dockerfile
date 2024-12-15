@@ -13,9 +13,6 @@ RUN npm install
 # Sao chép toàn bộ mã nguồn vào container
 COPY . .
 
-# Debug: Hiển thị nội dung file .env
-RUN cat .env
-
 # Build ứng dụng Next.js
 RUN npm run build
 

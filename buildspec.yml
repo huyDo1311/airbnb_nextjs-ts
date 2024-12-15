@@ -21,14 +21,6 @@ phases:
   build:
     commands:
       - echo Build started on `date`
-      - echo Verifying .env file...
-      # Kiểm tra sự tồn tại của tệp .env
-      - |
-        if [ -f .env ]; then 
-          echo ".env file found"; 
-        else 
-          echo "ERROR: .env file missing" && exit 1; 
-        fi
       - echo Building the Docker image...
       # Build Docker image
       # - docker build --platform linux/amd64 -t $REPOSITORY_URI:latest 
