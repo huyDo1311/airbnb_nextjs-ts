@@ -6,7 +6,7 @@ export default async function Dashboard() {
       <div className='space-y-2'>
         <Card x-chunk='dashboard-06-chunk-0'>
           <CardHeader>
-            <CardTitle>Dashboard</CardTitle>
+            <CardTitle>Dashboard v1</CardTitle>
             <CardDescription>Phân tích các chỉ số</CardDescription>
           </CardHeader>
           <CardContent>
