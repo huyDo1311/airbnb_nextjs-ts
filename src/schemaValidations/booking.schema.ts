@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { date, z } from "zod";
 import { UserSchema } from "./user.schema";
 import { RoomSchema } from "./room.schema";
 
@@ -22,15 +22,28 @@ export const LocationListRes = z.object({
 export type BookingListResType = z.TypeOf<typeof LocationListRes>;
 
 export const CreateBookingBody = z.object({
-  id: z.number(), // id là số nguyên
+  id: z.number(),
   maPhong: z.number(), // maPhong là số nguyên
-  ngayDen: z.string().datetime(), // ngày đến ở định dạng ISO datetime string
-  ngayDi: z.string().datetime(), // ngày đi ở định dạng ISO datetime string
+  ngayDen: z.string(), // ngày đến ở định dạng ISO datetime string
+  ngayDi: z.string(), // ngày đi ở định dạng ISO datetime string
   soLuongKhach: z.number().int().positive(), // số lượng khách là số nguyên dương
   maNguoiDung: z.number(), // maNguoiDung là số nguyên
 });
 
 export type CreateBookingBodyType = z.TypeOf<typeof CreateBookingBody>;
+
+export const CreateBookingDetailBody = z.object({
+  id: z.number(),
+  maPhong: z.number(), // maPhong là số nguyên
+  ngayDen: z.date(), // ngày đến ở định dạng ISO datetime string
+  ngayDi: z.date(), // ngày đi ở định dạng ISO datetime string
+  soLuongKhach: z.number().int().positive(), // số lượng khách là số nguyên dương
+  maNguoiDung: z.number(), // maNguoiDung là số nguyên
+});
+
+export type CreateBookingDetailBodyType = z.TypeOf<
+  typeof CreateBookingDetailBody
+>;
 
 export const CreateBookingBodyRes = z.object({
   statusCode: z.number(),
@@ -66,8 +79,6 @@ export const GetBookingByUserBody = z.object({
 });
 
 export type GetBookingByUserResType = z.TypeOf<typeof GetBookingByUserBody>;
-
-
 
 export const UserBookingSchema = BookingSchema.extend({
   id: z.number(),

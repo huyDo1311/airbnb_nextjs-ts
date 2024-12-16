@@ -9,7 +9,6 @@ import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 export default function Rooms({ data2 }: any) {
   let { resultSearch, setStar, setDataLocation } = useStore();
-  console.log(data2, "lmaop");
   const router = useRouter();
 
   let handleDetail = (id: number, star: number, tinhThanh: string) => {
@@ -23,6 +22,20 @@ export default function Rooms({ data2 }: any) {
   const formatStar = (star: number) => {
     return star.toFixed(1).replace(".", ",");
   };
+
+  let handleMoney = (money: number): string => {
+    let currency = money * 25;
+    let formattedCurrency =
+      new Intl.NumberFormat("vi-VN", {
+        minimumFractionDigits: 3,
+        maximumFractionDigits: 3,
+      }).format(currency) + " đ"; // Adding the "đ" symbol at the end
+    return formattedCurrency.replace(",", ".");
+  };
+
+  let handleFavorite = () => {
+    console.log("hi");
+  };
   const vietnameseDate = formatDateToVietnamese(new Date());
   let renderRooms = () => {
     return resultSearch.map((item: any, index: any) => {
@@ -31,10 +44,10 @@ export default function Rooms({ data2 }: any) {
           {item.hinhAnh &&
             data2.content.data.map((item2: any) => {
               return (
-                <div key={item2.id} className="m-5 group">
+                <div key={item2.id} className="m-5 group cursor-pointer z-20">
                   {item2.id == item.maViTri && (
                     <CardContainer className="inter-var h-40 w-full   ">
-                      <CardBody className="shadow-lg p-4 border  relative group/card  px-5 dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] rounded-xl    ">
+                      <CardBody className="group shadow-lg p-4 border  relative group/card  px-5 dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] rounded-xl    ">
                         <div
                           className=""
                           onClick={() => {
@@ -46,7 +59,7 @@ export default function Rooms({ data2 }: any) {
                           }}
                         >
                           <CardItem translateZ="50">
-                            <div className="w-full h-[250px]">
+                            <div className="w-[300px] h-[250px]">
                               <Image
                                 className="h-full w-full object-left object-cover rounded-xl"
                                 src={item.hinhAnh}
@@ -64,14 +77,14 @@ export default function Rooms({ data2 }: any) {
                                     {item2.tinhThanh} / Việt Nam
                                   </p>
                                 )}
-                                <CardItem translateZ={100}>
+                                <CardItem>
                                   <p className="text-sm font-light">
                                     {vietnameseDate}
                                   </p>
                                 </CardItem>
                                 <CardItem translateZ={100}>
                                   <p className="text-sm font-medium">
-                                    ${item.giaTien} / Đêm{" "}
+                                    {handleMoney(item.giaTien)} / Đêm{" "}
                                   </p>
                                 </CardItem>
                               </div>
@@ -87,29 +100,14 @@ export default function Rooms({ data2 }: any) {
                             </div>
                           </CardItem>
 
-                          <CardItem
-                            className="absolute top-2 right-2 z-50"
-                            translateZ={100}
-                          >
-                            <button>
-                              <i
-                                className="fa fa-heart   hover:scale-150 text-lg duration-300       text-gray-500
-                      bg-clip-text 
-                      [-webkit-text-stroke:1px_white]
-                      hover:text-red-500 
-                      hover:[-webkit-text-stroke:0px]
-                      transition-all"
-                              ></i>
-                            </button>
-                          </CardItem>
                           {vietnamLocations[index]?.star <= 4.5 &&
                             vietnamLocations[index]?.star > 4 && (
                               <CardItem
                                 className="absolute top-2 left-2"
                                 translateZ={100}
                               >
-                                <div className="bg-white rounded-xl ">
-                                  <p className="text-sm font-semibold p-1 px-2">
+                                <div className="dark:bg-white bg-white rounded-xl ">
+                                  <p className="text-sm font-semibold p-1 px-2 text-black">
                                     {" "}
                                     Được khách yêu thích
                                   </p>
@@ -130,6 +128,24 @@ export default function Rooms({ data2 }: any) {
                             </CardItem>
                           )}
                         </div>
+                        <CardItem
+                          className="absolute top-7 right-7 hover:text-2xl"
+                          translateZ={100}
+                        >
+                          <button
+                            onClick={handleFavorite}
+                            className=" active:text-red-400 "
+                          >
+                            <i
+                              className="fa fa-heart  scale-125    group-hover:animate-beat duration-300 z-40    text-gray-500
+                      bg-clip-text 
+                      [-webkit-text-stroke:1px_white]
+                      group-hover:text-red-500 
+                      hover:[-webkit-text-stroke:0px]
+                      transition-all"
+                            ></i>
+                          </button>
+                        </CardItem>
                       </CardBody>
                     </CardContainer>
                   )}

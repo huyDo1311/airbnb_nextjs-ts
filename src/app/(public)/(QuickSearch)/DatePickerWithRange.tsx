@@ -19,11 +19,20 @@ export function DatePickerWithRange({
   className,
 }: React.HTMLAttributes<HTMLDivElement>) {
   const [date, setDate] = React.useState<DateRange | undefined>();
-  let { NextStep, setDataCalendar } = useStore();
+  let {
+    NextStep,
+    setDataCalendar,
+    dataCalendar,
+    removeDataHeader,
+    setRemoveDataHeader,
+  } = useStore();
 
   React.useEffect(() => {
     setDataCalendar(date);
   }, [date, setDataCalendar]);
+  React.useEffect(() => {
+    setDate(undefined);
+  }, [setRemoveDataHeader, removeDataHeader]);
   const [active, setActive] = React.useState(false);
   const [click, setClick] = React.useState<string | null>(null);
   const matcher: DateBefore = { before: new Date() };
@@ -63,6 +72,9 @@ export function DatePickerWithRange({
   const wrapperRef = React.useRef(null);
   const wrapperRef2 = React.useRef(null);
   useOutsideAlerter(wrapperRef, wrapperRef2);
+  let handleDate = (date: DateRange | undefined) => {
+    setDate(date);
+  };
   return (
     <div
       className={cn(
@@ -84,20 +96,19 @@ s        flex  after:border-r items-center`,
                 className={cn(
                   `    cursor-pointer 
                 items-center
-                group-hover:after:h-0
 after:h-10  after:border-r before:h-10 before:border-l
 
                
-             text-left w-full h-full focus:bg-red-400 rounded-full  `
+             text-left w-full h-full  rounded-full  `
                 )}
               >
-                {date?.from ? (
+                {dataCalendar?.from ? (
                   <div className="w-full flex-col items-center flex">
                     <div className="w-full">
                       <p className="font-semibold text-xs">Nhận phòng</p>
 
                       <p className="text-md">
-                        {format(date.from, "dd MMM", { locale: vi })}
+                        {format(dataCalendar.from, "dd MMM", { locale: vi })}
                       </p>
                     </div>
                   </div>
@@ -122,18 +133,18 @@ after:h-10  after:border-r before:h-10 before:border-l
                 variant={"ghost"}
                 id="date2"
                 className={cn(
-                  `group w-full h-full text-left rounded-full focus:bg-red-400 
+                  `group w-full h-full text-left rounded-full  
                  after:h-10  after:border-r
-                hover:after:h-0`
+              `
                 )}
               >
-                {date?.to ? (
+                {dataCalendar?.to ? (
                   <div className="w-full  flex-col items-center flex">
                     <div className="w-full">
                       {" "}
                       <p className="font-semibold text-xs">Trả phòng</p>
                       <p className="text-md">
-                        {format(date.to, "dd MMM", { locale: vi })}
+                        {format(dataCalendar.to, "dd MMM", { locale: vi })}
                       </p>
                     </div>
                   </div>
@@ -165,7 +176,7 @@ after:h-10  after:border-r before:h-10 before:border-l
               mode="range"
               defaultMonth={date?.from}
               selected={date}
-              onSelect={setDate}
+              onSelect={handleDate}
               numberOfMonths={2}
               captionLayout="dropdown"
             />
@@ -175,5 +186,3 @@ after:h-10  after:border-r before:h-10 before:border-l
     </div>
   );
 }
-
-

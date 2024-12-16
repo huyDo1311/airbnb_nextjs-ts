@@ -4,6 +4,7 @@ import bookingApiRequest from "@/apiRequests/booking";
 import {
   BookingType,
   CreateBookingBodyType,
+  CreateBookingDetailBodyType,
 } from "@/schemaValidations/booking.schema";
 import commentsRequest from "@/apiRequests/comments";
 
@@ -19,6 +20,19 @@ export const useAddBookingMutation = () => {
   return useMutation({
     mutationFn: (body: CreateBookingBodyType) =>
       bookingApiRequest.NextClientToServerAddBooking(body),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["booking-list"],
+      });
+    },
+  });
+};
+
+export const useAddBookingDetailMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (body: CreateBookingDetailBodyType) =>
+      bookingApiRequest.NextClientToServerAddBookingDetail(body),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["booking-list"],
@@ -99,4 +113,3 @@ export const useDeleteSingleBookingMutation = () => {
     },
   });
 };
-

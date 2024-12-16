@@ -1,4 +1,5 @@
 import Destinations from "@/app/(public)/Destinations";
+
 import ListRoom from "@/app/(public)/(ListRoom)/ListRoom";
 import { Suspense } from "react";
 import LoadingSkeleton from "@/app/(public)/LoadingSkeleton";

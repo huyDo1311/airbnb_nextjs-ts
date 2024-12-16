@@ -17,12 +17,14 @@ export default function FormatTime() {
     console.log(formatDate2, "huhuh");
     setFormatDate(formatDate);
     setFormatDate2(formatDate2);
-    resultSearch?.forEach((_: any, index: any) => {
-      if (index == resultSearch.length - 1) {
-        let total = index + 1;
-        setChoO(total);
-      }
-    });
+    setChoO(resultSearch.length);
+
+    // resultSearch?.forEach((_: any, index: any) => {
+    //   if (index == resultSearch.length - 1) {
+    //     let total = index + 1;
+    //     setChoO(total);
+    //   }
+    // });
   }, [resultSearch, dataCalendar]);
   return (
     <div className="text-md font-semibold">

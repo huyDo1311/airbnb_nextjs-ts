@@ -16,11 +16,40 @@ interface dataDestination {
   pickDataDestination: destination;
 }
 
+interface destinationProps {
+  id: number;
+  tenViTri: string;
+  tinhThanh: string;
+  quocGia: string;
+  hinhAnh: string;
+}
+
 export function PickDestination({ pickDataDestination }: dataDestination) {
+  let { dataStoreDestination2 } = useStore();
+  const [DataDestination, setDataDestination] = useState<
+    destinationProps[] | null
+  >(null);
+  useEffect(() => {
+    let vietNam = {
+      id: 0,
+      tenViTri: "vn",
+      tinhThanh: "Khắp Việt Nam",
+      quocGia: "Viet nam",
+      hinhAnh: "/assets/Destinations/Vietnam.jpg",
+    };
+    let clonePickDataDestination: any = [
+      vietNam,
+      ...pickDataDestination.content.data,
+    ];
+    setDataDestination(clonePickDataDestination);
+    console.log("clone ne", clonePickDataDestination);
+  }, []);
   const [history, setHistory] = useState<string[]>([]);
+  const [location, setLocation] = useState<string | null>(null);
   const { setNextStep, setDataStoreDestination, setDataStoreDestination2 } =
     useStore();
   let handleDestination = (id: number, tinhThanh: string): void => {
+    setLocation(tinhThanh);
     setDataStoreDestination(id);
     setDataStoreDestination2(tinhThanh);
   };
@@ -29,6 +58,7 @@ export function PickDestination({ pickDataDestination }: dataDestination) {
     let findIndex = cloneHistory.filter((itemNe: string) => itemNe == name);
     if (findIndex.length == 0) {
       cloneHistory.push(name);
+      setLocation(name);
     }
     setHistory(cloneHistory);
     setNextStep(1);
@@ -51,7 +81,7 @@ export function PickDestination({ pickDataDestination }: dataDestination) {
     });
   };
   let renderDestination = () => {
-    return pickDataDestination?.content.data.map((item) => {
+    return DataDestination?.map((item) => {
       return (
         <div
           key={item.id}
@@ -62,7 +92,7 @@ export function PickDestination({ pickDataDestination }: dataDestination) {
         >
           <div className="space-y-1">
             <div
-              className="w-28 h-28 rounded-md overflow-hidden"
+              className="w-28 h-28 rounded-md overflow-hidden border-2 dark:border-white border-black"
               onClick={() => {
                 handleDestination(item.id, item.tinhThanh);
               }}
@@ -94,11 +124,21 @@ export function PickDestination({ pickDataDestination }: dataDestination) {
               setNextStep(-1);
             }}
             variant="ghost"
-            className="w-[280px] h-full text-left flex justify-start focus:bg-red-400"
+            className="w-[280px] h-full text-left flex justify-start "
           >
             <div className="ps-3 ">
               <p className="font-semibold text-xs">Địa điểm</p>
-              <p className="text-gray-300 ">Tìm kiếm điểm đến</p>
+              <p
+                className={` ${
+                  dataStoreDestination2
+                    ? "font-semibold"
+                    : "font-light  text-gray-400"
+                }`}
+              >
+                {dataStoreDestination2
+                  ? dataStoreDestination2
+                  : "Tìm kiếm điểm đến"}
+              </p>
             </div>
           </Button>
         </PopoverTrigger>

@@ -1,6 +1,14 @@
 "use client";
 
-import Link from "next/link";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 import { useStore } from "@/store/store";
 import { Dialog, DialogTrigger } from "@radix-ui/react-dialog";
@@ -10,6 +18,9 @@ import React, { useEffect, useState } from "react";
 import { CardBody, CardContainer, CardItem } from "@/components/ui/3d-card";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
+import { HoverEffect } from "@/components/ui/card-hover-effect";
+import { toast } from "@/hooks/use-toast";
+import FormDialog from "@/app/(public)/FormDialog";
 export interface Location {
   star: number;
 }
@@ -54,12 +65,42 @@ export const vietnamLocations: Location[] = [
 
 export default function ListRoomCsr({ data, data2 }: any) {
   const router = useRouter();
-  let { setStar, setDataLocation } = useStore();
-  useEffect(() => {}, []);
+  let handleMoney = (money: number): string => {
+    let currency = money * 25;
+    let formattedCurrency =
+      new Intl.NumberFormat("vi-VN", {
+        minimumFractionDigits: 3,
+        maximumFractionDigits: 3,
+      }).format(currency) + " đ"; // Adding the "đ" symbol at the end
+    return formattedCurrency.replace(",", ".");
+  };
 
+  let sliceNumber = 12;
+  const [lastRoom, setLastRoom] = useState<number | null>(null);
+  let {
+    favorite,
+    setStar,
+    setDataLocation,
+    resetDataCalendar,
+    resetCustomers,
+    setFavorite,
+    getUserData,
+  } = useStore();
+  const [start, setStart] = useState(0);
+  const [end, setEnd] = useState(sliceNumber);
+  const [heart, setHeart] = useState<any>();
+  useEffect(() => {
+    data?.content.forEach((_: any, index: any) => {
+      if (index == data.content.length - 1) {
+        setLastRoom(index);
+      }
+    });
+  }, [data]);
   let handleDetail = (id: number, star: number, tinhThanh: string) => {
     setStar(star);
     setDataLocation(tinhThanh);
+    resetCustomers();
+    resetDataCalendar();
     router.push(`/room-detail/id?name=${id}`);
   };
 
@@ -71,18 +112,39 @@ export default function ListRoomCsr({ data, data2 }: any) {
   };
   const vietnameseDate = formatDateToVietnamese(data.dateTime);
 
+  const [Open, setOpen] = useState<boolean>(false);
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  let handleFavorite = (id: number) => {
+    if (getUserData.id === 0) {
+      setOpen(true);
+      toast({
+        title: "Bạn cần phải đăng nhập để thực hiện tính năng này",
+      });
+    } else {
+      setFavorite(id);
+      toast({
+        title: "Đã được thêm vào mục ưa thích",
+      });
+    }
+  };
+  useEffect(() => {
+    console.log({ favorite });
+    setHeart(favorite);
+  }, [setFavorite, favorite]);
   let renderRooms = () => {
-    console.log(data.dateTime, "data");
-    return data?.content?.map((item: any, index: any) => {
+    return data?.content?.slice(start, end).map((item: any, index: any) => {
       return (
         <div key={item.id} className="w-[375px] my-6">
           {item.hinhAnh &&
             data2.content.data.map((item2: any) => {
               return (
-                <div key={item2.id} className="m-5 group">
+                <div key={item2.id} className="m-5 group cursor-pointer z-20">
                   {item2.id == item.maViTri && (
                     <CardContainer className="inter-var h-40 w-full   ">
-                      <CardBody className="shadow-lg p-4 border  relative group/card  px-5 dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] rounded-xl    ">
+                      <CardBody className="group shadow-lg p-4 border  relative group/card  px-5 dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] rounded-xl    ">
                         <div
                           className=""
                           onClick={() => {
@@ -94,7 +156,7 @@ export default function ListRoomCsr({ data, data2 }: any) {
                           }}
                         >
                           <CardItem translateZ="50">
-                            <div className="w-full h-[250px]">
+                            <div className="w-[300px] h-[250px]">
                               <Image
                                 className="h-full w-full object-left object-cover rounded-xl"
                                 src={item.hinhAnh}
@@ -112,14 +174,14 @@ export default function ListRoomCsr({ data, data2 }: any) {
                                     {item2.tinhThanh} / Việt Nam
                                   </p>
                                 )}
-                                <CardItem translateZ={100}>
+                                <CardItem>
                                   <p className="text-sm font-light">
                                     {vietnameseDate}
                                   </p>
                                 </CardItem>
                                 <CardItem translateZ={100}>
                                   <p className="text-sm font-medium">
-                                    ${item.giaTien} / Đêm{" "}
+                                    {handleMoney(item.giaTien)} / Đêm{" "}
                                   </p>
                                 </CardItem>
                               </div>
@@ -135,29 +197,14 @@ export default function ListRoomCsr({ data, data2 }: any) {
                             </div>
                           </CardItem>
 
-                          <CardItem
-                            className="absolute top-2 right-2 z-50"
-                            translateZ={100}
-                          >
-                            <button>
-                              <i
-                                className="fa fa-heart   hover:scale-150 text-lg duration-300       text-gray-500
-                      bg-clip-text 
-                      [-webkit-text-stroke:1px_white]
-                      hover:text-red-500 
-                      hover:[-webkit-text-stroke:0px]
-                      transition-all"
-                              ></i>
-                            </button>
-                          </CardItem>
                           {vietnamLocations[index]?.star <= 4.5 &&
                             vietnamLocations[index]?.star > 4 && (
                               <CardItem
                                 className="absolute top-2 left-2"
                                 translateZ={100}
                               >
-                                <div className="bg-white rounded-xl ">
-                                  <p className="text-sm font-semibold p-1 px-2">
+                                <div className="dark:bg-white bg-white rounded-xl ">
+                                  <p className="text-sm font-semibold p-1 px-2 text-black">
                                     {" "}
                                     Được khách yêu thích
                                   </p>
@@ -178,6 +225,29 @@ export default function ListRoomCsr({ data, data2 }: any) {
                             </CardItem>
                           )}
                         </div>
+                        <CardItem
+                          className="absolute top-7 right-7 hover:text-2xl"
+                          translateZ={100}
+                          key={index}
+                        >
+                          <button
+                            key={index}
+                            onClick={() => {
+                              handleFavorite(item.id);
+                            }}
+                            className=" active:text-red-400 "
+                          >
+                            <i
+                              className={`fa fa-heart  scale-125 ${"group-hover:animate-beat"}
+                               duration-300 z-40    text-gray-500
+                  bg-clip-text 
+                  [-webkit-text-stroke:1px_white]
+                  group-hover:text-red-500 
+                  hover:[-webkit-text-stroke:0px]
+                  transition-all`}
+                            ></i>
+                          </button>
+                        </CardItem>
                       </CardBody>
                     </CardContainer>
                   )}
@@ -190,8 +260,41 @@ export default function ListRoomCsr({ data, data2 }: any) {
   };
 
   return (
-    <div>
+    <div className="">
+      <FormDialog Open={Open} handleClose={handleClose} />
       <div className="grid grid-cols-4 ">{renderRooms()}</div>
+
+      <Pagination>
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious
+              className={`${
+                start == 0
+                  ? "opacity-50 cursor-not-allowed pointer-events-none"
+                  : ""
+              }`}
+              onClick={() => {
+                setStart(start - sliceNumber), setEnd(end - sliceNumber);
+              }}
+              href="#"
+            />
+          </PaginationItem>
+
+          <PaginationItem>
+            <PaginationNext
+              className={`${
+                end >= (lastRoom ?? 0)
+                  ? "opacity-50 cursor-not-allowed pointer-events-none"
+                  : ""
+              }`}
+              onClick={() => {
+                setStart(start + sliceNumber), setEnd(end + sliceNumber);
+              }}
+              href="#"
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
     </div>
   );
 }

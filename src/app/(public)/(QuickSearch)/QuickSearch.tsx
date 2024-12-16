@@ -26,7 +26,6 @@ export default async function QuickSearch() {
   const data: destination = await http.get(
     "/api/vi-tri/phan-trang-tim-kiem?pageIndex=1&pageSize=8"
   );
-  console.log("data", data);
   return (
     <div
       className={`flex rounded-s-full rounded-e-full border shadow-md overflow-hidden   

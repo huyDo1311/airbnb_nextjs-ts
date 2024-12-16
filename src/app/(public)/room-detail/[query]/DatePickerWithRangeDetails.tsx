@@ -17,13 +17,33 @@ import { useStore } from "@/store/store";
 
 export function DatePickerWithRangeDetails({
   className,
-}: React.HTMLAttributes<HTMLDivElement>) {
+  setDateSubmit,
+  setDifferenceDays,
+}: React.HTMLAttributes<HTMLDivElement> | any) {
   const [date, setDate] = React.useState<DateRange | undefined>();
   let { NextStep, setDataCalendar, dataCalendar } = useStore();
-
   const [active, setActive] = React.useState(false);
   const [click, setClick] = React.useState<string | null>(null);
   const matcher: DateBefore = { before: new Date() };
+  let handleDate = (date: DateRange | undefined) => {
+    if (date?.from && date?.to) {
+      let checkin = new Date(date.from);
+      let checkout = new Date(date.to);
+      const differenceInTime = checkout.getTime() - checkin.getTime();
+      const differenceIndays = differenceInTime / (1000 * 3600 * 24);
+      setDifferenceDays(differenceIndays);
+    }
+
+    setDate(date);
+
+    setDateSubmit(date);
+  };
+  React.useEffect(() => {
+    if (dataCalendar?.from && dataCalendar?.to) {
+      setDate(dataCalendar);
+      setDateSubmit(dataCalendar);
+    }
+  }, [dataCalendar]);
   function useOutsideAlerter(ref: any, ref2: any) {
     React.useEffect(() => {
       function handleClickOutside(event: any) {
@@ -158,13 +178,14 @@ s        flex   items-center`,
         >
           <div className="flex justify-center">
             <Calendar
+              id="DatePicker"
               locale={vi}
               disabled={matcher}
               initialFocus
               mode="range"
               defaultMonth={date?.from}
               selected={date}
-              onSelect={setDate}
+              onSelect={handleDate}
               numberOfMonths={2}
               captionLayout="dropdown"
             />

@@ -1,17 +1,19 @@
 "use client";
+import { useStore } from "@/store/store";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
 export default function Logo() {
+  let { resetQuickSearch, setRemoveDataHeader } = useStore();
   let handleDeleteStorage = () => {
-    window.location.reload;
+    resetQuickSearch();
+    setRemoveDataHeader();
   };
   return (
-    <div>
+    <div onClick={handleDeleteStorage}>
       <Link href="/">
         <Image
-          onClick={handleDeleteStorage}
           alt="logo"
           src="/assets/airbnb-desktop.png"
           width={100}

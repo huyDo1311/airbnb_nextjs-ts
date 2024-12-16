@@ -7,6 +7,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { toast } from "@/hooks/use-toast";
 import { useStore } from "@/store/store";
 import { Minus, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -20,14 +21,24 @@ interface dataTypeCustomers {
 }
 
 export function CustomerPicker() {
-  let { setCustomers, setSearch, setDataApiListRoom, dataStoreDestination } =
-    useStore();
+  let {
+    dataCalendar,
+    setCustomers,
+    setSearch,
+    setDataApiListRoom,
+    dataStoreDestination,
+    dataStoreDestination2,
+    setHeaderTotal,
+    headerTotal,
+    removeDataHeader,
+    setRemoveDataHeader,
+  } = useStore();
   let router = useRouter();
-  const [quantityOfAdult, setQuantityOfAdult] = useState<number>(1);
+  const [quantityOfAdult, setQuantityOfAdult] = useState<number>(0);
   const [quantityOfChildren, setQuantityOfChildren] = useState<number>(0);
   const [quantityOfBabies, setQuantityOfBaby] = useState<number>(0);
   const [quantityOfPets, setQuantityOfPets] = useState<number>(0);
-
+  const [total, setTotal] = useState<number>(0);
   // useEffect(() => {
 
   // }, [quantityOfAdult, quantityOfChildren, setCustomers]);
@@ -41,6 +52,11 @@ export function CustomerPicker() {
         console.log(err);
       });
   }, [setDataApiListRoom]);
+
+  useEffect(() => {
+    setTotal(quantityOfAdult + quantityOfChildren);
+    setHeaderTotal(quantityOfAdult + quantityOfChildren);
+  }, [quantityOfAdult, quantityOfChildren]);
   let dataCustomers: dataTypeCustomers[] = [
     {
       Object: "Người lớn",
@@ -71,34 +87,53 @@ export function CustomerPicker() {
       HandleQuantityMinus: setQuantityOfPets,
     },
   ];
+  useEffect(() => {
+    setQuantityOfAdult(0);
+    setQuantityOfChildren(0);
+    setQuantityOfBaby(0);
+    setQuantityOfPets(0);
+  }, [setRemoveDataHeader, removeDataHeader]);
   let handleSearching = () => {
-    setCustomers({
-      adults: quantityOfAdult,
-      children: quantityOfChildren,
-      babies: quantityOfBabies,
-      pets: quantityOfPets,
-    });
-    if (dataStoreDestination == 1) {
-      router.push("/rooms/ho-chi-minh");
-    } else if (dataStoreDestination == 2) {
-      router.push("/rooms/can-tho");
-    } else if (dataStoreDestination == 3) {
-      router.push("/rooms/nha-trang");
-    } else if (dataStoreDestination == 4) {
-      router.push("/rooms/ha-noi");
-    } else if (dataStoreDestination == 5) {
-      router.push("/rooms/phu-quoc");
-    } else if (dataStoreDestination == 6) {
-      router.push("/rooms/da-nang");
-    } else if (dataStoreDestination == 7) {
-      router.push("/rooms/da-lat");
-    } else if (dataStoreDestination == 8) {
-      router.push("/rooms/phan-thiet");
+    if (!dataStoreDestination2) {
+      toast({
+        description: "Không được bỏ trống địa điểm",
+      });
+    } else if (!dataCalendar?.from || !dataCalendar?.to) {
+      toast({
+        description: "Không được bỏ trống ngày nhận và trả phòng",
+      });
+    } else if (headerTotal === 0) {
+      toast({
+        description: "Không được bỏ trống số lượng khách",
+      });
     } else {
-      router.push("/rooms");
+      setCustomers({
+        adults: quantityOfAdult,
+        children: quantityOfChildren,
+        babies: quantityOfBabies,
+        pets: quantityOfPets,
+      });
+      if (dataStoreDestination == 1) {
+        router.push("/rooms/ho-chi-minh");
+      } else if (dataStoreDestination == 2) {
+        router.push("/rooms/can-tho");
+      } else if (dataStoreDestination == 3) {
+        router.push("/rooms/nha-trang");
+      } else if (dataStoreDestination == 4) {
+        router.push("/rooms/ha-noi");
+      } else if (dataStoreDestination == 5) {
+        router.push("/rooms/phu-quoc");
+      } else if (dataStoreDestination == 6) {
+        router.push("/rooms/da-nang");
+      } else if (dataStoreDestination == 7) {
+        router.push("/rooms/da-lat");
+      } else if (dataStoreDestination == 8) {
+        router.push("/rooms/phan-thiet");
+      } else {
+        router.push("/rooms");
+      }
+      setSearch();
     }
-
-    setSearch();
   };
   let renderCustomer = () => {
     return dataCustomers.map((item, index) => {
@@ -121,19 +156,35 @@ export function CustomerPicker() {
           </div>
           <div className="flex space-x-2 items-center">
             <div>
-              <Button
-                onClick={() => {
-                  item.HandleQuantityMinus((prev: any) =>
-                    prev == 0 ? 0 : prev - 1
-                  );
-                }}
-                variant={`${item.Quantity == 0 ? "secondary" : "ghost"}`}
-                className={`rounded-full border-2 h-10 w-10 ${
-                  item.Quantity == 0 ? "cursor-not-allowed opacity-30" : ""
-                }`}
-              >
-                <Minus />
-              </Button>
+              {item.Object == "Người lớn" ? (
+                <Button
+                  onClick={() => {
+                    item.HandleQuantityMinus((prev: any) =>
+                      prev == 1 ? 1 : prev - 1
+                    );
+                  }}
+                  variant={`${item.Quantity == 0 ? "secondary" : "ghost"}`}
+                  className={`rounded-full border-2 h-10 w-10 ${
+                    item.Quantity == 1 ? "cursor-not-allowed opacity-30" : ""
+                  }`}
+                >
+                  <Minus />
+                </Button>
+              ) : (
+                <Button
+                  onClick={() => {
+                    item.HandleQuantityMinus((prev: any) =>
+                      prev == 0 ? 0 : prev - 1
+                    );
+                  }}
+                  variant={`${item.Quantity == 0 ? "secondary" : "ghost"}`}
+                  className={`rounded-full border-2 h-10 w-10 ${
+                    item.Quantity == 0 ? "cursor-not-allowed opacity-30" : ""
+                  }`}
+                >
+                  <Minus />
+                </Button>
+              )}
             </div>
             <div className="w-10">
               <p className="text-center text-md">
@@ -169,12 +220,16 @@ export function CustomerPicker() {
             className="w-[280px] h-full flex justify-start text-left"
           >
             <div>
-              <p className="font-semibold text-xs">Khách</p>
-              <p className="text-gray-300">Thêm khách</p>
+              <p className="font-semibold  text-xs">Khách</p>
+              {headerTotal > 0 ? (
+                <p className=" ">{headerTotal} khách</p>
+              ) : (
+                <p className="text-gray-400 font-light">Thêm khách</p>
+              )}
             </div>
           </Button>
         </PopoverTrigger>
-        <div className="absolute top-0 right-8 h-full">
+        <div className="absolute top-0 right-8 h-full cursor-pointer">
           <div className="h-full  flex items-center w-full justify-center ">
             <div
               className="p-3  bg-red-500  rounded-3xl h-3/4 w-full flex space-x-3 px-4 cursor-pointer"
