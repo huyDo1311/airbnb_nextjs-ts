@@ -169,9 +169,11 @@ export const ModalContent = ({
 export const ModalFooter = ({
   className,
   handlesubmit,
+  handleSuccess,
 }: {
   className?: string;
   handlesubmit: () => Promise<void>;
+  handleSuccess: () => void;
 }) => {
   const { setOpen } = useModal();
 
@@ -180,7 +182,7 @@ export const ModalFooter = ({
       <button
         className="bg-black text-white dark:bg-white dark:text-black text-sm px-2 py-1 rounded-md border border-black w-28"
         onClick={() => {
-          handlesubmit(), setOpen(false);
+          handlesubmit(), setOpen(false), handleSuccess();
         }}
       >
         Đặt ngay

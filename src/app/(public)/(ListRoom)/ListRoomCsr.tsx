@@ -88,7 +88,7 @@ export default function ListRoomCsr({ data, data2 }: any) {
   } = useStore();
   const [start, setStart] = useState(0);
   const [end, setEnd] = useState(sliceNumber);
-  const [heart, setHeart] = useState<any>();
+  const [enable, setEnable] = useState(false);
   useEffect(() => {
     data?.content.forEach((_: any, index: any) => {
       if (index == data.content.length - 1) {
@@ -124,16 +124,21 @@ export default function ListRoomCsr({ data, data2 }: any) {
         title: "Bạn cần phải đăng nhập để thực hiện tính năng này",
       });
     } else {
-      setFavorite(id);
-      toast({
-        title: "Đã được thêm vào mục ưa thích",
-      });
+      if (!enable) {
+        setFavorite(id);
+        setEnable(true);
+        toast({
+          title: "Đã được thêm vào mục ưa thích",
+        });
+        console.log(enable);
+      } else {
+        setEnable(false);
+
+        console.log(enable);
+      }
     }
   };
-  useEffect(() => {
-    console.log({ favorite });
-    setHeart(favorite);
-  }, [setFavorite, favorite]);
+
   let renderRooms = () => {
     return data?.content?.slice(start, end).map((item: any, index: any) => {
       return (
@@ -238,13 +243,11 @@ export default function ListRoomCsr({ data, data2 }: any) {
                             className=" active:text-red-400 "
                           >
                             <i
-                              className={`fa fa-heart  scale-125 ${"group-hover:animate-beat"}
-                               duration-300 z-40    text-gray-500
-                  bg-clip-text 
-                  [-webkit-text-stroke:1px_white]
-                  group-hover:text-red-500 
-                  hover:[-webkit-text-stroke:0px]
-                  transition-all`}
+                              className={`fa fa-heart scale-125 ${
+                                favorite?.includes(item.id)
+                                  ? "text-red-500"
+                                  : "text-gray-500"
+                              } group-hover:animate-beat duration-300 z-40 bg-clip-text [-webkit-text-stroke:1px_white] group-hover:text-red-500 hover:[-webkit-text-stroke:0px] transition-all`}
                             ></i>
                           </button>
                         </CardItem>

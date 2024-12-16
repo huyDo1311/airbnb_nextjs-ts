@@ -33,31 +33,28 @@ export default function MenuDropDown() {
     }
   };
   useEffect(() => {
-    if (getUserData) {
-      userApiRequest
-        .NextClientToServerGetUser(getUserData.id)
-        .then((res: any) => {
-          setAvatarUser(res.content.avatar);
-        })
-        .catch((err: any) => console.log(err));
-    }
-  }, [fetchDataStore]);
+    setAvatarUser(getUserData.avatar);
+  }, [getUserData, fetchDataStore]);
   return (
     <div>
       <Popover>
         <PopoverTrigger asChild>
-          <Button variant="outline" className="rounded-3xl  px-12 py-6 w-20">
-            <div className=" w-8 h-8 flex justify-center items-center space-x-4">
-              <Menu size={50} />
-              <Image
-                src={
-                  avatarUser ? avatarUser : "/assets/Dashboard/anonymous.jpg"
-                }
-                alt="avt"
-                width={100}
-                height={100}
-                className="rounded-full w-10 object-cover h-8"
-              />
+          <Button variant="outline" className="rounded-3xl w-[100px] py-6 ">
+            <div className=" w-full flex justify-between items-center ">
+              <div className="">
+                <Menu className="w-10" size={50} />
+              </div>
+              <div className="w-8 h-8">
+                <Image
+                  src={
+                    avatarUser ? avatarUser : "/assets/Dashboard/anonymous.jpg"
+                  }
+                  alt="avt"
+                  width={100}
+                  height={100}
+                  className="rounded-full w-full object-cover h-full"
+                />
+              </div>
             </div>
           </Button>
         </PopoverTrigger>

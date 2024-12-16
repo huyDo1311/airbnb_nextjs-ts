@@ -41,10 +41,16 @@ import {
   WashingMachine,
   Wifi,
 } from "lucide-react";
+import dynamic from "next/dynamic";
+const LottieAnimationPurchase = dynamic(
+  () => import("@/components/animatePurchase"),
+  {
+    ssr: false,
+  }
+);
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { json } from "stream/consumers";
 
 export default function RoomDetails() {
   const [commentsOfUsers, setCommentsOfUsers] = useState<
@@ -94,10 +100,35 @@ export default function RoomDetails() {
     hinhAnh: "",
   });
   const [totalMoney, setTotalMoney] = useState<string | undefined>();
+  const [isSuccess, setIsSuccess] = useState(false);
+  let handleSuccess = () => {
+    setIsSuccess(true);
+    setTimeout(() => {
+      setIsSuccess(false);
+    }, 2000);
+  };
+
+  useEffect(() => {
+    if (isSuccess) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto"; // Re-enable scrolling
+    }
+
+    // Cleanup the effect when the component unmounts or modal state changes
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [isSuccess]);
 
   const formatStar = (star: number) => {
     return star.toFixed(1).replace(".", ",");
   };
+  let handleMoneyResult = (money: number): number => {
+    let result = handleMoney(money) * differenceDays;
+    return result;
+  };
+
   useEffect(() => {
     let filterDetail: any = dataApiListRoom.filter(
       (item: any) => item.id == query
@@ -134,11 +165,6 @@ export default function RoomDetails() {
         maximumFractionDigits: 3,
       }).format(money) + " đ"; // Adding the "đ" symbol at the end
     return formattedCurrency.replace(",", ".");
-  };
-
-  let handleMoneyResult = (money: number): number => {
-    let result = handleMoney(money) * differenceDays;
-    return result;
   };
 
   let renderRoomDetails = () => {
@@ -511,7 +537,7 @@ export default function RoomDetails() {
             </div>
             <div id="card" className="w-1/2 flex justify-center">
               <div className="relative">
-                <Card className="w-[350px] shadow-xl sticky top-28">
+                <Card className="w-[400px] p-3 shadow-xl sticky top-28">
                   <CardHeader>
                     <CardTitle className="text-xl">
                       {formatMoney(handleMoney(dataDetail?.giaTien ?? 0))}{" "}
@@ -521,6 +547,7 @@ export default function RoomDetails() {
                   </CardHeader>
                   <CardContent>
                     <FormBooking
+                      handleSuccess={handleSuccess}
                       dataDetail={dataDetail}
                       query={query}
                       setDifferenceDays={setDifferenceDays}
@@ -567,8 +594,17 @@ export default function RoomDetails() {
     }
   };
   return (
-    <div className="flex justify-center flex-col items-center w-full">
-      {renderRoomDetails()}
+    <div>
+      <div className="flex justify-center flex-col items-center w-full">
+        {renderRoomDetails()}
+      </div>
+      {isSuccess && (
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-4xl  w-full h-full bg-red-400 z-50  flex justify-center items-center ">
+          <div className="w-96 h-96">
+            <LottieAnimationPurchase />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

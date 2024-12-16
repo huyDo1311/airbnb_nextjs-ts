@@ -12,7 +12,7 @@ export default function FormUploadImage({ setRender, render }: any) {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const imageFileNe = useUploadMediaMutation();
-  const { setFetchDataStore } = useStore();
+  const { setFetchDataStore, setGetUserData } = useStore();
 
   const handleUpAvatar = async () => {
     if (imageFile) {

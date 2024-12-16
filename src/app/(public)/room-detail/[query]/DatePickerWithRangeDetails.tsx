@@ -43,7 +43,7 @@ export function DatePickerWithRangeDetails({
       setDate(dataCalendar);
       setDateSubmit(dataCalendar);
     }
-  }, [dataCalendar]);
+  }, [dataCalendar, setDateSubmit]);
   function useOutsideAlerter(ref: any, ref2: any) {
     React.useEffect(() => {
       function handleClickOutside(event: any) {
@@ -87,7 +87,7 @@ s        flex   items-center`,
     >
       <Popover open={active}>
         <PopoverTrigger asChild>
-          <div className="w-[300px] h-full flex group  " ref={wrapperRef}>
+          <div className="w-full h-full flex group  " ref={wrapperRef}>
             <div className={`w-1/2 border-r    h-full`}>
               <Button
                 onClick={() => {

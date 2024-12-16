@@ -1,5 +1,4 @@
 "use client";
-import userApiRequest from "@/apiRequests/user";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
@@ -22,6 +21,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import SigninForm from "@/app/(public)/auth/SigninForm";
 import RentedRooms from "@/app/(public)/Dashboard/RentedRooms";
 import FavoriteRooms from "@/app/(public)/Dashboard/FavoriteRooms";
+import { useSigninMutation } from "@/queries/useAuth";
+import userApiRequest from "@/apiRequests/user";
 
 interface UserProfile {
   avatar: string;
@@ -36,7 +37,8 @@ interface UserProfile {
 }
 
 export default function DashboardUser() {
-  let { getUserData } = useStore();
+  let { getUserData, setGetUserData } = useStore();
+
   const [avatarUser, setAvatarUser] = useState<string | null>(null);
   const [render, setRender] = useState(false);
   const [dataUser, setDataUser] = useState<UserProfile | null>(null);
@@ -44,8 +46,11 @@ export default function DashboardUser() {
     ? format(dataUser?.birthday, "dd/MM/yyyy")
     : "Date not available";
   useEffect(() => {
-    setDataUser(getUserData);
-    setAvatarUser(getUserData.avatar);
+    userApiRequest.NextClientToServerGetUser(getUserData.id).then((res) => {
+      setDataUser(res.content);
+      setAvatarUser(res.content.avatar);
+      setGetUserData(res.content);
+    });
   }, [render, getUserData]);
 
   return (

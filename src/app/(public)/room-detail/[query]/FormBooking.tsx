@@ -48,6 +48,7 @@ interface DataDetail {
   setDifferenceDays: React.Dispatch<React.SetStateAction<number>>;
   countComments: number | null;
   totalMoney: string | undefined;
+  handleSuccess: () => void;
 }
 
 export default function FormBooking({
@@ -56,6 +57,7 @@ export default function FormBooking({
   setDifferenceDays,
   countComments,
   totalMoney,
+  handleSuccess,
 }: DataDetail) {
   let { star, getUserData } = useStore();
   const handleClose = () => {
@@ -234,6 +236,7 @@ export default function FormBooking({
               </div>
             </ModalContent>
             <ModalFooter
+              handleSuccess={handleSuccess}
               handlesubmit={handlesubmit}
               className="gap-4"
             ></ModalFooter>

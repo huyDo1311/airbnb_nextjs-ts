@@ -59,7 +59,7 @@ const config: Config = {
           "0%, 100%": {
             transform: "scale(1)", // Normal size
           },
-          "50%": {
+          "70%": {
             transform: "scale(1.2)", // Grow to 120% of original size
           },
         },

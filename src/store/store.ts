@@ -42,7 +42,7 @@ interface AppState {
   headerTotal: any;
   fetchDataStore: boolean;
   removeDataHeader: boolean;
-  favorite: number[] | null;
+  favorite: number[];
   setStar: (newStar: any) => void;
   setDataLocation: (newLocation: any) => void;
   setSearch: () => void;
@@ -112,12 +112,10 @@ export const useStore = create<AppState>()(
             );
             if (filterFavorite.length === 0) {
               cloneFavorite.push(newFavorite);
-              console.log("yes", cloneFavorite);
               return {
                 favorite: cloneFavorite,
               };
             }
-            console.log("no");
 
             return { favorite: cloneFavorite };
           }),
