@@ -6,7 +6,7 @@ import animatePurchase from "./animatePurchase.json";
 const LottieAnimation = () => {
   return (
     <div style={{ width: "100%", height: "400px" }}>
-      <Lottie animationData={animatePurchase} loop={true} />
+      <Lottie animationData={animatePurchase} />
     </div>
   );
 };
