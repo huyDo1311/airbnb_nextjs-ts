@@ -50,10 +50,10 @@ COPY --from=builder /app/node_modules ./node_modules
 
 # Thiết lập biến môi trường
 ENV NODE_ENV=production
-ENV PORT=3000
+ENV PORT=8080
 
-# Mở cổng 3000
-EXPOSE 3000
+# Mở cổng 
+EXPOSE 8080
 
 # Lệnh mặc định để chạy ứng dụng
 CMD ["npm", "start"]
