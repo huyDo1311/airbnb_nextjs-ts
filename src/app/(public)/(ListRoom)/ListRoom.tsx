@@ -8,6 +8,7 @@ import http from "@/lib/http";
 export interface typeContent {
   id: number | null;
   tenPhong?: string;
+  loving?: boolean;
   khach?: number;
   phongNgu?: number;
   giuong?: number;

@@ -594,12 +594,12 @@ export default function RoomDetails() {
     }
   };
   return (
-    <div>
+    <div className="">
       <div className="flex justify-center flex-col items-center w-full">
         {renderRoomDetails()}
       </div>
       {isSuccess && (
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-4xl  w-full h-full bg-red-400 z-50  flex justify-center items-center ">
+        <div className="fixed top-0 left-0  text-4xl  w-full h-full bg-red-400 z-50  flex justify-center items-center ">
           <div className="w-96 h-96">
             <LottieAnimationPurchase />
           </div>

@@ -64,6 +64,7 @@ interface AppState {
   resetQuickSearch: () => void;
   clearStorageUser: () => void;
   setFavorite: (newFavorite: number) => any;
+  setRemoveFavorite: (newRemoveFavorite: number) => any;
 }
 
 export const useStore = create<AppState>()(
@@ -103,6 +104,17 @@ export const useStore = create<AppState>()(
         dataCalendar: {
           from: undefined,
           to: undefined,
+        },
+        setRemoveFavorite: (newRemoveFavorite) => {
+          set((state) => {
+            let cloneFavorite: number[] = [...state.favorite];
+            let filterFavorite = cloneFavorite.filter(
+              (item) => item != newRemoveFavorite
+            );
+            return {
+              favorite: filterFavorite,
+            };
+          });
         },
         setFavorite: (newFavorite: number): any =>
           set((state): any => {

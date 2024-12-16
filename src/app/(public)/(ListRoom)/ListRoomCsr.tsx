@@ -21,6 +21,7 @@ import { vi } from "date-fns/locale";
 import { HoverEffect } from "@/components/ui/card-hover-effect";
 import { toast } from "@/hooks/use-toast";
 import FormDialog from "@/app/(public)/FormDialog";
+import { typeContent } from "@/app/(public)/(ListRoom)/ListRoom";
 export interface Location {
   star: number;
 }
@@ -77,6 +78,7 @@ export default function ListRoomCsr({ data, data2 }: any) {
 
   let sliceNumber = 12;
   const [lastRoom, setLastRoom] = useState<number | null>(null);
+  const [newData, setNewData] = useState<typeContent[] | null>(null);
   let {
     favorite,
     setStar,
@@ -85,16 +87,20 @@ export default function ListRoomCsr({ data, data2 }: any) {
     resetCustomers,
     setFavorite,
     getUserData,
+    setRemoveFavorite,
   } = useStore();
   const [start, setStart] = useState(0);
   const [end, setEnd] = useState(sliceNumber);
   const [enable, setEnable] = useState(false);
   useEffect(() => {
-    data?.content.forEach((_: any, index: any) => {
-      if (index == data.content.length - 1) {
-        setLastRoom(index);
-      }
+    setLastRoom(data?.content.length - 1);
+    let cloneData = [...data.content];
+    let addLoving = cloneData.map((item: any) => {
+      return { ...item, loving: false };
     });
+    setNewData(addLoving);
+
+    setNewData;
   }, [data]);
   let handleDetail = (id: number, star: number, tinhThanh: string) => {
     setStar(star);
@@ -124,23 +130,29 @@ export default function ListRoomCsr({ data, data2 }: any) {
         title: "Bạn cần phải đăng nhập để thực hiện tính năng này",
       });
     } else {
-      if (!enable) {
-        setFavorite(id);
+      let cloneData = newData ? [...newData] : [];
+      let findIndex = cloneData.findIndex((item: any) => item.id == id);
+      let find = cloneData.find((item2: any) => item2.loving == true);
+      if (find?.loving == cloneData[findIndex].loving) {
+        setEnable(false);
+        cloneData[findIndex].loving = false;
+        setRemoveFavorite(id);
+        toast({
+          title: "Đã xóa khỏi mục ưa thích",
+        });
+      } else {
         setEnable(true);
+        cloneData[findIndex].loving = true;
+        setFavorite(id);
         toast({
           title: "Đã được thêm vào mục ưa thích",
         });
-        console.log(enable);
-      } else {
-        setEnable(false);
-
-        console.log(enable);
       }
     }
   };
 
   let renderRooms = () => {
-    return data?.content?.slice(start, end).map((item: any, index: any) => {
+    return newData?.slice(start, end).map((item: any, index: any) => {
       return (
         <div key={item.id} className="w-[375px] my-6">
           {item.hinhAnh &&
@@ -244,9 +256,7 @@ export default function ListRoomCsr({ data, data2 }: any) {
                           >
                             <i
                               className={`fa fa-heart scale-125 ${
-                                favorite?.includes(item.id)
-                                  ? "text-red-500"
-                                  : "text-gray-500"
+                                item.loving ? "text-red-500" : "text-gray-500"
                               } group-hover:animate-beat duration-300 z-40 bg-clip-text [-webkit-text-stroke:1px_white] group-hover:text-red-500 hover:[-webkit-text-stroke:0px] transition-all`}
                             ></i>
                           </button>
@@ -261,7 +271,7 @@ export default function ListRoomCsr({ data, data2 }: any) {
       );
     });
   };
-
+  // 5 bong den l
   return (
     <div className="">
       <FormDialog Open={Open} handleClose={handleClose} />
