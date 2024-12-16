@@ -20,6 +20,7 @@ import Image from "next/image";
 import { Eye, EyeClosed } from "lucide-react";
 import { useState } from "react";
 import { useStore } from "@/store/store";
+import { useRouter } from "next/navigation";
 
 interface SigninFormProps {
   handleClose: () => void; // Specify that handleClose is a function that takes no arguments and returns void
@@ -31,6 +32,7 @@ export default function SigninForm({
   setFetchData,
 }: SigninFormProps) {
   const { setFetchDataStore, setGetUserData } = useStore();
+  let router = useRouter();
   const signinMutation = useSigninMutation();
   const [show, setShow] = useState(true);
   const form = useForm<SigninBodyType>({
@@ -45,7 +47,7 @@ export default function SigninForm({
     try {
       const result = await signinMutation.mutateAsync(data);
       const user = result.content.user;
-      // setUserToLocalStorage(user);
+      setUserToLocalStorage(user);
       setFetchDataStore();
       handleClose();
       setGetUserData(user);

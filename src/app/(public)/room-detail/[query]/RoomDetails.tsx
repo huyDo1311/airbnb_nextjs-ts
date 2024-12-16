@@ -6,6 +6,7 @@ import { CustomerPickerDetails } from "@/app/(public)/room-detail/[query]/Custom
 import { DatePickerWithRangeDetails } from "@/app/(public)/room-detail/[query]/DatePickerWithRangeDetails";
 import FormBooking from "@/app/(public)/room-detail/[query]/FormBooking";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -26,6 +27,9 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { commentsSchema } from "@/schemaValidations/comments.schema";
 import { useStore } from "@/store/store";
+import { format, isValid } from "date-fns";
+import { vi } from "date-fns/locale";
+
 import {
   AirVent,
   Award,
@@ -41,6 +45,7 @@ import {
   WashingMachine,
   Wifi,
 } from "lucide-react";
+import moment from "moment";
 import dynamic from "next/dynamic";
 const LottieAnimationPurchase = dynamic(
   () => import("@/components/animatePurchase"),
@@ -70,9 +75,8 @@ export default function RoomDetails() {
         .then((res: any) => {
           let totalCount = 0;
 
-          res?.content.forEach((_: any, index: any) => (totalCount = index));
           setCommentsOfUsers(res?.content);
-          setCountComments(totalCount + 1);
+          setCountComments(res.content.length);
         })
         .catch((err) => console.log(err));
     }
@@ -101,11 +105,20 @@ export default function RoomDetails() {
   });
   const [totalMoney, setTotalMoney] = useState<string | undefined>();
   const [isSuccess, setIsSuccess] = useState(false);
+  const [end, setEnd] = useState<number>(4);
   let handleSuccess = () => {
     setIsSuccess(true);
     setTimeout(() => {
       setIsSuccess(false);
     }, 2000);
+  };
+
+  let handleDisplayComment = () => {
+    if (end === 4) {
+      setEnd(countComments);
+    } else {
+      setEnd(4);
+    }
   };
 
   useEffect(() => {
@@ -127,6 +140,19 @@ export default function RoomDetails() {
   let handleMoneyResult = (money: number): number => {
     let result = handleMoney(money) * differenceDays;
     return result;
+  };
+
+  let formatVietNamDate = (date: any) => {
+    // console.log({ date });
+    let formatDateString = new Date(date);
+    if (isValid(formatDateString)) {
+      let VietnamDate = format(formatDateString, "eeee, dd MMMM yyyy", {
+        locale: vi,
+      });
+      return VietnamDate;
+    } else {
+      return <p> Ngày không hợp lệ</p>;
+    }
   };
 
   useEffect(() => {
@@ -167,6 +193,97 @@ export default function RoomDetails() {
     return formattedCurrency.replace(",", ".");
   };
 
+  let selectStar = (): any => {
+    let displayStars = Array.from({ length: 5 }, (_, index) => {
+      return (
+        <svg
+          key={index}
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 32 32"
+          aria-hidden="true"
+          className="w-5 h-5 fill-gray-400 hover:fill-yellow-500"
+          role="presentation"
+          focusable="false"
+          style={{
+            display: "block",
+            height: 20,
+            width: 20,
+            fill: "#E0E0E0", // Gold for filled, light gray for empty
+          }}
+        >
+          <path
+            fillRule="evenodd"
+            d="m15.1 1.58-4.13 8.88-9.86 1.27a1 1 0 0 0-.54 1.74l7.3 6.57-1.97 9.85a1 1 0 0 0 1.48 1.06l8.62-5 8.63 5a1 1 0 0 0 1.48-1.06l-1.97-9.85 7.3-6.57a1 1 0 0 0-.55-1.73l-9.86-1.28-4.12-8.88a1 1 0 0 0-1.82 0z"
+          />
+        </svg>
+      );
+    });
+    return displayStars;
+  };
+
+  let renderStars = (stars: number) => {
+    let resultStar = Array.from({ length: 5 }, (_, index) => (
+      <svg
+        key={index}
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 32 32"
+        aria-hidden="true"
+        role="presentation"
+        focusable="false"
+        style={{
+          display: "block",
+          height: 12,
+          width: 12,
+          fill: index < stars ? "#FFD700" : "#E0E0E0", // Gold for filled, light gray for empty
+        }}
+      >
+        <path
+          fillRule="evenodd"
+          d="m15.1 1.58-4.13 8.88-9.86 1.27a1 1 0 0 0-.54 1.74l7.3 6.57-1.97 9.85a1 1 0 0 0 1.48 1.06l8.62-5 8.63 5a1 1 0 0 0 1.48-1.06l-1.97-9.85 7.3-6.57a1 1 0 0 0-.55-1.73l-9.86-1.28-4.12-8.88a1 1 0 0 0-1.82 0z"
+        />
+      </svg>
+    ));
+    return resultStar;
+  };
+  const renderComments = () => {
+    return commentsOfUsers?.slice(0, end).map((item: commentsSchema) => (
+      <div
+        key={item.id}
+        className="p-4  flex justify-center flex-col items-center"
+      >
+        <div className=" w-2/3">
+          <div className="flex items-center space-x-2">
+            <Avatar>
+              <AvatarImage
+                src={item.avatar ? item.avatar : "/assets/anonymous.png"}
+                className="w-48 rounded-full"
+                alt="user"
+              />
+              <AvatarFallback>User</AvatarFallback>
+            </Avatar>
+            <div>
+              <p className="text-md font-semibold">{item.tenNguoiBinhLuan}</p>
+              <p className="text-sm text-gray-500">3 năm hoạt động</p>
+            </div>
+          </div>
+
+          <div className="mt-2 space-y-1">
+            <div className="flex items-center space-x-2">
+              <span className="text-lg flex space-x-1">
+                {renderStars(item.saoBinhLuan)}
+              </span>
+              <span className="text-md font-semibold">
+                {formatVietNamDate(item.ngayBinhLuan)}
+              </span>
+            </div>
+            <p className="text-xl h-14 overflow-y-hidden  font-medium capitalize">
+              {item.noiDung ? item.noiDung : "Tốt"}
+            </p>
+          </div>
+        </div>
+      </div>
+    ));
+  };
   let renderRoomDetails = () => {
     if (dataDetail && star) {
       return (
@@ -598,6 +715,60 @@ export default function RoomDetails() {
       <div className="flex justify-center flex-col items-center w-full">
         {renderRoomDetails()}
       </div>
+      <div className=" mt-10 ">
+        <hr />
+        <div className="my-10">
+          <div className="flex justify-center i">
+            <Image
+              src="/assets/barley.png"
+              width={100}
+              height={100}
+              alt="barley"
+            />
+            <p className="text-7xl font-bold pt-5">{formatStar(star)}</p>
+            <Image
+              className="transform scale-x-[-1]"
+              src="/assets/barley.png"
+              width={100}
+              height={100}
+              alt="barley"
+            />
+          </div>
+          <div className="flex justify-center flex-col items-center">
+            <p className="text-3xl text-center">Được khách yêu thích</p>
+            <div className="">
+              <p className="text-center w-80">
+                <span className="text-gray-600">
+                  Trong số các nhà/phòng cho thuê đủ điều kiện dựa trên điểm xếp
+                  hạng, lượt đánh giá và độ tin cậy, nhà này nằm trong nhóm
+                </span>{" "}
+                10% chỗ ở hàng đầu
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <hr />
+
+        <div className="flex justify-center flex-col items-center my-10">
+          <div className="grid grid-cols-2 w-3/4 ">{renderComments()}</div>
+        </div>
+        <div className=" w-1/2 flex justify-center">
+          {countComments >= 4 && (
+            <Button
+              variant="outline"
+              className=""
+              onClick={handleDisplayComment}
+            >
+              {end === 4
+                ? `Hiện thị tất cả ${countComments} đánh giá`
+                : `Thu gọn đánh giá`}
+            </Button>
+          )}
+        </div>
+      </div>
+      <div className="flex space-x-1">{selectStar()}</div>
+
       {isSuccess && (
         <div className="fixed top-0 left-0  text-4xl  w-full h-full bg-red-400 z-50  flex justify-center items-center ">
           <div className="w-96 h-96">
