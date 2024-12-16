@@ -78,7 +78,6 @@ export default function ListRoomCsr({ data, data2 }: any) {
 
   let sliceNumber = 12;
   const [lastRoom, setLastRoom] = useState<number | null>(null);
-  const [newData, setNewData] = useState<typeContent[] | null>(null);
   let {
     favorite,
     setStar,
@@ -88,20 +87,31 @@ export default function ListRoomCsr({ data, data2 }: any) {
     setFavorite,
     getUserData,
     setRemoveFavorite,
+    setDataApiListRoom,
+    dataApiListRoom,
   } = useStore();
   const [start, setStart] = useState(0);
   const [end, setEnd] = useState(sliceNumber);
   const [enable, setEnable] = useState(false);
-  useEffect(() => {
-    setLastRoom(data?.content.length - 1);
-    let cloneData = [...data.content];
-    let addLoving = cloneData.map((item: any) => {
-      return { ...item, loving: false };
-    });
-    setNewData(addLoving);
 
-    setNewData;
-  }, [data]);
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.localStorage) {
+      let parseListRoomData = localStorage.getItem("app-state")
+        ? JSON.parse(localStorage.getItem("app-state")!)
+        : null;
+      console.log("here", parseListRoomData.state.dataApiListRoom);
+      setLastRoom(data?.content.length - 1);
+      let cloneData = [...data.content];
+      let addLoving = cloneData.map((item: any, index: number) => {
+        return {
+          ...item,
+          loving:
+            parseListRoomData.state.dataApiListRoom[index]?.loving ?? false,
+        };
+      });
+      setDataApiListRoom(addLoving);
+    }
+  }, []);
   let handleDetail = (id: number, star: number, tinhThanh: string) => {
     setStar(star);
     setDataLocation(tinhThanh);
@@ -130,19 +140,21 @@ export default function ListRoomCsr({ data, data2 }: any) {
         title: "Bạn cần phải đăng nhập để thực hiện tính năng này",
       });
     } else {
-      let cloneData = newData ? [...newData] : [];
-      let findIndex = cloneData.findIndex((item: any) => item.id == id);
-      let find = cloneData.find((item2: any) => item2.loving == true);
-      if (find?.loving == cloneData[findIndex].loving) {
+      let findIndex = dataApiListRoom.findIndex((item: any) => item.id == id);
+      let find = dataApiListRoom.find((item2: any) => item2.loving == true);
+      if (find?.loving == dataApiListRoom[findIndex].loving) {
         setEnable(false);
-        cloneData[findIndex].loving = false;
+        dataApiListRoom[findIndex].loving = false;
         setRemoveFavorite(id);
+        setDataApiListRoom(dataApiListRoom);
         toast({
           title: "Đã xóa khỏi mục ưa thích",
         });
       } else {
         setEnable(true);
-        cloneData[findIndex].loving = true;
+        dataApiListRoom[findIndex].loving = true;
+        setDataApiListRoom(dataApiListRoom);
+
         setFavorite(id);
         toast({
           title: "Đã được thêm vào mục ưa thích",
@@ -152,7 +164,7 @@ export default function ListRoomCsr({ data, data2 }: any) {
   };
 
   let renderRooms = () => {
-    return newData?.slice(start, end).map((item: any, index: any) => {
+    return dataApiListRoom?.slice(start, end).map((item: any, index: any) => {
       return (
         <div key={item.id} className="w-[375px] my-6">
           {item.hinhAnh &&
@@ -252,12 +264,12 @@ export default function ListRoomCsr({ data, data2 }: any) {
                             onClick={() => {
                               handleFavorite(item.id);
                             }}
-                            className=" active:text-red-400 "
+                            className=" active:text-red-400 active:scale-125"
                           >
                             <i
                               className={`fa fa-heart scale-125 ${
                                 item.loving ? "text-red-500" : "text-gray-500"
-                              } group-hover:animate-beat duration-300 z-40 bg-clip-text [-webkit-text-stroke:1px_white] group-hover:text-red-500 hover:[-webkit-text-stroke:0px] transition-all`}
+                              }  group-hover:animate-beat duration-300 z-40 bg-clip-text [-webkit-text-stroke:1px_white]  hover:[-webkit-text-stroke:0px] transition-all`}
                             ></i>
                           </button>
                         </CardItem>
@@ -271,7 +283,6 @@ export default function ListRoomCsr({ data, data2 }: any) {
       );
     });
   };
-  // 5 bong den l
   return (
     <div className="">
       <FormDialog Open={Open} handleClose={handleClose} />

@@ -55,24 +55,24 @@ export default function FavoriteRooms() {
       return (
         <div
           key={item.id}
-          className="w-full bg-red-400 my-6 border-2 dark:border-white border-black rounded-2xl  hover:scale-105 duration-300 "
+          className="w-full my-6 border rounded-2xl  hover:scale-105 duration-300 "
         >
           {item.hinhAnh &&
             data2?.map((item2: any) => {
               return (
-                <div key={item2.id} className="m-3  group cursor-pointer z-20 ">
+                <div key={item2.id} className="m-5 group cursor-pointer z-20">
                   {item2.id == item.maViTri && (
-                    <div className="relative border-2 rounded-xl overflow-hidden ">
+                    <div className="relative">
                       <div className="w-full h-[300px]">
                         <Image
-                          className="w-full h-full object-fill"
+                          className="w-full h-full rounded-xl object-fill"
                           src={item.hinhAnh ?? ""}
                           width={1000}
                           height={1000}
                           alt="ks"
                         />
                       </div>
-                      <div className="flex justify-between py-3 px-3">
+                      <div className="flex justify-between py-3">
                         <div className="space-y-1">
                           {item2.id == item.maViTri && (
                             <p className="text-sm font-bold ">
@@ -114,12 +114,12 @@ export default function FavoriteRooms() {
                       )}
                       <button className=" active:text-red-400 absolute top-1 right-1 ">
                         <i
-                          className="fa fa-heart  scale-125    animate-beat duration-300 z-40    
-                        bg-clip-text 
-                        [-webkit-text-stroke:1px_white]
-                        text-red-500 
-                        hover:[-webkit-text-stroke:0px]
-                        transition-all"
+                          className="fa fa-heart  scale-125    animate-beat duration-300 z-40   
+                      bg-clip-text 
+                      [-webkit-text-stroke:1px_white]
+                  text-red-500 
+                      hover:[-webkit-text-stroke:0px]
+                      transition-all"
                         ></i>
                       </button>
                     </div>
@@ -134,36 +134,40 @@ export default function FavoriteRooms() {
 
   return (
     <div>
-      {dataFavorite ? (
+      {dataFavorite?.length ?? 0 > 0 ? (
         renderFavorite()
       ) : (
-        <div className="space-y-3">
-          <div className="w-full space-y-2">
-            <Skeleton className="h-80 w-full rounded-2xl" />
-            <div className="flex w-full justify-between items-center">
-              <Skeleton className="h-4 w-[150px]" />
-              <div className="flex items-center space-x-1">
-                <Skeleton className="h-[20px] w-[40px] " />
-                <Skeleton className="h-[20px] w-[20px] rounded-full" />
-              </div>
-            </div>
-            <Skeleton className="h-4 w-[170px]" />
-            <Skeleton className="h-4 w-[150px]" />
-          </div>
-          <div className="w-full space-y-1">
-            <Skeleton className="h-80 w-full" />
-            <div className="flex w-full justify-between">
-              <Skeleton className="h-4 w-[150px]" />
-              <div className="flex items-center space-x-1">
-                <Skeleton className="h-[20px] w-[40px] " />
-                <Skeleton className="h-[20px] w-[20px] rounded-full" />
-              </div>
-            </div>
-            <Skeleton className="h-4 w-[170px]" />
-            <Skeleton className="h-4 w-[150px]" />
-          </div>
-        </div>
+        <p className="text-2xl  text-center mt-10">
+          Hiện tại bạn vẫn chưa ưa thích chỗ ở nào
+        </p>
       )}
+
+      {/* <div className="space-y-3">
+             <div className="w-full space-y-2">
+               <Skeleton className="h-80 w-full rounded-2xl" />
+               <div className="flex w-full justify-between items-center">
+                 <Skeleton className="h-4 w-[150px]" />
+                 <div className="flex items-center space-x-1">
+                   <Skeleton className="h-[20px] w-[40px] " />
+                   <Skeleton className="h-[20px] w-[20px] rounded-full" />
+                 </div>
+               </div>
+               <Skeleton className="h-4 w-[170px]" />
+               <Skeleton className="h-4 w-[150px]" />
+             </div>
+             <div className="w-full space-y-1">
+               <Skeleton className="h-80 w-full" />
+               <div className="flex w-full justify-between">
+                 <Skeleton className="h-4 w-[150px]" />
+                 <div className="flex items-center space-x-1">
+                   <Skeleton className="h-[20px] w-[40px] " />
+                   <Skeleton className="h-[20px] w-[20px] rounded-full" />
+                 </div>
+               </div>
+               <Skeleton className="h-4 w-[170px]" />
+               <Skeleton className="h-4 w-[150px]" />
+             </div>
+           </div> */}
     </div>
   );
 }

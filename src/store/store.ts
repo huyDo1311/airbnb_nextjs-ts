@@ -1,3 +1,4 @@
+import FavoriteRooms from "@/app/(public)/Dashboard/FavoriteRooms";
 import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
 

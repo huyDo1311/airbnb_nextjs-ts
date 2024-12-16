@@ -42,16 +42,6 @@ export function CustomerPicker() {
   // useEffect(() => {
 
   // }, [quantityOfAdult, quantityOfChildren, setCustomers]);
-  useEffect(() => {
-    roomApiRequest
-      .NextClientToServerGetListRoom()
-      .then((res) => {
-        setDataApiListRoom(res.content);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, [setDataApiListRoom]);
 
   useEffect(() => {
     setTotal(quantityOfAdult + quantityOfChildren);

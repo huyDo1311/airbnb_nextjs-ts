@@ -4,11 +4,22 @@ import { CardBody, CardContainer, CardItem } from "@/components/ui/3d-card";
 import { useStore } from "@/store/store";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
+import FormDialog from "@/app/(public)/FormDialog";
+import { toast } from "@/hooks/use-toast";
 export default function Rooms({ data2 }: any) {
-  let { resultSearch, setStar, setDataLocation } = useStore();
+  let {
+    resultSearch,
+    setStar,
+    setDataLocation,
+    getUserData,
+    setRemoveFavorite,
+    dataApiListRoom,
+    setDataApiListRoom,
+    setFavorite,
+  } = useStore();
   const router = useRouter();
 
   let handleDetail = (id: number, star: number, tinhThanh: string) => {
@@ -32,9 +43,36 @@ export default function Rooms({ data2 }: any) {
       }).format(currency) + " đ"; // Adding the "đ" symbol at the end
     return formattedCurrency.replace(",", ".");
   };
+  const [Open, setOpen] = useState<boolean>(false);
+  const handleClose = () => {
+    setOpen(false);
+  };
+  let handleFavorite = (id: number) => {
+    if (getUserData.id === 0) {
+      setOpen(true);
+      toast({
+        title: "Bạn cần phải đăng nhập để thực hiện tính năng này",
+      });
+    } else {
+      let findIndex = dataApiListRoom.findIndex((item: any) => item.id == id);
+      let find = dataApiListRoom.find((item2: any) => item2.loving == true);
+      if (find?.loving == dataApiListRoom[findIndex].loving) {
+        dataApiListRoom[findIndex].loving = false;
+        setRemoveFavorite(id);
+        setDataApiListRoom(dataApiListRoom);
+        toast({
+          title: "Đã xóa khỏi mục ưa thích",
+        });
+      } else {
+        dataApiListRoom[findIndex].loving = true;
+        setDataApiListRoom(dataApiListRoom);
 
-  let handleFavorite = () => {
-    console.log("hi");
+        setFavorite(id);
+        toast({
+          title: "Đã được thêm vào mục ưa thích",
+        });
+      }
+    }
   };
   const vietnameseDate = formatDateToVietnamese(new Date());
   let renderRooms = () => {
@@ -131,18 +169,19 @@ export default function Rooms({ data2 }: any) {
                         <CardItem
                           className="absolute top-7 right-7 hover:text-2xl"
                           translateZ={100}
+                          key={index}
                         >
                           <button
-                            onClick={handleFavorite}
-                            className=" active:text-red-400 "
+                            key={index}
+                            onClick={() => {
+                              handleFavorite(item.id);
+                            }}
+                            className=" active:text-red-400 active:scale-125"
                           >
                             <i
-                              className="fa fa-heart  scale-125    group-hover:animate-beat duration-300 z-40    text-gray-500
-                      bg-clip-text 
-                      [-webkit-text-stroke:1px_white]
-                      group-hover:text-red-500 
-                      hover:[-webkit-text-stroke:0px]
-                      transition-all"
+                              className={`fa fa-heart scale-125 ${
+                                item.loving ? "text-red-500" : "text-gray-500"
+                              }  group-hover:animate-beat duration-300 z-40 bg-clip-text [-webkit-text-stroke:1px_white]  hover:[-webkit-text-stroke:0px] transition-all`}
                             ></i>
                           </button>
                         </CardItem>
@@ -158,6 +197,7 @@ export default function Rooms({ data2 }: any) {
   };
   return (
     <div>
+      <FormDialog Open={Open} handleClose={handleClose} />
       <div className="grid grid-cols-4 ">{renderRooms()}</div>
     </div>
   );
