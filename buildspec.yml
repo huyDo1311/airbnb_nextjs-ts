@@ -11,6 +11,9 @@ phases:
       - aws --version
       # Đăng nhập vào Amazon ECR
       - aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin 977098996062.dkr.ecr.ap-southeast-1.amazonaws.com
+      # Đăng nhập Docker Hub
+      - echo Logging into Docker Hub...
+      - docker login --username "thanhhuy.dohuynh@gmail.com" --password "@Thanhhuy1995"
       # Khai báo biến REPOSITORY_URI
       - REPOSITORY_URI=977098996062.dkr.ecr.ap-southeast-1.amazonaws.com/airbnb-app-repo
       # Lấy commit hash từ mã nguồn
@@ -22,6 +25,7 @@ phases:
     commands:
       - echo Build started on `date`
       - echo Building the Docker image...
+      - docker login
       # Build Docker image
       # - docker build --platform linux/amd64 -t $REPOSITORY_URI:latest 
       # - docker build -t $REPOSITORY_URI:latest .
