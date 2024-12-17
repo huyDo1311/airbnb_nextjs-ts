@@ -1,6 +1,6 @@
 "use client";
 import bookingApiRequest from "@/apiRequests/booking";
-import commentsRequest, { commentsSubmit } from "@/apiRequests/comments";
+import commentsRequest from "@/apiRequests/comments";
 import { typeContent } from "@/app/(public)/(ListRoom)/ListRoom";
 import Comments from "@/app/(public)/room-detail/[query]/Comments";
 import { CustomerPickerDetails } from "@/app/(public)/room-detail/[query]/CustomerPickerDetails";
