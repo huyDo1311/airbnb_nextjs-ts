@@ -28,7 +28,7 @@ export default async function QuickSearch() {
   );
   return (
     <div
-      className={`flex rounded-s-full rounded-e-full border shadow-md overflow-hidden   
+      className={`flex justify-center rounded-s-full rounded-e-full border shadow-md overflow-hidden   
      
       h-16`}
     >

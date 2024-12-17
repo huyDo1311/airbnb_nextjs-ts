@@ -207,7 +207,7 @@ export function CustomerPicker() {
         <PopoverTrigger asChild>
           <Button
             variant="ghost"
-            className="w-[280px] h-full flex justify-start text-left"
+            className="xl:w-[280px] w-[250px] h-full flex justify-start text-left"
           >
             <div>
               <p className="font-semibold  text-xs">Khách</p>
@@ -219,7 +219,7 @@ export function CustomerPicker() {
             </div>
           </Button>
         </PopoverTrigger>
-        <div className="absolute top-0 right-8 h-full cursor-pointer">
+        <div className="absolute top-0 xl:right-8 right-1 h-full cursor-pointer">
           <div className="h-full  flex items-center w-full justify-center ">
             <div
               className="p-3  bg-red-500  rounded-3xl h-3/4 w-full flex space-x-3 px-4 cursor-pointer"

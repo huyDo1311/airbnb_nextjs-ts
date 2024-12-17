@@ -39,7 +39,7 @@ export default function FavoriteRooms() {
       console.log({ filterFavorite });
       setDataFavorite(filterFavorite.reverse().slice(0, 10));
     }
-  }, [favorite]);
+  }, [dataApiListRoom, favorite]);
 
   useEffect(() => {
     http
