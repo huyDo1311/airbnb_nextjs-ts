@@ -15,6 +15,7 @@ import { useRouter } from 'next/navigation'
 import { useSignoutMutation } from '@/queries/useAuth'
 import { useUserProfile } from '@/queries/useUser'
 import { useEffect, useState } from 'react'
+import { useStore } from '@/store/store'
 
 
 const account = {
@@ -23,6 +24,9 @@ const account = {
 }
 
 export default function DropdownAvatar() {
+
+  const {clearStorageUser} = useStore();
+
   const signOutMutation = useSignoutMutation();
   const router = useRouter();
 
@@ -51,7 +55,9 @@ export default function DropdownAvatar() {
     try {
       await signOutMutation.mutateAsync();
       localStorage.removeItem("user");
-      router.push('/');
+      clearStorageUser();
+      window.location.href = "/";
+      // router.push('/');
     } catch (error: any) {
       handleErrorApi({ error })
     }
