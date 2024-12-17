@@ -33,7 +33,7 @@ export default function MenuDropDown() {
     }
   };
   useEffect(() => {
-    setAvatarUser(getUserData.avatar);
+    setAvatarUser(getUserData?.avatar);
   }, [getUserData, fetchDataStore]);
   return (
     <div>
@@ -60,7 +60,19 @@ export default function MenuDropDown() {
         </PopoverTrigger>
         <PopoverContent className="bg-white  border-2 border-black p-3 rounded-xl px-5">
           {getUserData?.id ? (
-            <div className="space-y-3  text-black">
+            <div className="space-y-1 text-black">
+              {getUserData?.role === "ADMIN" && (
+                <div className=" ">
+                  <Link className="text-sm" href="/manage/dashboard">
+                    <Button
+                      variant="ghost"
+                      className="w-full flex justify-start"
+                    >
+                      Admin
+                    </Button>
+                  </Link>
+                </div>
+              )}
               <div className=" ">
                 <Link className="text-sm" href="/Dashboard">
                   <Button variant="ghost" className="w-full flex justify-start">
@@ -68,6 +80,7 @@ export default function MenuDropDown() {
                   </Button>
                 </Link>
               </div>
+
               <Button
                 variant="ghost"
                 className="flex justify-start w-full"

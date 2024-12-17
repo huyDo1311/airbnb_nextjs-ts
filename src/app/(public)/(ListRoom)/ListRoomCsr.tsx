@@ -22,38 +22,19 @@ import { HoverEffect } from "@/components/ui/card-hover-effect";
 import { toast } from "@/hooks/use-toast";
 import FormDialog from "@/app/(public)/FormDialog";
 import { typeContent } from "@/app/(public)/(ListRoom)/ListRoom";
+import bookingApiRequest from "@/apiRequests/booking";
 export interface Location {
   star: number;
 }
 
 export const vietnamLocations: Location[] = [
+  { star: 4.3 },
+  { star: 4.8 },
   { star: 4.2 },
   { star: 5.0 },
   { star: 4.2 },
   { star: 3.6 },
   { star: 3.5 },
-  { star: 4.5 },
-  { star: 5.0 },
-  { star: 5.0 },
-  { star: 5.0 },
-  { star: 4.5 },
-  { star: 4.2 },
-  { star: 5.0 },
-  { star: 4.5 },
-  { star: 5.0 },
-  { star: 4.5 },
-  { star: 2.5 },
-  { star: 4.5 },
-  { star: 4.2 },
-  { star: 3.6 },
-  { star: 3.5 },
-  { star: 4.5 },
-  { star: 3.5 },
-  { star: 4.5 },
-  { star: 2.5 },
-  { star: 4.5 },
-  { star: 3.5 },
-  { star: 4.5 },
   { star: 2.5 },
   { star: 4.5 },
   { star: 4.5 },
@@ -62,6 +43,50 @@ export const vietnamLocations: Location[] = [
   { star: 3.5 },
   { star: 4.3 },
   { star: 4.8 },
+  { star: 4.2 },
+  { star: 5.0 },
+  { star: 4.2 },
+  { star: 3.6 },
+  { star: 3.5 },
+  { star: 4.5 },
+  { star: 5.0 },
+  { star: 5.0 },
+  { star: 5.0 },
+  { star: 4.5 },
+  { star: 4.2 },
+  { star: 5.0 },
+  { star: 4.5 },
+  { star: 5.0 },
+  { star: 4.5 },
+  { star: 2.5 },
+  { star: 4.5 },
+  { star: 4.2 },
+  { star: 3.6 },
+  { star: 3.5 },
+  { star: 4.5 },
+  { star: 3.5 },
+  { star: 4.5 },
+  { star: 2.5 },
+  { star: 4.5 },
+  { star: 3.5 },
+  { star: 4.5 },
+  { star: 4.2 },
+  { star: 5.0 },
+  { star: 4.2 },
+  { star: 3.6 },
+  { star: 3.5 },
+  { star: 4.5 },
+  { star: 5.0 },
+  { star: 5.0 },
+  { star: 5.0 },
+  { star: 4.5 },
+  { star: 4.2 },
+  { star: 5.0 },
+  { star: 4.5 },
+  { star: 5.0 },
+  { star: 4.5 },
+  { star: 2.5 },
+  { star: 4.5 },
 ];
 
 export default function ListRoomCsr({ data, data2 }: any) {
@@ -79,7 +104,6 @@ export default function ListRoomCsr({ data, data2 }: any) {
   let sliceNumber = 12;
   const [lastRoom, setLastRoom] = useState<number | null>(null);
   let {
-    favorite,
     setStar,
     setDataLocation,
     resetDataCalendar,
@@ -89,6 +113,8 @@ export default function ListRoomCsr({ data, data2 }: any) {
     setRemoveFavorite,
     setDataApiListRoom,
     dataApiListRoom,
+    setDataRented,
+    fetchDataStore,
   } = useStore();
   const [start, setStart] = useState(0);
   const [end, setEnd] = useState(sliceNumber);
@@ -112,6 +138,33 @@ export default function ListRoomCsr({ data, data2 }: any) {
       setDataApiListRoom(addLoving);
     }
   }, []);
+
+  useEffect(() => {
+    if (dataApiListRoom.length > 0) {
+      bookingApiRequest
+        .NextClientToServerGetBookingByUser(getUserData?.id)
+        .then((res: any) => {
+          let sliceData = res.content.reverse().slice(0, 10);
+          let filterSliceData = sliceData.filter(
+            (data: any, index: number, self: any) => {
+              return (
+                index ===
+                self.findIndex((value: any) => value.maPhong === data.maPhong)
+              );
+            }
+          );
+
+          let filterDetail = filterSliceData.map((item: any) => {
+            return dataApiListRoom.find((item2: typeContent) => {
+              return item.maPhong == item2.id ? item.maPhong == item2.id : null;
+            });
+          });
+          setDataRented(filterDetail);
+        })
+        .catch((err) => console.log(err, "err"));
+    }
+  }, [fetchDataStore]);
+
   let handleDetail = (id: number, star: number, tinhThanh: string) => {
     setStar(star);
     setDataLocation(tinhThanh);
@@ -121,7 +174,7 @@ export default function ListRoomCsr({ data, data2 }: any) {
   };
 
   const formatStar = (star: number) => {
-    return star.toFixed(1).replace(".", ",");
+    return star ? star.toFixed(1).replace(".", ",") : star;
   };
   const formatDateToVietnamese = (date: any) => {
     return format(date, "eeee, dd MMMM yyyy", { locale: vi });
@@ -166,20 +219,25 @@ export default function ListRoomCsr({ data, data2 }: any) {
   let renderRooms = () => {
     return dataApiListRoom?.slice(start, end).map((item: any, index: any) => {
       return (
-        <div key={item.id} className="w-[375px] my-6">
+        <div key={item.id} className="w-full  my-6">
           {item.hinhAnh &&
             data2.content.data.map((item2: any) => {
               return (
-                <div key={item2.id} className="m-5 group cursor-pointer z-20">
+                <div
+                  key={item2.id}
+                  className="m-5 group w-[200px] cursor-pointer z-20"
+                >
                   {item2.id == item.maViTri && (
-                    <CardContainer className="inter-var h-40 w-full   ">
+                    <CardContainer className="inter-var xl:h-40 h-36 w-full   ">
                       <CardBody className="group shadow-lg p-4 border  relative group/card  px-5 dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] rounded-xl    ">
                         <div
                           className=""
                           onClick={() => {
                             handleDetail(
                               item.id,
-                              vietnamLocations[index]?.star,
+                              vietnamLocations[index]?.star
+                                ? vietnamLocations[index]?.star
+                                : 4.5,
                               item2.tinhThanh
                             );
                           }}
@@ -217,7 +275,9 @@ export default function ListRoomCsr({ data, data2 }: any) {
                               <div className="flex items-start">
                                 <div className="flex items-center space-x-2">
                                   <p className="text-sm font-medium">
-                                    {formatStar(vietnamLocations[index]?.star)}{" "}
+                                    {formatStar(
+                                      vietnamLocations[index]?.star
+                                    ) ?? formatStar(4.5)}{" "}
                                     {/* Display star with comma */}
                                   </p>
                                   <i className="fa fa-star text-sm transition duration-300 group-hover:text-yellow-300"></i>
@@ -226,8 +286,8 @@ export default function ListRoomCsr({ data, data2 }: any) {
                             </div>
                           </CardItem>
 
-                          {vietnamLocations[index]?.star <= 4.5 &&
-                            vietnamLocations[index]?.star > 4 && (
+                          {(vietnamLocations[index]?.star ?? 4.5) <= 4.5 &&
+                            (vietnamLocations[index]?.star ?? 5) > 4 && (
                               <CardItem
                                 className="absolute top-2 left-2"
                                 translateZ={100}
@@ -240,7 +300,7 @@ export default function ListRoomCsr({ data, data2 }: any) {
                                 </div>
                               </CardItem>
                             )}
-                          {vietnamLocations[index]?.star == 5 && (
+                          {(vietnamLocations[index]?.star ?? 4.5) == 5 && (
                             <CardItem
                               className="absolute top-2 left-2"
                               translateZ={100}
@@ -286,9 +346,11 @@ export default function ListRoomCsr({ data, data2 }: any) {
   return (
     <div className="">
       <FormDialog Open={Open} handleClose={handleClose} />
-      <div className="grid grid-cols-4 ">{renderRooms()}</div>
+      <div className="grid xl:grid-cols-4 grid-cols-3 my-5 ">
+        {renderRooms()}
+      </div>
 
-      <Pagination>
+      <Pagination className="">
         <PaginationContent>
           <PaginationItem>
             <PaginationPrevious

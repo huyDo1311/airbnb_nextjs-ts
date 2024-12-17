@@ -100,12 +100,12 @@ export default function HoChiMinh() {
                       </p>
                       <div className="flex items-center space-x-2">
                         <p className="text-sm">
-                          {vietnamLocations[index]?.star}
+                          {vietnamLocations[index]?.star ?? 4.5}
                         </p>
                         <i className="fa fa-star text-sm"></i>
                       </div>
                     </div>
-                    <p className="text-sm font-light ">{vietnameseDate}</p>
+                    <p className="text-sm font-normal ">{vietnameseDate}</p>
                     <p className="text-sm font-medium">
                       {handleMoney(item.giaTien)} / Đêm{" "}
                     </p>
@@ -125,10 +125,17 @@ export default function HoChiMinh() {
                     ></i>
                   </button>
                 </div>
-                {vietnamLocations[index]?.star >= 4 && (
-                  <div className="bg-white rounded-xl absolute top-1 left-1">
-                    <p className="text-sm text-black font-semibold p-1">
+                {(vietnamLocations[index]?.star ?? 4.5) <= 4.5 &&
+                (vietnamLocations[index]?.star ?? 4.5) > 4 ? (
+                  <div className="bg-white rounded-xl absolute top-1 left-1 ">
+                    <p className="text-sm text-black font-semibold p-1 px-2">
                       Được khách yêu thích
+                    </p>
+                  </div>
+                ) : (
+                  <div className="bg-red-400 rounded-xl absolute top-1 left-1">
+                    <p className="text-sm text-black font-semibold p-1 px-2">
+                      Chủ nhà siêu cấp
                     </p>
                   </div>
                 )}
@@ -169,7 +176,7 @@ export default function HoChiMinh() {
           </div>
         </div>
         <div className="">
-          <div className="sticky top-36">
+          <div className="sticky top-28">
             <BackgroundGradient className="rounded-[22px] bg-white dark:bg-zinc-900 overflow-hidden ">
               <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d501725.4184472557!2d106.36556595347503!3d10.755292861627074!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x317529292e8d3dd1%3A0xf15f5aad773c112b!2zVGjDoG5oIHBo4buRIEjhu5MgQ2jDrSBNaW5oLCBI4buTIENow60gTWluaCwgVmnhu4d0IE5hbQ!5e0!3m2!1svi!2s!4v1732295370863!5m2!1svi!2s"

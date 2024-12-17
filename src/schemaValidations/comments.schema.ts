@@ -1,5 +1,5 @@
 export interface commentsSchema {
-  id: number;
+  id?: number;
   ngayBinhLuan: Date;
   noiDung: string;
   saoBinhLuan: number;

@@ -30,6 +30,7 @@ interface UserProfile {
 interface AppState {
   NextStep: number;
   total: number;
+  dataRented: any;
   dataStoreDestination: any;
   dataStoreDestination2: any;
   dataApiListRoom: any;
@@ -66,12 +67,14 @@ interface AppState {
   clearStorageUser: () => void;
   setFavorite: (newFavorite: number) => any;
   setRemoveFavorite: (newRemoveFavorite: number) => any;
+  setDataRented: (newDataRented: any) => any;
 }
 
 export const useStore = create<AppState>()(
   devtools(
     persist(
       (set) => ({
+        dataRented: [],
         star: 0,
         favorite: [],
         removeDataHeader: false,
@@ -105,6 +108,10 @@ export const useStore = create<AppState>()(
         dataCalendar: {
           from: undefined,
           to: undefined,
+        },
+
+        setDataRented: (newDataRented: any) => {
+          set({ dataRented: newDataRented });
         },
         setRemoveFavorite: (newRemoveFavorite) => {
           set((state) => {
@@ -285,6 +292,7 @@ export const useStore = create<AppState>()(
         },
         clearStorageUser: () => {
           set((state) => {
+            console.log("1");
             // Reset the user data to its default value (empty object or some default)
             let defaultData = { ...state.getUserData }; // Adjust this to your default user data structure
             return { getUserData: defaultData }; // Reset user data
@@ -315,7 +323,6 @@ export const useStore = create<AppState>()(
                 ![
                   "headerTotal",
                   "dataStoreDestination",
-                  "dataStoreDestination2",
                   "NextStep",
                   "removeDataHeader",
                 ].includes(key)

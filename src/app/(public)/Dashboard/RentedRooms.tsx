@@ -25,10 +25,8 @@ interface responseBooking {
 }
 
 export default function RentedRooms() {
-  let { getUserData, dataApiListRoom } = useStore();
-  const [dataRented, setDataRented] = useState<Booking[] | null>(null);
-
-  let { resultSearch, dataStoreDestination2 } = useStore();
+  let { getUserData, dataApiListRoom, setDataRented, dataRented } = useStore();
+  let { resultSearch, dataStoreDestination2, fetchDataStore } = useStore();
   const [data2, setData2] = useState<any>();
   let handleMoney = (money: number): string => {
     let currency = money * 25;
@@ -46,21 +44,6 @@ export default function RentedRooms() {
     return star.toFixed(1).replace(".", ",");
   };
   const vietnameseDate = formatDateToVietnamese(new Date());
-  useEffect(() => {
-    if (dataApiListRoom.length > 0) {
-      bookingApiRequest
-        .NextClientToServerGetBookingByUser(getUserData.id)
-        .then((res: responseBooking) => {
-          let filterRented = dataApiListRoom.filter((listRoom: typeContent) =>
-            res.content.some(
-              (rentedRooms: Booking) => listRoom.id === rentedRooms.maPhong
-            )
-          );
-          setDataRented(filterRented.splice(-10).reverse());
-        })
-        .catch((err) => console.log(err, "err"));
-    }
-  }, [getUserData, dataApiListRoom]);
 
   useEffect(() => {
     http
@@ -76,7 +59,7 @@ export default function RentedRooms() {
       return (
         <div
           key={item.id}
-          className="w-full my-6 border rounded-2xl  hover:scale-105 duration-300 "
+          className="w-full my-6 border rounded-2xl bg-white dark:bg-black  hover:scale-105 duration-300 "
         >
           {item.hinhAnh &&
             data2?.map((item2: any) => {

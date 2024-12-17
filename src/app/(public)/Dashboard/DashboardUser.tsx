@@ -43,15 +43,19 @@ export default function DashboardUser() {
   const [render, setRender] = useState(false);
   const [dataUser, setDataUser] = useState<UserProfile | null>(null);
   const formattedBirthday = dataUser?.birthday
-    ? format(dataUser?.birthday, "dd/MM/yyyy")
+    ? dataUser?.birthday ?? format(dataUser?.birthday, "dd/MM/yyyy")
     : "Date not available";
+
   useEffect(() => {
-    userApiRequest.NextClientToServerGetUser(getUserData.id).then((res) => {
-      setDataUser(res.content);
-      setAvatarUser(res.content.avatar);
-      setGetUserData(res.content);
-    });
-  }, [render, getUserData]);
+    userApiRequest
+      .NextClientToServerGetUser(getUserData.id)
+      .then((res) => {
+        setDataUser(res.content);
+        setAvatarUser(res.content.avatar);
+        setGetUserData(res.content);
+      })
+      .catch((err) => {});
+  }, [render, getUserData, setGetUserData]);
 
   return (
     <div className="h">
@@ -65,10 +69,10 @@ export default function DashboardUser() {
       </div>
       <div className="mb-60"></div>
       <div className="flex relative ">
-        <div className="w-1/3      ">
+        <div className="w-1/3        ">
           <div className="sticky top-16">
             <CardContainer className="z-50">
-              <CardBody className=" h-full shadow-xl group border-black border-2 relative group/card space-y-4 dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] w-auto sm:w-[30rem] rounded-xl p-6   ">
+              <CardBody className=" h-full bg-white  shadow-xl group border-black border-2 relative group/card space-y-4 dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] w-auto sm:w-[30rem] rounded-xl p-6   ">
                 <CardItem
                   translateZ={100}
                   translateX={-10}

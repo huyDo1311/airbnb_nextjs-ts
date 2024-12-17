@@ -1,77 +1,90 @@
-'use client'
+"use client";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Button } from '@/components/ui/button'
-import Link from 'next/link'
-import { handleErrorApi } from '@/lib/utils'
-import { useRouter } from 'next/navigation'
-import { useSignoutMutation } from '@/queries/useAuth'
-import { useUserProfile } from '@/queries/useUser'
-import { useEffect, useState } from 'react'
-
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { handleErrorApi } from "@/lib/utils";
+import { useRouter } from "next/navigation";
+import { useSignoutMutation } from "@/queries/useAuth";
+import { useUserProfile } from "@/queries/useUser";
+import { useEffect, useState } from "react";
+import { useStore } from "@/store/store";
 
 const account = {
-  name: 'Nguyễn Văn A',
-  avatar: 'https://i.pravatar.cc/150'
-}
+  name: "Nguyễn Văn A",
+  avatar: "https://i.pravatar.cc/150",
+};
 
 export default function DropdownAvatar() {
   const signOutMutation = useSignoutMutation();
   const router = useRouter();
-
+  let { clearStorageUser } = useStore();
   const [userId, setUserId] = useState<number>(0);
   const [handleFetch, setHandleFetch] = useState(false);
   const { data } = useUserProfile(userId, handleFetch);
-  const account = data?.content
+  const account = data?.content;
 
   useEffect(() => {
-    const userString = localStorage.getItem('user') ? localStorage.getItem('user') : localStorage.getItem('userProfile');
+    const userString = localStorage.getItem("user")
+      ? localStorage.getItem("user")
+      : localStorage.getItem("userProfile");
     if (userString) {
       const user = JSON.parse(userString); // Chuyển chuỗi JSON thành đối tượng
       const id = user?.id;
       setUserId(id); // Lưu id vào state hoặc làm việc với id
-      setHandleFetch(true)
+      setHandleFetch(true);
     }
   }, []);
 
   useEffect(() => {
     // localStorage.removeItem('user');
-    localStorage.setItem('userProfile', JSON.stringify(account));
+    localStorage.setItem("userProfile", JSON.stringify(account));
   }, [account]);
 
   const signout = async () => {
     if (signOutMutation.isPending) return;
     try {
       await signOutMutation.mutateAsync();
-      localStorage.removeItem("user");
-      router.push('/');
+      // clearStorageUser();
+      // localStorage.removeItem("user");
+      // window.location.href = "/";
+      // router.push("/");
     } catch (error: any) {
-      handleErrorApi({ error })
+      handleErrorApi({ error });
     }
-  }
+  };
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant='outline' size='icon' className='overflow-hidden rounded-full'>
+        <Button
+          variant="outline"
+          size="icon"
+          className="overflow-hidden rounded-full"
+        >
           <Avatar>
-            <AvatarImage src={account?.avatar || undefined} alt={account?.name} />
-            <AvatarFallback>{account?.name?.slice(0, 2).toUpperCase()}</AvatarFallback>
+            <AvatarImage
+              src={account?.avatar || undefined}
+              alt={account?.name}
+            />
+            <AvatarFallback>
+              {account?.name?.slice(0, 2).toUpperCase()}
+            </AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align='end'>
+      <DropdownMenuContent align="end">
         <DropdownMenuLabel>{account?.name}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href={'/user/setting'} className='cursor-pointer'>
+          <Link href={"/user/setting"} className="cursor-pointer">
             Cài đặt
           </Link>
         </DropdownMenuItem>
@@ -80,9 +93,5 @@ export default function DropdownAvatar() {
         <DropdownMenuItem onClick={signout}>Đăng xuất</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }
-
-
-
-

@@ -42,6 +42,7 @@ import { DateRange } from "react-day-picker";
 import { CreateBookingDetailBodyType } from "@/schemaValidations/booking.schema";
 import { useAddBookingDetailMutation } from "@/queries/useBooking";
 import Image from "next/image";
+import bookingApiRequest from "@/apiRequests/booking";
 interface DataDetail {
   dataDetail: typeContent;
   query: string | null;
@@ -59,7 +60,7 @@ export default function FormBooking({
   totalMoney,
   handleSuccess,
 }: DataDetail) {
-  let { star, getUserData } = useStore();
+  let { star, getUserData, dataApiListRoom, setDataRented } = useStore();
   const handleClose = () => {
     setOpen(false);
   };
@@ -82,7 +83,7 @@ export default function FormBooking({
   };
 
   useEffect(() => {
-    if (getUserData.id) {
+    if (getUserData?.id) {
       let dataOfUser = getUserData;
       setStorageUser(dataOfUser);
     }
@@ -125,6 +126,26 @@ export default function FormBooking({
         maNguoiDung: storageUser.id,
       };
       await userBooking.mutateAsync(dataSubmit);
+
+      let result = await bookingApiRequest.NextClientToServerGetBookingByUser(
+        getUserData.id
+      );
+      let sliceData = result.content.reverse().slice(0, 10);
+      let filterSliceData = sliceData.filter(
+        (data: any, index: number, self: any) => {
+          return (
+            index ===
+            self.findIndex((value: any) => value.maPhong === data.maPhong)
+          );
+        }
+      );
+      let filterDetail = filterSliceData.map((item: any) => {
+        return dataApiListRoom.find((item2: typeContent) => {
+          return item.maPhong == item2.id ? item.maPhong == item2.id : null;
+        });
+      });
+      setDataRented(filterDetail);
+
       toast({
         description: (
           <div className="flex items-center">

@@ -55,7 +55,7 @@ export default function FavoriteRooms() {
       return (
         <div
           key={item.id}
-          className="w-full my-6 border rounded-2xl  hover:scale-105 duration-300 "
+          className="w-full my-6 border rounded-2xl  bg-white dark:bg-black   hover:scale-105 duration-300 "
         >
           {item.hinhAnh &&
             data2?.map((item2: any) => {

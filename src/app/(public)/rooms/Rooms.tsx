@@ -91,7 +91,9 @@ export default function Rooms({ data2 }: any) {
                           onClick={() => {
                             handleDetail(
                               item.id,
-                              vietnamLocations[index]?.star,
+                              vietnamLocations[index]?.star
+                                ? vietnamLocations[index]?.star
+                                : 4.5,
                               item2.tinhThanh
                             );
                           }}
@@ -129,7 +131,9 @@ export default function Rooms({ data2 }: any) {
                               <div className="flex items-start">
                                 <div className="flex items-center space-x-2">
                                   <p className="text-sm font-medium">
-                                    {formatStar(vietnamLocations[index]?.star)}{" "}
+                                    {formatStar(
+                                      vietnamLocations[index]?.star
+                                    ) ?? formatStar(4.5)}{" "}
                                     {/* Display star with comma */}
                                   </p>
                                   <i className="fa fa-star text-sm transition duration-300 group-hover:text-yellow-300"></i>
@@ -138,8 +142,8 @@ export default function Rooms({ data2 }: any) {
                             </div>
                           </CardItem>
 
-                          {vietnamLocations[index]?.star <= 4.5 &&
-                            vietnamLocations[index]?.star > 4 && (
+                          {(vietnamLocations[index]?.star ?? 4.5) <= 4.5 &&
+                            (vietnamLocations[index]?.star ?? 5) > 4 && (
                               <CardItem
                                 className="absolute top-2 left-2"
                                 translateZ={100}
@@ -152,7 +156,7 @@ export default function Rooms({ data2 }: any) {
                                 </div>
                               </CardItem>
                             )}
-                          {vietnamLocations[index]?.star == 5 && (
+                          {(vietnamLocations[index]?.star ?? 4.5) == 5 && (
                             <CardItem
                               className="absolute top-2 left-2"
                               translateZ={100}

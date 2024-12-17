@@ -53,6 +53,7 @@ const config: Config = {
       },
       animation: {
         beat: "beat 1s infinite", // Animation for the heartbeat effect
+        moveGradient: "moveGradient 3s linear infinite ",
       },
       keyframes: {
         beat: {
@@ -61,6 +62,17 @@ const config: Config = {
           },
           "70%": {
             transform: "scale(1.2)", // Grow to 120% of original size
+          },
+        },
+        moveGradient: {
+          "0%": {
+            "background-position": "-200% 0", // Start with the background off-screen
+          },
+          "50%": {
+            "background-position": "200% 0", // Move the gradient
+          },
+          "100%": {
+            "background-position": "-200% 0", // End with the background off-screen again
           },
         },
       },

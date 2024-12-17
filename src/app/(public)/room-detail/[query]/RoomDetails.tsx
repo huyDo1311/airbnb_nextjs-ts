@@ -1,11 +1,13 @@
 "use client";
-import commentsRequest from "@/apiRequests/comments";
+import bookingApiRequest from "@/apiRequests/booking";
+import commentsRequest, { commentsSubmit } from "@/apiRequests/comments";
 import { typeContent } from "@/app/(public)/(ListRoom)/ListRoom";
 import Comments from "@/app/(public)/room-detail/[query]/Comments";
 import { CustomerPickerDetails } from "@/app/(public)/room-detail/[query]/CustomerPickerDetails";
 import { DatePickerWithRangeDetails } from "@/app/(public)/room-detail/[query]/DatePickerWithRangeDetails";
 import FormBooking from "@/app/(public)/room-detail/[query]/FormBooking";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { BackgroundGradient } from "@/components/ui/background-gradient";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -25,6 +27,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Textarea } from "@/components/ui/textarea";
+import { toast } from "@/hooks/use-toast";
 import { commentsSchema } from "@/schemaValidations/comments.schema";
 import { useStore } from "@/store/store";
 import { format, isValid } from "date-fns";
@@ -39,6 +43,8 @@ import {
   KeyRound,
   Languages,
   MountainSnow,
+  Send,
+  SendHorizontal,
   Smile,
   Sparkles,
   TvMinimal,
@@ -63,24 +69,17 @@ export default function RoomDetails() {
   >(null);
   const [differenceDays, setDifferenceDays] = useState<number>(1);
   const [countComments, setCountComments] = useState(0);
-  let { dataApiListRoom, star, dataLocation, setCustomerDetails, total } =
-    useStore();
-
-  const searchParams = useSearchParams();
-  const query: string | null = searchParams.get("name");
-  useEffect(() => {
-    if (query) {
-      commentsRequest
-        .NextClientToServerGetComments(query)
-        .then((res: any) => {
-          let totalCount = 0;
-
-          setCommentsOfUsers(res?.content);
-          setCountComments(res.content.length);
-        })
-        .catch((err) => console.log(err));
-    }
-  }, [query]);
+  let {
+    dataApiListRoom,
+    star,
+    dataLocation,
+    setCustomerDetails,
+    total,
+    setFetchDataStore,
+    getUserData,
+    dataRented,
+    setDataRented,
+  } = useStore();
 
   const [dataDetail, setDataDetail] = useState<typeContent>({
     id: 0,
@@ -106,8 +105,13 @@ export default function RoomDetails() {
   const [totalMoney, setTotalMoney] = useState<string | undefined>();
   const [isSuccess, setIsSuccess] = useState(false);
   const [end, setEnd] = useState<number>(4);
-  let handleSuccess = () => {
+
+  const searchParams = useSearchParams();
+  const query: string | null = searchParams.get("name");
+  let handleSuccess = async () => {
     setIsSuccess(true);
+    setFetchDataStore();
+
     setTimeout(() => {
       setIsSuccess(false);
     }, 2000);
@@ -171,6 +175,7 @@ export default function RoomDetails() {
       if (takingDataDetailStorage) {
         setCustomerDetails(takingDataDetailStorage.khach);
         setDataDetail(takingDataDetailStorage);
+        setFetchDataStore();
         setTotalMoney(
           formatMoney(handleMoneyResult(takingDataDetailStorage.giaTien) + 200)
         );
@@ -192,33 +197,76 @@ export default function RoomDetails() {
       }).format(money) + " đ"; // Adding the "đ" symbol at the end
     return formattedCurrency.replace(",", ".");
   };
+  const [fetchCommentData, setFetchCommentData] = useState(false);
+  const [hoveredIndex, setHoveredIndex] = useState(-1); // To handle hover effect
+  const [selectedIndex, setSelectedIndex] = useState(-1); // To handle click effect
+  const [showRating, setShowRating] = useState<number>(-1);
+  const handleMouseEnter = (index: number) => {
+    setHoveredIndex(index); // Update the hover index
+  };
+
+  const handleMouseLeave = () => {
+    setHoveredIndex(-1); // Reset hover when mouse leaves
+  };
+
+  const handleClick = (index: number) => {
+    setSelectedIndex(index); // Set the clicked star as selected
+  };
 
   let selectStar = (): any => {
-    let displayStars = Array.from({ length: 5 }, (_, index) => {
-      return (
-        <svg
-          key={index}
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 32 32"
-          aria-hidden="true"
-          className="w-5 h-5 fill-gray-400 hover:fill-yellow-500"
-          role="presentation"
-          focusable="false"
-          style={{
-            display: "block",
-            height: 20,
-            width: 20,
-            fill: "#E0E0E0", // Gold for filled, light gray for empty
-          }}
-        >
-          <path
-            fillRule="evenodd"
-            d="m15.1 1.58-4.13 8.88-9.86 1.27a1 1 0 0 0-.54 1.74l7.3 6.57-1.97 9.85a1 1 0 0 0 1.48 1.06l8.62-5 8.63 5a1 1 0 0 0 1.48-1.06l-1.97-9.85 7.3-6.57a1 1 0 0 0-.55-1.73l-9.86-1.28-4.12-8.88a1 1 0 0 0-1.82 0z"
-          />
-        </svg>
-      );
-    });
+    const displayStars = Array.from({ length: 5 }, (_, index) => (
+      <div
+        key={index}
+        className="cursor-pointer"
+        onMouseEnter={() => handleMouseEnter(index)}
+        onMouseLeave={handleMouseLeave}
+        onClick={() => handleClick(index)}
+      >
+        <i
+          className={`fa fa-star ${
+            hoveredIndex >= index || selectedIndex >= index
+              ? "text-yellow-300"
+              : "text-gray-300"
+          }`}
+        />
+      </div>
+    ));
     return displayStars;
+  };
+  const [userInput, setUserInput] = useState("");
+  const handleSubmit = (e: React.FormEvent) => {
+    let date = new Date();
+    e.preventDefault();
+
+    if (selectedIndex !== -1 && userInput.length > 3) {
+      let dataCommentSubmit = {
+        maPhong: query,
+        maNguoiBinhLuan: getUserData.id,
+        ngayBinhLuan: date.toString(),
+        noiDung: userInput,
+        saoBinhLuan: selectedIndex + 1,
+      };
+      commentsRequest
+        .NextClientToServerPostComments(dataCommentSubmit)
+        .then((res) => {
+          setFetchCommentData((a) => !a);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else if (userInput.length < 3) {
+      toast({
+        title: "Bạn cần phải viết đánh giá trên 3 kí tự ",
+      });
+    } else {
+      toast({
+        title: "Bạn cần phải lựa chọn sao",
+      });
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setUserInput(e.target.value);
   };
 
   let renderStars = (stars: number) => {
@@ -227,13 +275,13 @@ export default function RoomDetails() {
         key={index}
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 32 32"
+        className="w-3"
         aria-hidden="true"
         role="presentation"
         focusable="false"
         style={{
           display: "block",
-          height: 12,
-          width: 12,
+
           fill: index < stars ? "#FFD700" : "#E0E0E0", // Gold for filled, light gray for empty
         }}
       >
@@ -272,7 +320,7 @@ export default function RoomDetails() {
               <span className="text-lg flex space-x-1">
                 {renderStars(item.saoBinhLuan)}
               </span>
-              <span className="text-md font-semibold">
+              <span className="text-sm font-semibold">
                 {formatVietNamDate(item.ngayBinhLuan)}
               </span>
             </div>
@@ -287,7 +335,7 @@ export default function RoomDetails() {
   let renderRoomDetails = () => {
     if (dataDetail && star) {
       return (
-        <div className="space-y-4 2xl:w-1/2 ">
+        <div className="space-y-4 2xl:w-1/2">
           <p className="text-3xl font-semibold">{dataDetail?.tenPhong}</p>
           <div className="flex space-x-2">
             {star > 4 ? (
@@ -307,7 +355,7 @@ export default function RoomDetails() {
               </>
             )}
           </div>
-          <div className="w-full">
+          <div className="w-full rounded-xl overflow-hidden">
             {dataDetail?.hinhAnh ? (
               <Image
                 src={dataDetail?.hinhAnh}
@@ -320,8 +368,8 @@ export default function RoomDetails() {
               <Skeleton className=" w-[1000px] h-[500px]" />
             )}
           </div>
-          <div className="w-full flex">
-            <div className="w-1/2">
+          <div className="w-full flex pt-5">
+            <div className="w-3/4">
               <p className="text-2xl font-semibold">
                 Toàn bộ căn hộ chung cư cao cấp tại {dataLocation}, Việt Nam
               </p>
@@ -478,7 +526,7 @@ export default function RoomDetails() {
                     </div>
                   </div>
                 </DialogTrigger>
-                <DialogContent className="w-[1000px] p-5">
+                <DialogContent className="w-[1100px] p-5">
                   <DialogHeader>
                     <DialogTitle>
                       {" "}
@@ -530,8 +578,8 @@ export default function RoomDetails() {
                 </DialogContent>
               </Dialog>
 
-              <div>
-                <div className="space-y-4  mt-4">
+              <div className="">
+                <div className="space-y-4  my-4">
                   <div className="flex space-x-3 border-b py-5">
                     <Avatar>
                       <AvatarImage
@@ -652,7 +700,7 @@ export default function RoomDetails() {
                 </div>
               </div>
             </div>
-            <div id="card" className="w-1/2 flex justify-center">
+            <div id="card" className="w-1/2 flex justify-end">
               <div className="relative">
                 <Card className="w-[400px] p-3 shadow-xl sticky top-28">
                   <CardHeader>
@@ -710,6 +758,27 @@ export default function RoomDetails() {
       );
     }
   };
+
+  useEffect(() => {
+    if (query) {
+      commentsRequest
+        .NextClientToServerGetComments(query)
+        .then((res: any) => {
+          setCommentsOfUsers(res?.content.reverse());
+          setCountComments(res.content.length);
+        })
+        .catch((err) => console.log(err));
+    }
+  }, [query, fetchCommentData]);
+
+  useEffect(() => {
+    let findIndex = dataRented.findIndex(
+      (item: typeContent) => item.id == query
+    );
+
+    setShowRating(findIndex);
+  }, [dataRented, query, showRating]);
+
   return (
     <div className="">
       <div className="flex justify-center flex-col items-center w-full">
@@ -754,20 +823,70 @@ export default function RoomDetails() {
           <div className="grid grid-cols-2 w-3/4 ">{renderComments()}</div>
         </div>
         <div className=" w-1/2 flex justify-center">
-          {countComments >= 4 && (
+          {countComments > 4 && (
             <Button
               variant="outline"
               className=""
               onClick={handleDisplayComment}
             >
               {end === 4
-                ? `Hiện thị tất cả ${countComments} đánh giá`
+                ? `Hiển thị tất cả ${countComments} đánh giá`
                 : `Thu gọn đánh giá`}
             </Button>
           )}
         </div>
       </div>
-      <div className="flex space-x-1">{selectStar()}</div>
+      {getUserData?.id !== 0 && showRating !== -1 && (
+        <div className="my-14 ">
+          <p className=" my-5 text-center text-3xl font-medium">
+            Bảng đánh giá
+          </p>
+          <div className="w-full h-full flex justify-center ">
+            <div className="w-1/2">
+              <BackgroundGradient className="rounded-[22px] w-full bg-white dark:bg-zinc-900  overflow-hidden">
+                <div className="space-y-3  flex items-center space-x-5  p-5 px-10 ">
+                  <div className="space-y-1">
+                    <div className="flex flex-col items-center space-y-1">
+                      <Avatar className="w-16 h-16">
+                        <AvatarImage
+                          src={
+                            getUserData?.avatar
+                              ? getUserData?.avatar
+                              : "/assets/anonymous.png"
+                          }
+                          className=" rounded-full"
+                          alt="user"
+                        />
+                        <AvatarFallback>User</AvatarFallback>
+                      </Avatar>
+                      <p className="text-md text-center font-medium">
+                        {getUserData.name}
+                      </p>
+                    </div>
+                    <div className="flex space-x-1">{selectStar()}</div>
+                  </div>
+                  <div className="w-full space-y-2">
+                    <form onSubmit={handleSubmit} className="flex">
+                      <Textarea
+                        value={userInput}
+                        onChange={handleChange}
+                        className="resize-none h-32  outline-none"
+                        placeholder="Viết đánh giá của bạn vào đây..."
+                      />
+                      <button
+                        className="hover:scale-125 transition-all"
+                        type="submit"
+                      >
+                        <Send size={30} />
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </BackgroundGradient>
+            </div>
+          </div>
+        </div>
+      )}
 
       {isSuccess && (
         <div className="fixed top-0 left-0  text-4xl  w-full h-full bg-red-400 z-50  flex justify-center items-center ">
