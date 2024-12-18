@@ -207,7 +207,7 @@ export function CustomerPicker() {
         <PopoverTrigger asChild>
           <Button
             variant="ghost"
-            className="xl:w-[280px] w-[250px] h-full flex justify-start text-left"
+            className="lg:w-[280px] w-[180px] h-full flex justify-start text-left"
           >
             <div>
               <p className="font-semibold  text-xs">Khách</p>
@@ -220,9 +220,9 @@ export function CustomerPicker() {
           </Button>
         </PopoverTrigger>
         <div className="absolute top-0 xl:right-8 right-1 h-full cursor-pointer">
-          <div className="h-full  flex items-center w-full justify-center ">
+          <div className="h-full  flex items-center w-full  justify-center ">
             <div
-              className="p-3  bg-red-500  rounded-3xl h-3/4 w-full flex space-x-3 px-4 cursor-pointer"
+              className="items-center  bg-red-500 rounded-full lg:rounded-3xl w-14 h-14 lg:h-3/4 lg:w-full lg:px-5 flex cursor-pointer justify-center"
               onClick={handleSearching}
             >
               <svg
@@ -240,7 +240,9 @@ export function CustomerPicker() {
                 <circle cx={11} cy={11} r={8} />
                 <path d="m21 21-4.3-4.3" />
               </svg>
-              <p className="text-md font-medium text-white">Tìm kiếm</p>
+              <p className="text-md ps-2 font-medium text-white lg:block hidden">
+                Tìm kiếm
+              </p>
             </div>
           </div>
         </div>

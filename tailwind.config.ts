@@ -51,6 +51,10 @@ const config: Config = {
           "5": "hsl(var(--chart-5))",
         },
       },
+      screens: {
+        mdCustom: "830px", // Custom small screen
+      },
+
       animation: {
         beat: "beat 1s infinite", // Animation for the heartbeat effect
         moveGradient: "moveGradient 3s linear infinite ",

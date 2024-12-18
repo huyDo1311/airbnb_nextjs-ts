@@ -1,7 +1,6 @@
 import { CustomerPicker } from "@/app/(public)/(QuickSearch)/CustomerPicker";
 import { DatePickerWithRange } from "@/app/(public)/(QuickSearch)/DatePickerWithRange";
 import { PickDestination } from "@/app/(public)/(QuickSearch)/PickDestination";
-import http from "@/lib/http";
 
 interface Data {
   id: number;
@@ -22,19 +21,18 @@ export interface destination {
   dateTime?: string;
 }
 
-export default async function QuickSearch() {
-  const data: destination = await http.get(
-    "/api/vi-tri/phan-trang-tim-kiem?pageIndex=1&pageSize=8"
-  );
+export default function QuickSearch() {
   return (
-    <div
-      className={`flex justify-center rounded-s-full rounded-e-full border shadow-md overflow-hidden   
+    <div className="flex justify-center">
+      <div
+        className={`flex justify-center rounded-s-full rounded-e-full border shadow-md overflow-hidden  w-[850px]
      
-      h-16`}
-    >
-      <PickDestination pickDataDestination={data} />
-      <DatePickerWithRange />
-      <CustomerPicker />
+     h-[69px]`}
+      >
+        <PickDestination />
+        <DatePickerWithRange />
+        <CustomerPicker />
+      </div>
     </div>
   );
 }

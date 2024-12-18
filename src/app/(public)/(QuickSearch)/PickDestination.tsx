@@ -7,14 +7,11 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import http from "@/lib/http";
 import { useStore } from "@/store/store";
 import { Clock9 } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-
-interface dataDestination {
-  pickDataDestination: destination;
-}
 
 interface destinationProps {
   id: number;
@@ -24,26 +21,35 @@ interface destinationProps {
   hinhAnh: string;
 }
 
-export function PickDestination({ pickDataDestination }: dataDestination) {
+export function PickDestination() {
+  const [pickDataDestination, setPickDataDestination] = useState<
+    destinationProps[]
+  >([]);
+  useEffect(() => {
+    http
+      .get("/api/vi-tri/phan-trang-tim-kiem?pageIndex=1&pageSize=8")
+      .then((res) => {
+        // setPickDataDestination(res.content.data);
+        let vietNam = {
+          id: 0,
+          tenViTri: "vn",
+          tinhThanh: "Khắp Việt Nam",
+          quocGia: "Viet nam",
+          hinhAnh: "/assets/Destinations/Vietnam.jpg",
+        };
+        let cloneDataDestination: destinationProps[] = [
+          vietNam,
+          ...res.content.data,
+        ];
+        setPickDataDestination(cloneDataDestination);
+      })
+      .catch((err) => console.log(err));
+  }, []);
   let { dataStoreDestination2 } = useStore();
   const [DataDestination, setDataDestination] = useState<
     destinationProps[] | null
   >(null);
-  useEffect(() => {
-    let vietNam = {
-      id: 0,
-      tenViTri: "vn",
-      tinhThanh: "Khắp Việt Nam",
-      quocGia: "Viet nam",
-      hinhAnh: "/assets/Destinations/Vietnam.jpg",
-    };
-    let clonePickDataDestination: any = [
-      vietNam,
-      ...pickDataDestination.content.data,
-    ];
-    setDataDestination(clonePickDataDestination);
-    console.log("clone ne", clonePickDataDestination);
-  }, []);
+
   const [history, setHistory] = useState<string[]>([]);
   const [location, setLocation] = useState<string | null>(null);
   const { setNextStep, setDataStoreDestination, setDataStoreDestination2 } =
@@ -53,6 +59,7 @@ export function PickDestination({ pickDataDestination }: dataDestination) {
     setDataStoreDestination(id);
     setDataStoreDestination2(tinhThanh);
   };
+
   let handleHistory = (name: string) => {
     let cloneHistory = [...history];
     let findIndex = cloneHistory.filter((itemNe: string) => itemNe == name);
@@ -81,7 +88,7 @@ export function PickDestination({ pickDataDestination }: dataDestination) {
     });
   };
   let renderDestination = () => {
-    return DataDestination?.map((item) => {
+    return pickDataDestination?.map((item) => {
       return (
         <div
           key={item.id}
@@ -124,7 +131,7 @@ export function PickDestination({ pickDataDestination }: dataDestination) {
               setNextStep(-1);
             }}
             variant="ghost"
-            className="w-[280px] h-full text-left flex justify-start "
+            className="xl:w-[280px] w-full h-full text-left flex justify-start "
           >
             <div className="ps-3 ">
               <p className="font-semibold text-xs">Địa điểm</p>

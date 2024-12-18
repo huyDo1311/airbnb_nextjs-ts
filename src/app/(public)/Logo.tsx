@@ -18,6 +18,7 @@ export default function Logo() {
           src="/assets/airbnb-desktop.png"
           width={100}
           height={100}
+          className="w-24"
         />
       </Link>
     </div>

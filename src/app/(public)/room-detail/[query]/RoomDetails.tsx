@@ -297,11 +297,11 @@ export default function RoomDetails() {
     return commentsOfUsers?.slice(0, end).map((item: commentsSchema) => (
       <div
         key={item.id}
-        className="p-4  flex justify-center flex-col items-center"
+        className="  flex justify-center flex-col items-center"
       >
-        <div className=" w-2/3">
+        <div className=" ">
           <div className="flex items-center space-x-2">
-            <Avatar>
+            <Avatar className="-z-10">
               <AvatarImage
                 src={item.avatar ? item.avatar : "/assets/anonymous.png"}
                 className="w-48 rounded-full"
@@ -310,7 +310,9 @@ export default function RoomDetails() {
               <AvatarFallback>User</AvatarFallback>
             </Avatar>
             <div>
-              <p className="text-md font-semibold">{item.tenNguoiBinhLuan}</p>
+              <p className="lg:text-md text-sm font-semibold">
+                {item.tenNguoiBinhLuan}
+              </p>
               <p className="text-sm text-gray-500">3 năm hoạt động</p>
             </div>
           </div>
@@ -320,11 +322,11 @@ export default function RoomDetails() {
               <span className="text-lg flex space-x-1">
                 {renderStars(item.saoBinhLuan)}
               </span>
-              <span className="text-sm font-semibold">
+              <span className=" text-sm font-semibold">
                 {formatVietNamDate(item.ngayBinhLuan)}
               </span>
             </div>
-            <p className="text-xl h-14 overflow-y-hidden  font-medium capitalize">
+            <p className="lg:text-xl text-md h-14 overflow-y-hidden  font-medium capitalize">
               {item.noiDung ? item.noiDung : "Tốt"}
             </p>
           </div>
@@ -335,7 +337,7 @@ export default function RoomDetails() {
   let renderRoomDetails = () => {
     if (dataDetail && star) {
       return (
-        <div className="space-y-4 2xl:w-1/2">
+        <div className="space-y-4 ">
           <p className="text-3xl font-semibold">{dataDetail?.tenPhong}</p>
           <div className="flex space-x-2">
             {star > 4 ? (
@@ -362,14 +364,14 @@ export default function RoomDetails() {
                 width={800}
                 height={800}
                 alt="ks"
-                className="w-full h-[400px]"
+                className="w-full lg:h-[400px] h-[300px]"
               />
             ) : (
               <Skeleton className=" w-[1000px] h-[500px]" />
             )}
           </div>
-          <div className="w-full flex pt-5">
-            <div className="w-3/4">
+          <div className="w-full block lg:flex pt-5">
+            <div className="w-full lg:w-3/4">
               <p className="text-2xl font-semibold">
                 Toàn bộ căn hộ chung cư cao cấp tại {dataLocation}, Việt Nam
               </p>
@@ -391,16 +393,16 @@ export default function RoomDetails() {
               <Dialog>
                 <DialogTrigger asChild>
                   <div className="flex border p-5 space-x-5 justify-center rounded-2xl my-5 cursor-pointer">
-                    <div className="flex items-center">
+                    <div className="xl:flex hidden items-center">
                       <Image
                         src="/assets/barley.png"
                         width={50}
                         height={50}
                         alt="barley"
                       />
-                      <div className="text-md font-semibold px-2 line-">
-                        <p className="text-center leading-tight">
-                          Được khách <br /> yêu thích
+                      <div className="xl:text-md text-sm font-semibold px-2 line-">
+                        <p className="text-center leading-tight w-20">
+                          Được khách yêu thích
                         </p>
                       </div>
                       <Image
@@ -411,17 +413,18 @@ export default function RoomDetails() {
                         alt="barley"
                       />
                     </div>
-                    <p className="text-sm w-64 px-5 font-semibold">
+                    <p className="text-sm hidden xl:block w-64 px-7 text-center font-semibold">
                       Khách đánh giá đây là một trong những ngôi nhà được yêu
                       thích nhất trên Airbnb
                     </p>
+
                     <div className="flex items-center flex-col justify-center">
                       <div>
-                        <p className="text-xl font-bold text-center w-10 h-8">
+                        <p className="lg:text-xl text-lg font-bold text-center w-10 h-8">
                           {formatStar(star)}
                         </p>
                       </div>
-                      <div className="flex space-x-1 text-lg h-3 items-center">
+                      <div className="flex space-x-1 text-md lg:text-lg h-3 items-center">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           viewBox="0 0 32 32"
@@ -514,7 +517,27 @@ export default function RoomDetails() {
                         </svg>
                       </div>
                     </div>
-                    <div className="flex items-center flex-col justify-center ms-10">
+                    <div className="flex items-center xl:hidden justify-center border-x md:w-72 w-56">
+                      <Image
+                        src="/assets/barley.png"
+                        width={50}
+                        height={50}
+                        alt="barley"
+                      />
+                      <div className="xl:text-md text-sm font-semibold px-2 line-">
+                        <p className="text-center leading-tight w-20">
+                          Được khách yêu thích
+                        </p>
+                      </div>
+                      <Image
+                        className="transform scale-x-[-1]"
+                        src="/assets/barley.png"
+                        width={50}
+                        height={50}
+                        alt="barley"
+                      />
+                    </div>
+                    <div className="flex items-center flex-col justify-center  w-20">
                       <div className=" flex items-center ">
                         <p className="text-xl font-bold text-center w-10 h-8">
                           {countComments}
@@ -648,8 +671,10 @@ export default function RoomDetails() {
                 <p className="text-lg">{dataDetail?.moTa}</p>
               </div>
               <div className="space-y-5">
-                <p className="font-bold text-2xl">Các tiện ích đi kèm</p>
-                <div className="grid grid-cols-2 gap-6">
+                <p className="font-bold text-2xl lg:text-left text-center">
+                  Các tiện ích đi kèm
+                </p>
+                <div className="grid grid-cols-2 lg:gap-6 gap-5">
                   {[
                     {
                       icon: <WashingMachine />,
@@ -689,8 +714,11 @@ export default function RoomDetails() {
                   ].map(
                     (feature) =>
                       feature.isActive && (
-                        <div key={feature.label}>
-                          <div className="flex items-center space-x-4 ">
+                        <div
+                          key={feature.label}
+                          className="flex justify-center"
+                        >
+                          <div className="w-48  justify-center lg:justify-start flex flex-col lg:flex-row items-center  space-x-2">
                             <p>{feature.icon}</p>
                             <p> {feature.label}</p>
                           </div>
@@ -700,57 +728,59 @@ export default function RoomDetails() {
                 </div>
               </div>
             </div>
-            <div id="card" className="w-1/2 flex justify-end">
-              <div className="relative">
-                <Card className="w-[400px] p-3 shadow-xl sticky top-28">
-                  <CardHeader>
-                    <CardTitle className="text-xl">
-                      {formatMoney(handleMoney(dataDetail?.giaTien ?? 0))}{" "}
-                      <span className="text-sm font-normal"> / Đêm</span>
-                    </CardTitle>
-                    <CardDescription></CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <FormBooking
-                      handleSuccess={handleSuccess}
-                      dataDetail={dataDetail}
-                      query={query}
-                      setDifferenceDays={setDifferenceDays}
-                      countComments={countComments}
-                      totalMoney={totalMoney}
-                    />
-                    <p className="text-sm text-gray-400 text-center">
-                      Bạn vẫn chưa bị trừ tiền{" "}
-                    </p>
-                    <div className="space-y-4 mt-3">
-                      <div className="flex justify-between">
-                        <p className="text-md font-light underline">
-                          {formatMoney(handleMoney(dataDetail?.giaTien ?? 0))} x{" "}
-                          {differenceDays} đêm
-                        </p>
-                        <p>
-                          {formatMoney(
-                            handleMoneyResult(dataDetail?.giaTien ?? 0)
-                          )}
-                        </p>
+            <div id="card" className="w-full lg:w-1/2 lg:flex justify-end">
+              <div className="">
+                <div className="w-full  flex justify-center">
+                  <Card className="xl:w-[400px] lg:w-[350px] md:w-[450px] w-3/4 mt-28 lg:mt-0  p-3 shadow-xl sticky top-28 ">
+                    <CardHeader>
+                      <CardTitle className="text-xl">
+                        {formatMoney(handleMoney(dataDetail?.giaTien ?? 0))}{" "}
+                        <span className="text-sm font-normal"> / Đêm</span>
+                      </CardTitle>
+                      <CardDescription></CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <FormBooking
+                        handleSuccess={handleSuccess}
+                        dataDetail={dataDetail}
+                        query={query}
+                        setDifferenceDays={setDifferenceDays}
+                        countComments={countComments}
+                        totalMoney={totalMoney}
+                      />
+                      <p className="text-sm text-gray-400 text-center">
+                        Bạn vẫn chưa bị trừ tiền{" "}
+                      </p>
+                      <div className="space-y-4 mt-3">
+                        <div className="flex justify-between">
+                          <p className="text-md font-light underline">
+                            {formatMoney(handleMoney(dataDetail?.giaTien ?? 0))}{" "}
+                            x {differenceDays} đêm
+                          </p>
+                          <p>
+                            {formatMoney(
+                              handleMoneyResult(dataDetail?.giaTien ?? 0)
+                            )}
+                          </p>
+                        </div>
+                        <div className="flex justify-between">
+                          <p className="text-md font-light underline">
+                            Phí vệ sinh
+                          </p>
+                          <p>{formatMoney(200)}</p>
+                        </div>
+                        <hr />
+                        <div className="flex justify-between">
+                          <p className="text-lg font-semibold">Tổng</p>
+                          <p className="text-md font-medium underline">
+                            {totalMoney}
+                          </p>
+                        </div>
                       </div>
-                      <div className="flex justify-between">
-                        <p className="text-md font-light underline">
-                          Phí vệ sinh
-                        </p>
-                        <p>{formatMoney(200)}</p>
-                      </div>
-                      <hr />
-                      <div className="flex justify-between">
-                        <p className="text-lg font-semibold">Tổng</p>
-                        <p className="text-md font-medium underline">
-                          {totalMoney}
-                        </p>
-                      </div>
-                    </div>
-                  </CardContent>
-                  <CardFooter className="flex justify-between"></CardFooter>
-                </Card>
+                    </CardContent>
+                    <CardFooter className="flex justify-between"></CardFooter>
+                  </Card>
+                </div>
               </div>
             </div>
           </div>
@@ -773,7 +803,7 @@ export default function RoomDetails() {
 
   useEffect(() => {
     let findIndex = dataRented.findIndex(
-      (item: typeContent) => item.id == query
+      (item: typeContent) => item?.id == query
     );
 
     setShowRating(findIndex);
@@ -796,7 +826,7 @@ export default function RoomDetails() {
             />
             <p className="text-7xl font-bold pt-5">{formatStar(star)}</p>
             <Image
-              className="transform scale-x-[-1]"
+              className="transform scale-x-[-1] -z-10"
               src="/assets/barley.png"
               width={100}
               height={100}
@@ -819,8 +849,8 @@ export default function RoomDetails() {
 
         <hr />
 
-        <div className="flex justify-center flex-col items-center my-10">
-          <div className="grid grid-cols-2 w-3/4 ">{renderComments()}</div>
+        <div className="flex justify-between flex-col items-center my-10">
+          <div className="grid grid-cols-2 md:w-3/4  ">{renderComments()}</div>
         </div>
         <div className=" w-1/2 flex justify-center">
           {countComments > 4 && (
@@ -842,12 +872,12 @@ export default function RoomDetails() {
             Bảng đánh giá
           </p>
           <div className="w-full h-full flex justify-center ">
-            <div className="w-1/2">
+            <div className="xl:w-1/2 md:w-2/3">
               <BackgroundGradient className="rounded-[22px] w-full bg-white dark:bg-zinc-900  overflow-hidden">
                 <div className="space-y-3  flex items-center space-x-5  p-5 px-10 ">
                   <div className="space-y-1">
                     <div className="flex flex-col items-center space-y-1">
-                      <Avatar className="w-16 h-16">
+                      <Avatar className="w-16 h-16 -z-10">
                         <AvatarImage
                           src={
                             getUserData?.avatar

@@ -9,7 +9,7 @@ export default function Layout({
   return (
     <div className="flex  flex-col relative w-full">
       <MainHeader />
-      <main className="p-6 w-full">{children}</main>
+      <main className="p-6 mt-44 xl:mt-28 w-full">{children}</main>
       <Footer />
     </div>
   );

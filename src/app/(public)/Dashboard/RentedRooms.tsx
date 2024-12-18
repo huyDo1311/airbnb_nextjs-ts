@@ -58,14 +58,14 @@ export default function RentedRooms() {
     return dataRented?.map((item: typeContent, index: number): any => {
       return (
         <div
-          key={item.id}
+          key={index}
           className="w-full my-6 border rounded-2xl bg-white dark:bg-black  hover:scale-105 duration-300 "
         >
-          {item.hinhAnh &&
-            data2?.map((item2: any) => {
+          {item?.hinhAnh &&
+            data2?.map((item2?: any) => {
               return (
-                <div key={item2.id} className="m-5 group cursor-pointer z-20">
-                  {item2.id == item.maViTri && (
+                <div key={item2?.id} className="m-5 group cursor-pointer z-20">
+                  {item2?.id == item.maViTri && (
                     <div className="relative">
                       <div className="w-full h-[300px]">
                         <Image
@@ -78,9 +78,9 @@ export default function RentedRooms() {
                       </div>
                       <div className="flex justify-between py-3">
                         <div className="space-y-1">
-                          {item2.id == item.maViTri && (
+                          {item2?.id == item.maViTri && (
                             <p className="text-sm font-bold ">
-                              {item2.tinhThanh} / Việt Nam
+                              {item2?.tinhThanh} / Việt Nam
                             </p>
                           )}
                           <p className="text-sm font-light">{vietnameseDate}</p>

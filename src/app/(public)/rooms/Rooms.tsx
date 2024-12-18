@@ -78,13 +78,13 @@ export default function Rooms({ data2 }: any) {
   let renderRooms = () => {
     return resultSearch.map((item: any, index: any) => {
       return (
-        <div key={item.id} className="w-[375px] my-6">
+        <div key={item.id} className="">
           {item.hinhAnh &&
             data2.content.data.map((item2: any) => {
               return (
-                <div key={item2.id} className="m-5 group cursor-pointer z-20">
+                <div key={item2.id} className="  group  cursor-pointer z-20">
                   {item2.id == item.maViTri && (
-                    <CardContainer className="inter-var h-40 w-full   ">
+                    <CardContainer className="inter-var   ">
                       <CardBody className="group shadow-lg p-4 border  relative group/card  px-5 dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] rounded-xl    ">
                         <div
                           className=""
@@ -99,7 +99,7 @@ export default function Rooms({ data2 }: any) {
                           }}
                         >
                           <CardItem translateZ="50">
-                            <div className="w-[300px] h-[250px]">
+                            <div className="xl:w-[300px] xl:h-[250px] w-full h-[200px]">
                               <Image
                                 className="h-full w-full object-left object-cover rounded-xl"
                                 src={item.hinhAnh}
@@ -202,7 +202,9 @@ export default function Rooms({ data2 }: any) {
   return (
     <div>
       <FormDialog Open={Open} handleClose={handleClose} />
-      <div className="grid grid-cols-4 ">{renderRooms()}</div>
+      <div className="grid xl:grid-cols-4 grid-cols-3  gap-5">
+        {renderRooms()}
+      </div>
     </div>
   );
 }

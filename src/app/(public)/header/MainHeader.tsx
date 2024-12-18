@@ -1,5 +1,5 @@
 "use client";
-import HeaderDesktop from "@/app/(public)/header/headerDesktop";
+import HeaderDesktop from "@/app/(public)/header/HeaderDesktop";
 import HeaderMobile from "@/app/(public)/header/HeaderMobile";
 import HeaderTablet from "@/app/(public)/header/HeaderTablet";
 import React from "react";
@@ -7,15 +7,15 @@ import MediaQuery from "react-responsive";
 
 export default function MainHeader() {
   return (
-    <div>
+    <div className="">
       <MediaQuery maxWidth={767}>
         <HeaderMobile />
       </MediaQuery>
-      <MediaQuery minWidth={768} maxWidth={1023}>
+      <MediaQuery minWidth={768} maxWidth={1279}>
         <HeaderTablet />
       </MediaQuery>
 
-      <MediaQuery minWidth={1024}>
+      <MediaQuery minWidth={1280}>
         <HeaderDesktop />
       </MediaQuery>
     </div>

@@ -97,7 +97,7 @@ export const ModalBody = ({
   return (
     <AnimatePresence>
       {open && (
-        <div>
+        <div className="">
           <Overlay />
           <motion.div
             initial={{
