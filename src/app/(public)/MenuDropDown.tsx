@@ -43,7 +43,7 @@ export default function MenuDropDown() {
 
   return (
     <div>
-      <SidebarTrigger ref={refSidebar} className="hidden" />
+      <SidebarTrigger />
 
       <Button
         variant="outline"

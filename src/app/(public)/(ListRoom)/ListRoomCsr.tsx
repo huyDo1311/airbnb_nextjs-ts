@@ -354,24 +354,11 @@ export default function ListRoomCsr({ data, data2 }: any) {
   };
   return (
     <div className="">
-      <Drawer>
-        <DrawerTrigger>Open</DrawerTrigger>
-        <DrawerContent>
-          <DrawerHeader>
-            <DrawerTitle>Are you absolutely sure?</DrawerTitle>
-            <DrawerDescription>This action cannot be undone.</DrawerDescription>
-          </DrawerHeader>
-          <DrawerFooter>
-            <Button>Submit</Button>
-            <DrawerClose>bk</DrawerClose>
-          </DrawerFooter>
-        </DrawerContent>
-      </Drawer>
       <FormDialog Open={Open} handleClose={handleClose} />
       <div className="grid xl:grid-cols-4 mdCustom:grid-cols-2 lg:grid-cols-3 lg:gap-5  gap-8">
         {renderRooms()}
       </div>
-
+      <SidebarTrigger />
       <Pagination className="">
         <PaginationContent>
           <PaginationItem>

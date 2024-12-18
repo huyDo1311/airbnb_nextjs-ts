@@ -75,7 +75,7 @@ export default function SignupForm({ handleClick }: any) {
   };
 
   return (
-    <div className="">
+    <div className="w-full">
       <Card className=" w-full  shadow-none border-0">
         <CardHeader>
           <CardTitle className="text-2xl">Đăng Ký</CardTitle>
@@ -92,15 +92,16 @@ export default function SignupForm({ handleClick }: any) {
                 console.warn("loi", err);
               })}
             >
-              <div className="grid gap-3">
+              <div className="grid gap-4">
                 <FormField
                   control={form.control}
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <div className="grid gap-2 ">
+                      <div className="grid gap-2 w-full ">
                         <Label htmlFor="name">Họ và Tên</Label>
                         <Input
+                          className="w-full"
                           id="name"
                           type="text"
                           placeholder="Nguyễn Văn A"
@@ -162,76 +163,55 @@ export default function SignupForm({ handleClick }: any) {
                   )}
                 />
 
-                <div className="flex justify-start space-x-5">
-                  <FormField
-                    control={form.control}
-                    name="gender"
-                    render={({ field }) => (
-                      <FormItem>
-                        <div className="grid gap-2">
-                          <Label htmlFor="gender">Giới tính</Label>
+                <div className="md:flex justify-start md:space-x-5 grid grid-cols-1 gap-4">
+                  <div className="md:w-1/2 w-full">
+                    <FormField
+                      control={form.control}
+                      name="gender"
+                      render={({ field }) => (
+                        <FormItem>
+                          <div className="grid gap-2">
+                            <Label htmlFor="gender">Giới tính</Label>
 
-                          <Select
-                            required
-                            onValueChange={(value) =>
-                              field.onChange(value === "true")
-                            } // Convert string "true"/"false" to boolean
-                          >
-                            <SelectTrigger className="w-[180px]">
-                              <SelectValue placeholder="Chọn giới tính" />
-                            </SelectTrigger>
-                            <SelectContent side="top">
-                              <SelectGroup>
-                                <SelectItem value="true">Nam</SelectItem>
-                                <SelectItem value="false">Nữ</SelectItem>
-                              </SelectGroup>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </div>
-                      </FormItem>
-                    )}
-                  />
-                  {/* <FormField
-                    control={form.control}
-                    name="gender"
-                    render={({ field }) => (
-                      <FormItem>
-                        <div className="grid gap-2">
-                          <Label htmlFor="gender">Giới tính</Label>
+                            <Select
+                              required
+                              onValueChange={(value) =>
+                                field.onChange(value === "true")
+                              } // Convert string "true"/"false" to boolean
+                            >
+                              <SelectTrigger>
+                                <SelectValue placeholder="Chọn giới tính" />
+                              </SelectTrigger>
+                              <SelectContent side="top">
+                                <SelectGroup>
+                                  <SelectItem value="true">Nam</SelectItem>
+                                  <SelectItem value="false">Nữ</SelectItem>
+                                </SelectGroup>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </div>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className="md:w-1/2 w-full">
+                    <FormField
+                      control={form.control}
+                      name="birthday"
+                      render={({ field }) => (
+                        <FormItem>
+                          <div className="grid gap-2 ">
+                            <Label htmlFor="birthday">Sinh nhật</Label>
 
-                          <Select required onValueChange={field.onChange}>
-                            <SelectTrigger className="w-[180px]">
-                              <SelectValue placeholder="Chọn giới tính" />
-                            </SelectTrigger>
-                            <SelectContent side="top">
-                              <SelectGroup>
-                                <SelectItem value="male">Nam</SelectItem>
-                                <SelectItem value="female">Nữ</SelectItem>
-                              </SelectGroup>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </div>
-                      </FormItem>
-                    )}
-                  /> */}
+                            <BirthdayPicker field={field} />
 
-                  <FormField
-                    control={form.control}
-                    name="birthday"
-                    render={({ field }) => (
-                      <FormItem>
-                        <div className="grid gap-2 ">
-                          <Label htmlFor="birthday">Sinh nhật</Label>
-
-                          <BirthdayPicker field={field} />
-
-                          <FormMessage />
-                        </div>
-                      </FormItem>
-                    )}
-                  />
+                            <FormMessage />
+                          </div>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                 </div>
                 <Button type="submit" className="">
                   Đăng Ký

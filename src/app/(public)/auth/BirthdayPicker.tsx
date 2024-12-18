@@ -84,7 +84,7 @@ export function BirthdayPicker({ field }: any) {
         <Button
           variant={"outline"}
           className={cn(
-            "w-[240px] justify-star bg-transparent text-left font-normal flex justify-start"
+            " w-full justify-star bg-transparent text-left font-normal flex justify-start"
           )}
         >
           <CalendarIcon />
