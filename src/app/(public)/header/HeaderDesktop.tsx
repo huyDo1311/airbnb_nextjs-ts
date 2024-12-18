@@ -1,3 +1,4 @@
+"use client";
 import QuickSearch from "@/app/(public)/(QuickSearch)/QuickSearch";
 import Logo from "@/app/(public)/Logo";
 import MenuDropDown from "@/app/(public)/MenuDropDown";

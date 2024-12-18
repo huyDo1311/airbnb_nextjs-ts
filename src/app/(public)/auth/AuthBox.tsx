@@ -53,7 +53,7 @@ export default function AuthBox() {
                 onValueChange={setTabValue}
                 className="w-full h-full"
               >
-                <TabsList className="grid w-full grid-cols-2">
+                <TabsList className="grid  grid-cols-2">
                   <TabsTrigger value="signin">Đăng Nhập</TabsTrigger>
                   <TabsTrigger value="signup">Đăng ký</TabsTrigger>
                 </TabsList>

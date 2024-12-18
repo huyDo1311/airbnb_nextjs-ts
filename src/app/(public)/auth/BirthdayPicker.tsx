@@ -6,11 +6,7 @@ import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+
 import { vi } from "date-fns/locale";
 import {
   Select,
@@ -19,10 +15,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@radix-ui/react-popover";
 
 export function BirthdayPicker({ field }: any) {
   const [date, setDate] = React.useState<Date | undefined>(new Date());
   const [active, setActive] = React.useState(false);
+  const [activeMonth, setActiveMonth] = React.useState(false);
+  const [activeYear, setActiveYear] = React.useState(false);
 
   const startYear = getYear(new Date()) - 100;
   const endYear = getYear(new Date());
@@ -54,12 +57,16 @@ export function BirthdayPicker({ field }: any) {
   const handleMonthChange = (month: string) => {
     const newDate = setMonth(date!, months.indexOf(month));
     setDate(newDate);
+    setActiveMonth(true);
+
     field.onChange(newDate); // Update react-hook-form with new month value
   };
 
   const handleYearChange = (year: string) => {
     const newDate = setYear(date!, parseInt(year));
     setDate(newDate);
+    setActiveYear(true);
+
     field.onChange(newDate); // Update react-hook-form with new year value
   };
 
@@ -68,7 +75,9 @@ export function BirthdayPicker({ field }: any) {
     (_, i) => startYear + i
   );
   const years = NewYears.toReversed();
-
+  let givay = () => {
+    console.log(1);
+  };
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -79,18 +88,21 @@ export function BirthdayPicker({ field }: any) {
           )}
         >
           <CalendarIcon />
-          {active ? (
+          {active || activeMonth || activeYear ? (
             format(date!, "dd/MM/yyyy", { locale: vi })
           ) : (
             <span>Chọn sinh nhật</span>
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0" align="center">
+      <PopoverContent
+        className="w-auto p-0 bg-white rounded-xl shadow-lg dark:bg-black"
+        align="center"
+      >
         <div className="flex justify-between px-4 pt-4">
           <Select
             onValueChange={handleMonthChange}
-            value={active ? months[getMonth(date!)] : ""} // Ensure month is a string value (month name)
+            value={active || activeMonth ? months[getMonth(date!)] : ""} // Ensure month is a string value (month name)
           >
             <SelectTrigger className="w-[140px] p-2">
               <SelectValue placeholder="Tháng" />
@@ -106,7 +118,7 @@ export function BirthdayPicker({ field }: any) {
 
           <Select
             onValueChange={handleYearChange}
-            value={active ? getYear(date!).toString() : ""} // Ensure year is a string value
+            value={active || activeYear ? getYear(date!).toString() : ""} // Ensure year is a string value
           >
             <SelectTrigger className="w-[140px] p-2">
               <SelectValue placeholder="Năm" />

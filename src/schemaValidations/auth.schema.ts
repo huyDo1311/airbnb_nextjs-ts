@@ -7,14 +7,22 @@ export const SignupBody = z
     name: z
       .string()
       .min(1, "Tên không được bỏ trống")
-      .regex(/^[a-zA-Z\s]+$/, {
-        message: "Tên chỉ được chứa chữ cái và khoảng trắng", // Message in Vietnamese
-      }),
+      .regex(
+        /^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểễếỄỆỉịọỏốồổỗộớờởỡợụủứừửữựỳỵỷỹ\s]+$/,
+        {
+          message: "Tên chỉ được chứa chữ cái tiếng Việt và khoảng trắng", // Custom error message
+        }
+      ),
     email: z.string().email("Email không hợp lệ"),
     password: z
       .string()
+
       .min(1, "Mật khẩu không được bỏ trống")
+      .regex(/^[a-zA-Z0-9]+$/, {
+        message: "Chỉ được nhập chữ cái tiếng Anh và số, không có khoảng trắng", // Custom error message in Vietnamese
+      })
       .min(6, "Mật khẩu phải có ít nhất 6 ký tự")
+
       .max(50, "Mật khẩu không được vượt quá 50 ký tự"),
     phone: z
       .string()

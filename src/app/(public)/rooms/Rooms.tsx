@@ -99,12 +99,12 @@ export default function Rooms({ data2 }: any) {
                           }}
                         >
                           <CardItem translateZ="50">
-                            <div className="xl:w-[300px] xl:h-[250px] w-full h-[200px]">
+                            <div className=" xl:h-[250px] w-full  lg:w-full mdCustom:w-[350px] h-[200px] ">
                               <Image
-                                className="h-full w-full object-left object-cover rounded-xl"
+                                className="h-full lg:w-full w-[500px] mdCustom:w-full object-left object-cover rounded-xl"
                                 src={item.hinhAnh}
-                                width={1000}
-                                height={1000}
+                                width={2000}
+                                height={2000}
                                 alt="ks"
                               />
                             </div>
@@ -113,28 +113,27 @@ export default function Rooms({ data2 }: any) {
                             <div className="flex justify-between py-3">
                               <div className="space-y-1">
                                 {item2.id == item.maViTri && (
-                                  <p className="text-sm font-bold ">
+                                  <p className="lg:text-sm  font-bold ">
                                     {item2.tinhThanh} / Việt Nam
                                   </p>
                                 )}
                                 <CardItem>
-                                  <p className="text-sm font-light">
+                                  <p className="lg:text-sm text-md font-light">
                                     {vietnameseDate}
                                   </p>
                                 </CardItem>
                                 <CardItem translateZ={100}>
-                                  <p className="text-sm font-medium">
+                                  <p className="lg:text-sm text-md font-medium">
                                     {handleMoney(item.giaTien)} / Đêm{" "}
                                   </p>
                                 </CardItem>
                               </div>
                               <div className="flex items-start">
                                 <div className="flex items-center space-x-2">
-                                  <p className="text-sm font-medium">
+                                  <p className="lg:text-sm text-md font-medium">
                                     {formatStar(
                                       vietnamLocations[index]?.star
                                     ) ?? formatStar(4.5)}{" "}
-                                    {/* Display star with comma */}
                                   </p>
                                   <i className="fa fa-star text-sm transition duration-300 group-hover:text-yellow-300"></i>
                                 </div>
@@ -202,7 +201,7 @@ export default function Rooms({ data2 }: any) {
   return (
     <div>
       <FormDialog Open={Open} handleClose={handleClose} />
-      <div className="grid xl:grid-cols-4 grid-cols-3  gap-5">
+      <div className="grid xl:grid-cols-4 mdCustom:grid-cols-2 lg:grid-cols-3 lg:gap-5  gap-8">
         {renderRooms()}
       </div>
     </div>

@@ -38,7 +38,7 @@ const footerData = [
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-100 text-gray-700 py-8">
+    <footer className="bg-gray-100 dark:bg-black text-gray-700 dark:text-white py-8">
       <div className="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 px-4">
         {footerData.map((section, index) => (
           <div key={index}>
@@ -56,7 +56,7 @@ export default function Footer() {
         ))}
       </div>
 
-      <div className="border-t mt-8 pt-4 text-center text-sm text-gray-500">
+      <div className="border-t mt-8 pt-4 text-center text-sm  text-gray-500 dark:text-white">
         <p>
           © 2024 Airbnb, Inc. · Quyền riêng tư · Điều khoản · Sơ đồ trang web
         </p>

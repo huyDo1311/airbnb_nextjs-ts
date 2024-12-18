@@ -105,7 +105,7 @@ export default function RoomDetails() {
   const [totalMoney, setTotalMoney] = useState<string | undefined>();
   const [isSuccess, setIsSuccess] = useState(false);
   const [end, setEnd] = useState<number>(4);
-
+  const [displayDes, setdisplayDes] = useState<boolean>(false);
   const searchParams = useSearchParams();
   const query: string | null = searchParams.get("name");
   let handleSuccess = async () => {
@@ -158,7 +158,6 @@ export default function RoomDetails() {
       return <p> Ngày không hợp lệ</p>;
     }
   };
-
   useEffect(() => {
     let filterDetail: any = dataApiListRoom.filter(
       (item: any) => item.id == query
@@ -297,20 +296,20 @@ export default function RoomDetails() {
     return commentsOfUsers?.slice(0, end).map((item: commentsSchema) => (
       <div
         key={item.id}
-        className="  flex justify-center flex-col items-center"
+        className="  flex justify-center flex-col items-center p-5 px-10 lg:p-0 lg:border-none border rounded-2xl"
       >
-        <div className=" ">
-          <div className="flex items-center space-x-2">
-            <Avatar className="-z-10">
+        <div className="lg:w-3/4 w-full ">
+          <div className="flex items-center space-x-4 lg:space-x-2">
+            <Avatar className="-z-10 lg:w-11 lg:h-11 w-16 h-16">
               <AvatarImage
                 src={item.avatar ? item.avatar : "/assets/anonymous.png"}
-                className="w-48 rounded-full"
+                className=" rounded-full"
                 alt="user"
               />
               <AvatarFallback>User</AvatarFallback>
             </Avatar>
             <div>
-              <p className="lg:text-md text-sm font-semibold">
+              <p className="md:text-md text-lg font-semibold">
                 {item.tenNguoiBinhLuan}
               </p>
               <p className="text-sm text-gray-500">3 năm hoạt động</p>
@@ -326,7 +325,7 @@ export default function RoomDetails() {
                 {formatVietNamDate(item.ngayBinhLuan)}
               </span>
             </div>
-            <p className="lg:text-xl text-md h-14 overflow-y-hidden  font-medium capitalize">
+            <p className="lg:text-xl text-md h-14 overflow-y-hidden   font-medium capitalize">
               {item.noiDung ? item.noiDung : "Tốt"}
             </p>
           </div>
@@ -364,7 +363,7 @@ export default function RoomDetails() {
                 width={800}
                 height={800}
                 alt="ks"
-                className="w-full lg:h-[400px] h-[300px]"
+                className="w-full lg:h-[400px] h-[250px]"
               />
             ) : (
               <Skeleton className=" w-[1000px] h-[500px]" />
@@ -392,7 +391,7 @@ export default function RoomDetails() {
 
               <Dialog>
                 <DialogTrigger asChild>
-                  <div className="flex border p-5 space-x-5 justify-center rounded-2xl my-5 cursor-pointer">
+                  <div className="flex border p-3 lg:p-5  justify-around rounded-2xl my-5 cursor-pointer">
                     <div className="xl:flex hidden items-center">
                       <Image
                         src="/assets/barley.png"
@@ -401,7 +400,7 @@ export default function RoomDetails() {
                         alt="barley"
                       />
                       <div className="xl:text-md text-sm font-semibold px-2 line-">
-                        <p className="text-center leading-tight w-20">
+                        <p className="text-center font-medium  leading-tight w-20">
                           Được khách yêu thích
                         </p>
                       </div>
@@ -517,20 +516,21 @@ export default function RoomDetails() {
                         </svg>
                       </div>
                     </div>
-                    <div className="flex items-center xl:hidden justify-center border-x md:w-72 w-56">
+                    <div className="flex items-center xl:hidden justify-center border-x md:w-64 w-52">
                       <Image
                         src="/assets/barley.png"
                         width={50}
                         height={50}
+                        className="xl:w-14 w-10"
                         alt="barley"
                       />
                       <div className="xl:text-md text-sm font-semibold px-2 line-">
-                        <p className="text-center leading-tight w-20">
+                        <p className="text-center  leading-tight w-20">
                           Được khách yêu thích
                         </p>
                       </div>
                       <Image
-                        className="transform scale-x-[-1]"
+                        className="transform scale-x-[-1] xl:w-14 w-10"
                         src="/assets/barley.png"
                         width={50}
                         height={50}
@@ -571,7 +571,7 @@ export default function RoomDetails() {
                           alt="barley"
                         />
                       </div>
-                      <p className="text-lg text-center">
+                      <p className="text-lg  text-center">
                         Được khách yêu thích
                       </p>
                     </DialogTitle>
@@ -668,7 +668,15 @@ export default function RoomDetails() {
                   <p>Dịch sang tiếng Anh</p>
                   <Languages />
                 </div>
-                <p className="text-lg">{dataDetail?.moTa}</p>
+                <div className={`  ${displayDes ? "" : "line-clamp-3"}`}>
+                  <p className="text-lg">{dataDetail?.moTa}</p>
+                </div>
+                <Button
+                  variant="outline"
+                  onClick={() => setdisplayDes((a) => !a)}
+                >
+                  {displayDes ? "Thu gọn" : "Xem tất cả"}
+                </Button>
               </div>
               <div className="space-y-5">
                 <p className="font-bold text-2xl lg:text-left text-center">
@@ -716,9 +724,9 @@ export default function RoomDetails() {
                       feature.isActive && (
                         <div
                           key={feature.label}
-                          className="flex justify-center"
+                          className="flex lg:justify-start  justify-center"
                         >
-                          <div className="w-48  justify-center lg:justify-start flex flex-col lg:flex-row items-center  space-x-2">
+                          <div className="w-20 lg:w-auto space-y-2 justify-center lg:justify-start flex flex-col lg:flex-row items-center  lg:space-x-2">
                             <p>{feature.icon}</p>
                             <p> {feature.label}</p>
                           </div>
@@ -728,10 +736,13 @@ export default function RoomDetails() {
                 </div>
               </div>
             </div>
-            <div id="card" className="w-full lg:w-1/2 lg:flex justify-end">
+            <div id="card" className="w-full lg:w-1/2  lg:flex justify-end ">
               <div className="">
-                <div className="w-full  flex justify-center">
-                  <Card className="xl:w-[400px] lg:w-[350px] md:w-[450px] w-3/4 mt-28 lg:mt-0  p-3 shadow-xl sticky top-28 ">
+                <div className="w-full  flex justify-center sticky xl:top-32 top-48 ">
+                  <Card
+                    className="xl:w-[400px] lg:w-[350px] sm:w-[450px] w-5/6
+                   mt-28 lg:mt-0  p-3 shadow-xl  "
+                  >
                     <CardHeader>
                       <CardTitle className="text-xl">
                         {formatMoney(handleMoney(dataDetail?.giaTien ?? 0))}{" "}
@@ -850,7 +861,9 @@ export default function RoomDetails() {
         <hr />
 
         <div className="flex justify-between flex-col items-center my-10">
-          <div className="grid grid-cols-2 md:w-3/4  ">{renderComments()}</div>
+          <div className="grid grid-cols-1 md:grid-cols-2 w-full h-56 lg:h-auto overflow-auto  gap-5 b">
+            {renderComments()}
+          </div>
         </div>
         <div className=" w-1/2 flex justify-center">
           {countComments > 4 && (
@@ -874,7 +887,7 @@ export default function RoomDetails() {
           <div className="w-full h-full flex justify-center ">
             <div className="xl:w-1/2 md:w-2/3">
               <BackgroundGradient className="rounded-[22px] w-full bg-white dark:bg-zinc-900  overflow-hidden">
-                <div className="space-y-3  flex items-center space-x-5  p-5 px-10 ">
+                <div className="space-y-3  lg:flex  justify-center items-center lg:space-x-5  p-5  ">
                   <div className="space-y-1">
                     <div className="flex flex-col items-center space-y-1">
                       <Avatar className="w-16 h-16 -z-10">
@@ -893,22 +906,30 @@ export default function RoomDetails() {
                         {getUserData.name}
                       </p>
                     </div>
-                    <div className="flex space-x-1">{selectStar()}</div>
+                    <div className="flex justify-center space-x-1">
+                      {selectStar()}
+                    </div>
                   </div>
-                  <div className="w-full space-y-2">
-                    <form onSubmit={handleSubmit} className="flex">
+                  <div className="w-full px-5 ">
+                    <form onSubmit={handleSubmit} className="lg:flex w-full ">
                       <Textarea
                         value={userInput}
                         onChange={handleChange}
-                        className="resize-none h-32  outline-none"
-                        placeholder="Viết đánh giá của bạn vào đây..."
+                        className="resize-none   outline-none"
+                        placeholder="Viết đánh giá của bạn vào đây"
                       />
                       <button
                         className="hover:scale-125 transition-all"
                         type="submit"
                       >
-                        <Send size={30} />
+                        <Send className="hidden lg:block" size={30} />
                       </button>
+                      <Button
+                        variant="default"
+                        className="w-full block lg:hidden"
+                      >
+                        <p>Gửi đi</p>
+                      </Button>
                     </form>
                   </div>
                 </div>
@@ -920,7 +941,7 @@ export default function RoomDetails() {
 
       {isSuccess && (
         <div className="fixed top-0 left-0  text-4xl  w-full h-full bg-red-400 z-50  flex justify-center items-center ">
-          <div className="w-96 h-96">
+          <div className="lg:w-96 lg:h-96 w-64 h-64">
             <LottieAnimationPurchase />
           </div>
         </div>

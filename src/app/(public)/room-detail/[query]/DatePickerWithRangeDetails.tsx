@@ -186,7 +186,7 @@ s        flex   items-center`,
               defaultMonth={date?.from}
               selected={date}
               onSelect={handleDate}
-              numberOfMonths={2}
+              numberOfMonths={window.innerWidth < 840 ? 1 : 2}
               captionLayout="dropdown"
             />
           </div>
