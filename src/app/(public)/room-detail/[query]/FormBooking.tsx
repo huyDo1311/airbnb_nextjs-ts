@@ -42,6 +42,14 @@ import { CreateBookingDetailBodyType } from "@/schemaValidations/booking.schema"
 import { useAddBookingDetailMutation } from "@/queries/useBooking";
 import Image from "next/image";
 import bookingApiRequest from "@/apiRequests/booking";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
 interface DataDetail {
   dataDetail: typeContent;
   query: string | null;
@@ -263,25 +271,72 @@ export default function FormBooking({
           </ModalBody>
         </Modal>
       </div>
-      <Dialog open={Open} onOpenChange={setOpen}>
-        <DialogPortal>
-          <DialogOverlay className="fixed inset-0 bg-black/50 z-10" />
-          <DialogContent className="w-[500px] p-5 border fixed dark:bg-black bg-white black:bg-black shadow-2xl top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-xl z-50 px-3">
-            <DialogHeader>
-              <DialogTitle className="text-center font-semibold text-lg py-5">
-                Đăng nhập hoặc đăng ký
-              </DialogTitle>
-            </DialogHeader>
-            <hr />
-            <div className="h-auto">
+      <div className="md:block hidden">
+        <Dialog open={Open} onOpenChange={setOpen}>
+          <DialogPortal>
+            <DialogOverlay className="fixed inset-0 bg-black/50 z-10" />
+            <DialogContent className="w-[500px] p-5 border fixed dark:bg-black bg-white black:bg-black shadow-2xl top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-xl z-50 px-3">
+              <DialogHeader>
+                <DialogTitle className="text-center font-semibold text-lg py-5">
+                  Đăng nhập hoặc đăng ký
+                </DialogTitle>
+              </DialogHeader>
+              <hr />
+              <div className="h-auto">
+                <tabs.Tabs
+                  value={tabValue}
+                  onValueChange={setTabValue}
+                  className="w-full h-full"
+                >
+                  <tabs.TabsList className="grid w-full grid-cols-2">
+                    <tabs.TabsTrigger value="signin">
+                      Đăng Nhập
+                    </tabs.TabsTrigger>
+                    <tabs.TabsTrigger value="signup">Đăng ký</tabs.TabsTrigger>
+                  </tabs.TabsList>
+                  <tabs.TabsContent value="signin">
+                    <SigninForm
+                      setFetchData={setFetchData}
+                      handleClose={handleClose}
+                    />
+                  </tabs.TabsContent>
+                  <tabs.TabsContent value="signup">
+                    <SignupForm handleClick={handleClick} />
+                  </tabs.TabsContent>
+                </tabs.Tabs>
+              </div>
+            </DialogContent>
+          </DialogPortal>
+        </Dialog>
+      </div>
+      <div className="md:hidden block">
+        <Drawer open={Open} onOpenChange={setOpen}>
+          <DrawerContent>
+            <DrawerHeader className="flex flex-col items-center">
+              <DrawerTitle className=""> Đăng nhập hoặc đăng ký</DrawerTitle>
+              <DrawerDescription>
+                Truy cập ngay để trải nghiệm nhiều tính năng mới
+              </DrawerDescription>
+            </DrawerHeader>
+            <div className="w-full flex justify-center">
               <tabs.Tabs
                 value={tabValue}
                 onValueChange={setTabValue}
-                className="w-full h-full"
+                className="w-[90%] h-full"
               >
-                <tabs.TabsList className="grid w-full grid-cols-2">
-                  <tabs.TabsTrigger value="signin">Đăng Nhập</tabs.TabsTrigger>
-                  <tabs.TabsTrigger value="signup">Đăng ký</tabs.TabsTrigger>
+                <tabs.TabsList className="grid w-full grid-cols-2  h-10 my-2">
+                  <tabs.TabsTrigger
+                    value="signin"
+                    className=" rounded-lg border focus:bg-gray-300/25"
+                  >
+                    Đăng Nhập
+                  </tabs.TabsTrigger>
+                  <tabs.TabsTrigger
+                    value="signup"
+                    className="rounded-lg border focus:bg-gray-300/25"
+                  >
+                    Đăng ký
+                  </tabs.TabsTrigger>
                 </tabs.TabsList>
                 <tabs.TabsContent value="signin">
                   <SigninForm
@@ -294,9 +349,10 @@ export default function FormBooking({
                 </tabs.TabsContent>
               </tabs.Tabs>
             </div>
-          </DialogContent>
-        </DialogPortal>
-      </Dialog>
+            <DrawerFooter></DrawerFooter>
+          </DrawerContent>
+        </Drawer>
+      </div>
     </div>
   );
 }

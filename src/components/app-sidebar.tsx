@@ -23,8 +23,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
 import SigninForm from "@/app/(public)/auth/SigninForm";
 import { useEffect, useRef, useState } from "react";
 import { useStore } from "@/store/store";
@@ -156,7 +156,7 @@ export function AppSidebar() {
 
   let renderSideTab = (): any => {
     let cc: any = items.map((item) => {
-      if (item.title == "Quản trị" && getUserData.role == "ADMIN") {
+      if (item.title == "Quản trị" && getUserData?.role == "ADMIN") {
         return (
           <SidebarMenuItem key={item.title}>
             <SidebarMenuButton asChild>
@@ -168,8 +168,8 @@ export function AppSidebar() {
           </SidebarMenuItem>
         );
       } else if (
-        item.title == "Thông tin" ||
-        (item.title == "Đăng xuất" && getUserData.id != 0)
+        item?.title == "Thông tin" ||
+        (item?.title == "Đăng xuất" && getUserData?.id != 0)
       ) {
         return (
           <SidebarMenuItem key={item.title}>
@@ -182,10 +182,10 @@ export function AppSidebar() {
           </SidebarMenuItem>
         );
       } else if (
-        item.title == "Truy cập" ||
-        item.title == "Trang chủ" ||
-        item.title == "Cài đặt" ||
-        (item.title == "Đặt lịch" && getUserData.id == 0)
+        item?.title == "Truy cập" ||
+        item?.title == "Trang chủ" ||
+        item?.title == "Cài đặt" ||
+        (item?.title == "Đặt lịch" && getUserData?.id == 0)
       ) {
         return (
           <SidebarMenuItem key={item.title}>
@@ -485,29 +485,43 @@ export function AppSidebar() {
       {/* Truy cập */}
       <Drawer open={OpenLogin} onOpenChange={setOpenLogin}>
         <DrawerContent>
-          <DrawerHeader>
+          <DrawerHeader className="flex flex-col items-center">
             <DrawerTitle className=""> Đăng nhập hoặc đăng ký</DrawerTitle>
-            <DrawerDescription>This action cannot be undone.</DrawerDescription>
+            <DrawerDescription>
+              Truy cập ngay để trải nghiệm nhiều tính năng mới
+            </DrawerDescription>
           </DrawerHeader>
-          <Tabs
-            value={tabValue}
-            onValueChange={setTabValue}
-            className="w-full h-full"
-          >
-            <TabsList className="grid w-full grid-cols-2 py-5 ">
-              <TabsTrigger value="signin">Đăng Nhập</TabsTrigger>
-              <TabsTrigger value="signup">Đăng ký</TabsTrigger>
-            </TabsList>
-            <TabsContent value="signin">
-              <SigninForm
-                setFetchData={setFetchData}
-                handleClose={handleClose}
-              />
-            </TabsContent>
-            <TabsContent value="signup">
-              <SignupForm handleClick={handleClick} />
-            </TabsContent>
-          </Tabs>
+          <div className="w-full flex justify-center">
+            <Tabs
+              value={tabValue}
+              onValueChange={setTabValue}
+              className="w-[90%] h-full"
+            >
+              <TabsList className="grid w-full grid-cols-2  h-10 my-2">
+                <TabsTrigger
+                  value="signin"
+                  className=" rounded-lg border focus:bg-gray-300/25"
+                >
+                  Đăng Nhập
+                </TabsTrigger>
+                <TabsTrigger
+                  value="signup"
+                  className="rounded-lg border focus:bg-gray-300/25"
+                >
+                  Đăng ký
+                </TabsTrigger>
+              </TabsList>
+              <TabsContent value="signin">
+                <SigninForm
+                  setFetchData={setFetchData}
+                  handleClose={handleClose}
+                />
+              </TabsContent>
+              <TabsContent value="signup">
+                <SignupForm handleClick={handleClick} />
+              </TabsContent>
+            </Tabs>
+          </div>
           <DrawerFooter></DrawerFooter>
         </DrawerContent>
       </Drawer>

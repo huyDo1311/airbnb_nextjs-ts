@@ -903,7 +903,7 @@ export default function RoomDetails() {
                         <AvatarFallback>User</AvatarFallback>
                       </Avatar>
                       <p className="text-md text-center font-medium">
-                        {getUserData.name}
+                        {getUserData?.name}
                       </p>
                     </div>
                     <div className="flex justify-center space-x-1">

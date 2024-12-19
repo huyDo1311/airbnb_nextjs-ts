@@ -47,10 +47,10 @@ export default function SigninForm({
     try {
       const result = await signinMutation.mutateAsync(data);
       const user = result.content.user;
+      setGetUserData(user);
       setUserToLocalStorage(user);
       setFetchDataStore();
       handleClose();
-      setGetUserData(user);
       if (setFetchData) {
         setFetchData(true);
       }
