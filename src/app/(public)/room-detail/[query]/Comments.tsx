@@ -40,23 +40,27 @@ export default function Comments({ commentsOfUsers }: commentsUsers) {
   const renderComments = () => {
     return commentsOfUsers?.map((item: commentsSchema) => (
       <div key={item.id} className="p-4 border-b">
-        <div className="flex items-center space-x-2">
-          <Avatar>
-            <AvatarImage
-              src={item.avatar ? item.avatar : "/assets/anonymous.png"}
-              className="w-10 rounded-full"
-              alt="user"
-            />
-            <AvatarFallback>User</AvatarFallback>
-          </Avatar>
+        <div className="flex flex-col sm:flex-row items-center sm:space-x-2 space-y-2">
+          <div className="sm:w-10 sm:h-10  w-20 h-20">
+            <Avatar className=" ">
+              <AvatarImage
+                src={item.avatar ? item.avatar : "/assets/anonymous.png"}
+                alt="user"
+                className="object-cover rounded-full w-full h-full"
+              />
+              <AvatarFallback>User</AvatarFallback>
+            </Avatar>
+          </div>
           <div>
-            <p className="text-sm font-semibold">{item.tenNguoiBinhLuan}</p>
-            <p className="text-xs text-gray-500">3 năm hoạt động</p>
+            <p className="text-sm sm:text-left text-center font-semibold">
+              {item.tenNguoiBinhLuan}
+            </p>
+            <p className="text-xs text-center text-gray-500">3 năm hoạt động</p>
           </div>
         </div>
 
         <div className="mt-2 space-y-1">
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center sm:justify-start justify-center space-x-2">
             <span className="text-xs flex space-x-1">
               {renderStars(item.saoBinhLuan)}
             </span>
@@ -65,14 +69,16 @@ export default function Comments({ commentsOfUsers }: commentsUsers) {
               {moment(item.ngayBinhLuan).format("DD MMM YYYY")}
             </span>
           </div>
-          <p className="text-xs font-light capitalize">{item.noiDung}</p>
+          <p className="sm:text-xs text-md sm:text-left text-center font-light capitalize">
+            {item.noiDung}
+          </p>
         </div>
       </div>
     ));
   };
 
   return (
-    <div className="grid grid-cols-2 gap-4 h-96 overflow-scroll">
+    <div className="grid sm:grid-cols-2 grid-cols-1 gap-4 h-96 overflow-scroll">
       {renderComments()}
     </div>
   );

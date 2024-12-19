@@ -1,6 +1,5 @@
 "use client";
 import { typeContent } from "@/app/(public)/(ListRoom)/ListRoom";
-import AuthBox from "@/app/(public)/auth/AuthBox";
 import SigninForm from "@/app/(public)/auth/SigninForm";
 import SignupForm from "@/app/(public)/auth/SignupForm";
 import { CustomerPickerDetails } from "@/app/(public)/room-detail/[query]/CustomerPickerDetails";
@@ -25,7 +24,6 @@ import {
   ModalFooter,
   ModalTrigger,
 } from "@/components/ui/animated-modal";
-import { motion } from "framer-motion";
 
 import * as tabs from "@/components/ui/tabs";
 import {
@@ -49,6 +47,7 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
+  DrawerTrigger,
 } from "@/components/ui/drawer";
 interface DataDetail {
   dataDetail: typeContent;
@@ -70,6 +69,7 @@ export default function FormBooking({
   let { star, getUserData, dataApiListRoom, setDataRented } = useStore();
   const handleClose = () => {
     setOpen(false);
+    setOpenMobile(false);
   };
 
   const formatStar = (): string => {
@@ -79,6 +79,7 @@ export default function FormBooking({
   let { total } = useStore();
   const [dateSubmit, setDateSubmit] = useState<DateRange | undefined>();
   const [Open, setOpen] = useState(false);
+  const [OpenMobile, setOpenMobile] = useState(false);
   const [storageUser, setStorageUser] = useState<any>(null);
   let userBooking = useAddBookingDetailMutation();
   let refClick = useRef<null | HTMLButtonElement>(null);
@@ -98,7 +99,11 @@ export default function FormBooking({
   let handleOpenModal = async () => {
     if (dateSubmit?.from && dateSubmit?.to) {
       if (!storageUser) {
-        setOpen(true);
+        if (window.innerWidth < 767) {
+          setOpenMobile(true);
+        } else {
+          setOpen(true);
+        }
         toast({
           variant: "destructive",
           description: (
@@ -175,7 +180,7 @@ export default function FormBooking({
         <CustomerPickerDetails dataDetail={dataDetail} />
       </div>
 
-      <div className="  flex items-center justify-center my-4">
+      <div className="   flex items-center justify-center my-4">
         <Modal>
           <ModalTrigger
             storageUser={storageUser}
@@ -193,72 +198,79 @@ export default function FormBooking({
               ✈️
             </div>
           </ModalTrigger>
-          <ModalBody>
-            <ModalContent>
-              <h4 className="text-lg md:text-2xl text-neutral-600 dark:text-neutral-100 font-bold text-center mb-8">
-                <span className="px-1 py-0.5 rounded-md bg-gray-100 dark:bg-neutral-800 dark:border-neutral-700 border border-gray-200">
-                  Chuyến đi của bạn ✈️
-                </span>{" "}
-              </h4>
-              <div className="h-[430px] border-2 rounded-lg">
-                <div className="flex justify-center items-center border-b-2 space-x-2 p-4  h-1/2">
-                  <div className="w-[120px] h-[120px]">
-                    <Image
-                      className="h-full w-full object-left object-cover rounded-xl"
-                      src={dataDetail?.hinhAnh ?? ""}
-                      width={1000}
-                      height={1000}
-                      alt="ks"
-                    />
-                  </div>
-                  <div className=" w-80 rounded-lg  space-y-1 p-1">
-                    <span className="  text-lg font-medium">
-                      {dataDetail?.tenPhong}
-                    </span>{" "}
-                    <div className="flex items-center space-x-1">
-                      <Star size={13} color="#FFD602" />
-                      <p className="text-md font-medium">{formatStar()}</p>
-                      <p className="text-sm">({countComments} bình luận)</p>
-                      <div className="flex  items-center">
-                        {star > 4 && <Award size={13} color="#e26060" />}
+          <ModalBody className="">
+            <ModalContent className="w-full z-50 ">
+              <div className="w-full">
+                <h4 className="text-lg md:text-2xl text-neutral-600 dark:text-neutral-100 font-bold text-center mb-8">
+                  <span className="px-1 py-0.5 rounded-md bg-gray-100 dark:bg-neutral-800 dark:border-neutral-700 border border-gray-200">
+                    Chuyến đi của bạn ✈️
+                  </span>{" "}
+                </h4>
+                <div className="h-[500px] border-2 rounded-lg">
+                  <div className=" block justify-center items-center border-b-2 space-x-2 p-4  h-1/2">
+                    <div className=" w-full h-32">
+                      <Image
+                        className="h-full w-full object-left object-cover rounded-xl"
+                        src={dataDetail?.hinhAnh ?? ""}
+                        width={1000}
+                        height={1000}
+                        alt="ks"
+                      />
+                    </div>
+                    <div className=" rounded-lg  space-y-1 p-1">
+                      <span className="  text-lg font-medium">
+                        {dataDetail?.tenPhong}
+                      </span>{" "}
+                      <div className="flex items-center space-x-1">
+                        <Star size={13} color="#FFD602" />
+                        <p className="text-md font-medium">{formatStar()}</p>
+                        <p className="text-sm">({countComments} bình luận)</p>
+                        <div className="flex  items-center">
+                          {star > 4 && <Award size={13} color="#e26060" />}
 
-                        <p className="text-sm font-medium">
-                          {star == 5
-                            ? "Chủ nhà siêu cấp"
-                            : star < 4
-                            ? ""
-                            : "Chủ nhà được ưa thích"}
-                        </p>
+                          <p className="text-sm font-medium">
+                            {star == 5
+                              ? "Chủ nhà siêu cấp"
+                              : star < 4
+                              ? ""
+                              : "Chủ nhà được ưa thích"}
+                          </p>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-                <div className="flex w-full p-5 h-1/2">
-                  <div className="  flex  flex-col justify-center space-y-2 w-2/3">
-                    <div className="flex items-center space-x-1">
-                      <p className="text-lg font-semibold">Ngày:</p>
-                      <p className="text-lg font-normal">
-                        {dateSubmit?.from && format(dateSubmit?.from, "dd ")} -{" "}
-                        {dateSubmit?.to &&
-                          format(dateSubmit?.to, "dd MMM yyy", { locale: vi })}
-                      </p>
+                  <div className="flex w-full p-5 h-1/2">
+                    <div className="  flex  flex-col justify-center space-y-2 w-2/3">
+                      <div className="flex items-center space-x-1">
+                        <p className="text-lg font-semibold">Ngày:</p>
+                        <p className="text-lg font-normal">
+                          {dateSubmit?.from && format(dateSubmit?.from, "dd ")}{" "}
+                          -{" "}
+                          {dateSubmit?.to &&
+                            format(dateSubmit?.to, "dd MMM yyy", {
+                              locale: vi,
+                            })}
+                        </p>
+                      </div>
+                      <div className="flex items-center space-x-1">
+                        <p className="text-lg font-semibold">Khách: </p>
+                        <p className="text-lg font-normal">{total}</p>
+                      </div>
+                      <div className="flex items-center space-x-1">
+                        <p className="text-lg font-semibold">
+                          Tổng giá (VNĐ):{" "}
+                        </p>
+                        <p className="text-lg font-normal">{totalMoney}</p>
+                      </div>
                     </div>
-                    <div className="flex items-center space-x-1">
-                      <p className="text-lg font-semibold">Khách: </p>
-                      <p className="text-lg font-normal">{total}</p>
+                    <div className="flex justify-center items-center w-1/3">
+                      <Image
+                        src="/assets/airbnb.png"
+                        width={120}
+                        height={120}
+                        alt="logo"
+                      />
                     </div>
-                    <div className="flex items-center space-x-1">
-                      <p className="text-lg font-semibold">Tổng giá (VNĐ): </p>
-                      <p className="text-lg font-normal">{totalMoney}</p>
-                    </div>
-                  </div>
-                  <div className="flex justify-center items-center w-1/3">
-                    <Image
-                      src="/assets/airbnb.png"
-                      width={120}
-                      height={120}
-                      alt="logo"
-                    />
                   </div>
                 </div>
               </div>
@@ -271,11 +283,11 @@ export default function FormBooking({
           </ModalBody>
         </Modal>
       </div>
-      <div className="md:block hidden">
+      <div className="">
         <Dialog open={Open} onOpenChange={setOpen}>
           <DialogPortal>
-            <DialogOverlay className="fixed inset-0 bg-black/50 z-10" />
-            <DialogContent className="w-[500px] p-5 border fixed dark:bg-black bg-white black:bg-black shadow-2xl top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-xl z-50 px-3">
+            <DialogOverlay className="fixed inset-0 md:block hidden w-[500px]  bg-black/50 z-10" />
+            <DialogContent className="md:block hidden w-[500px] p-5 border fixed dark:bg-black bg-white black:bg-black shadow-2xl top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-xl z-50 px-3">
               <DialogHeader>
                 <DialogTitle className="text-center font-semibold text-lg py-5">
                   Đăng nhập hoặc đăng ký
@@ -309,9 +321,9 @@ export default function FormBooking({
           </DialogPortal>
         </Dialog>
       </div>
-      <div className="md:hidden block">
-        <Drawer open={Open} onOpenChange={setOpen}>
-          <DrawerContent>
+      <div>
+        <Drawer open={OpenMobile} onOpenChange={setOpenMobile}>
+          <DrawerContent className="md:hidden block">
             <DrawerHeader className="flex flex-col items-center">
               <DrawerTitle className=""> Đăng nhập hoặc đăng ký</DrawerTitle>
               <DrawerDescription>

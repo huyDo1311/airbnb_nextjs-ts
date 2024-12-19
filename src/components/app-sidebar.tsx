@@ -124,7 +124,7 @@ export function AppSidebar() {
       action: () => setOpenLogin((a) => !a),
     },
     {
-      title: "Thông tin ",
+      title: "Thông tin",
       url: "/Dashboard",
       icon: User,
     },
@@ -155,51 +155,38 @@ export function AppSidebar() {
   ];
 
   let renderSideTab = (): any => {
-    let cc: any = items.map((item) => {
-      if (item.title == "Quản trị" && getUserData?.role == "ADMIN") {
-        return (
-          <SidebarMenuItem key={item.title}>
-            <SidebarMenuButton asChild>
-              <a href={item.url} onClick={item && item.action}>
-                <item.icon />
-                <span>{item.title}</span>
-              </a>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        );
-      } else if (
-        item?.title == "Thông tin" ||
-        (item?.title == "Đăng xuất" && getUserData?.id != 0)
-      ) {
-        return (
-          <SidebarMenuItem key={item.title}>
-            <SidebarMenuButton asChild>
-              <a href={item.url} onClick={item && item.action}>
-                <item.icon />
-                <span>{item.title}</span>
-              </a>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        );
-      } else if (
-        item?.title == "Truy cập" ||
-        item?.title == "Trang chủ" ||
-        item?.title == "Cài đặt" ||
-        (item?.title == "Đặt lịch" && getUserData?.id == 0)
-      ) {
-        return (
-          <SidebarMenuItem key={item.title}>
-            <SidebarMenuButton asChild>
-              <a href={item.url} onClick={item && item.action}>
-                <item.icon />
-                <span>{item.title}</span>
-              </a>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        );
-      }
-    });
-    return cc;
+    return items
+      .filter((item) => {
+        // Logic for filtering items based on user role and id
+        if (item.title === "Quản trị" && getUserData?.role === "ADMIN") {
+          return true;
+        }
+        if (
+          (item.title === "Thông tin" || item.title === "Đăng xuất") &&
+          getUserData?.id !== 0
+        ) {
+          return true;
+        }
+        if (
+          item.title === "Trang chủ" ||
+          item.title === "Cài đặt" ||
+          (item.title === "Truy cập" && getUserData?.id === 0) || // Show "Truy cập" only when not signed in
+          (item.title === "Đặt lịch" && getUserData?.id === 0)
+        ) {
+          return true;
+        }
+        return false;
+      })
+      .map((item) => (
+        <SidebarMenuItem key={item.title}>
+          <SidebarMenuButton asChild>
+            <a href={item.url} onClick={item?.action}>
+              <item.icon />
+              <span>{item.title}</span>
+            </a>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      ));
   };
 
   //   DATA DESTINATION
