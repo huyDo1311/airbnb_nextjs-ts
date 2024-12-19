@@ -46,16 +46,16 @@ export function PickDestination() {
       .catch((err) => console.log(err));
   }, []);
   let { dataStoreDestination2 } = useStore();
-  const [DataDestination, setDataDestination] = useState<
-    destinationProps[] | null
-  >(null);
+  // const [DataDestination, setDataDestination] = useState<
+  //   destinationProps[] | null
+  // >(null);
 
   const [history, setHistory] = useState<string[]>([]);
   const [location, setLocation] = useState<string | null>(null);
   const { setNextStep, setDataStoreDestination, setDataStoreDestination2 } =
     useStore();
   let handleDestination = (id: number, tinhThanh: string): void => {
-    setLocation(tinhThanh);
+    // setLocation(tinhThanh);
     setDataStoreDestination(id);
     setDataStoreDestination2(tinhThanh);
   };
@@ -123,7 +123,7 @@ export function PickDestination() {
   };
 
   return (
-    <div>
+    <div className="w-full">
       <Popover>
         <PopoverTrigger asChild>
           <Button
@@ -131,7 +131,7 @@ export function PickDestination() {
               setNextStep(-1);
             }}
             variant="ghost"
-            className="xl:w-[280px] w-full h-full text-left flex justify-start "
+            className=" w-full h-full text-left flex justify-start "
           >
             <div className="ps-3 ">
               <p className="font-semibold text-xs">Địa điểm</p>

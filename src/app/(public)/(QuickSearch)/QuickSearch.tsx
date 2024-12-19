@@ -25,7 +25,7 @@ export default function QuickSearch() {
   return (
     <div className="flex justify-center">
       <div
-        className={`flex justify-center rounded-s-full rounded-e-full border shadow-md overflow-hidden  w-[850px]
+        className={`flex justify-center rounded-s-full rounded-e-full border shadow-md overflow-hidden  w-[880px]
      
      h-[69px]`}
       >

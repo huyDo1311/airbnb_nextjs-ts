@@ -122,7 +122,7 @@ export function CustomerPickerDetails({ dataDetail }: DataDetail) {
   };
 
   return (
-    <div className="relative border rounded-lg border-black">
+    <div className="relative border rounded-lg border-black w-full">
       <Popover>
         <PopoverTrigger asChild>
           <Button
@@ -137,7 +137,10 @@ export function CustomerPickerDetails({ dataDetail }: DataDetail) {
           </Button>
         </PopoverTrigger>
 
-        <PopoverContent className="w-[450px] rounded-3xl" align="center">
+        <PopoverContent
+          className="sm:w-[450px] w-full rounded-3xl"
+          align="center"
+        >
           <div className="space-y-5 p-5">{renderCustomer()}</div>
         </PopoverContent>
       </Popover>

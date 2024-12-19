@@ -1,18 +1,19 @@
 "use client";
 import SigninForm from "@/app/(public)/auth/SigninForm";
-import { DialogHeader, DialogOverlay } from "@/components/ui/dialog";
-
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Dialog,
-  DialogContent,
-  DialogPortal,
-  DialogTitle,
-  DialogTrigger,
-} from "@radix-ui/react-dialog";
+import {} from "@radix-ui/react-dialog";
 import React, { useState } from "react";
 import SignupForm from "@/app/(public)/auth/SignupForm";
 import { Button } from "@/components/ui/button";
+import {
+  DialogHeader,
+  Dialog,
+  DialogContent,
+  DialogOverlay,
+  DialogPortal,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 export default function AuthBox() {
   const [open, setOpen] = useState(false);

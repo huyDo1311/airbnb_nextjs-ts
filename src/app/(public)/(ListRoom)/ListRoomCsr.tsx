@@ -358,7 +358,6 @@ export default function ListRoomCsr({ data, data2 }: any) {
       <div className="grid xl:grid-cols-4 mdCustom:grid-cols-2 lg:grid-cols-3 lg:gap-5  gap-8">
         {renderRooms()}
       </div>
-      <SidebarTrigger />
       <Pagination className="">
         <PaginationContent>
           <PaginationItem>

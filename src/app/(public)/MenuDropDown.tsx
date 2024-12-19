@@ -43,8 +43,7 @@ export default function MenuDropDown() {
 
   return (
     <div>
-      <SidebarTrigger />
-
+      <SidebarTrigger ref={refSidebar} className="hidden" />
       <Button
         variant="outline"
         className="rounded-3xl w-[100px] py-6 md:hidden flex"

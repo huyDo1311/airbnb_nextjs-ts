@@ -516,7 +516,7 @@ export default function RoomDetails() {
                         </svg>
                       </div>
                     </div>
-                    <div className="flex items-center xl:hidden justify-center border-x md:w-64 w-52">
+                    <div className="flex items-center xl:hidden justify-center border-x md:w-64 sm:w-52">
                       <Image
                         src="/assets/barley.png"
                         width={50}

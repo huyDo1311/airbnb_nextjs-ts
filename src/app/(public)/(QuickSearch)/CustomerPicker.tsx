@@ -38,13 +38,13 @@ export function CustomerPicker() {
   const [quantityOfChildren, setQuantityOfChildren] = useState<number>(0);
   const [quantityOfBabies, setQuantityOfBaby] = useState<number>(0);
   const [quantityOfPets, setQuantityOfPets] = useState<number>(0);
-  const [total, setTotal] = useState<number>(0);
+  // const [total, setTotal] = useState<number>(0);
   // useEffect(() => {
 
   // }, [quantityOfAdult, quantityOfChildren, setCustomers]);
 
   useEffect(() => {
-    setTotal(quantityOfAdult + quantityOfChildren);
+    // setTotal(quantityOfAdult + quantityOfChildren);
     setHeaderTotal(quantityOfAdult + quantityOfChildren);
   }, [quantityOfAdult, quantityOfChildren]);
   let dataCustomers: dataTypeCustomers[] = [
@@ -202,12 +202,12 @@ export function CustomerPicker() {
     });
   };
   return (
-    <div className="relative">
+    <div className="relative w-full">
       <Popover>
         <PopoverTrigger asChild>
           <Button
             variant="ghost"
-            className="lg:w-[280px] w-[180px] h-full flex justify-start text-left"
+            className="w-full h-full flex justify-start text-left"
           >
             <div>
               <p className="font-semibold  text-xs">Khách</p>
@@ -219,10 +219,10 @@ export function CustomerPicker() {
             </div>
           </Button>
         </PopoverTrigger>
-        <div className="absolute top-0 xl:right-8 right-1 h-full cursor-pointer">
-          <div className="h-full  flex items-center w-full  justify-center ">
+        <div className="absolute top-0 xl:right-8 right-1 h-full cursor-pointer w-1/2">
+          <div className="h-full  flex items-center justify-center   ">
             <div
-              className="items-center  bg-red-500 rounded-full lg:rounded-3xl w-14 h-14 lg:h-3/4 lg:w-full lg:px-5 flex cursor-pointer justify-center"
+              className="items-center  bg-red-500 rounded-full lg:rounded-3xl w-14 h-14 lg:h-3/4 lg:w-full md:px-5 flex cursor-pointer justify-center"
               onClick={handleSearching}
             >
               <svg

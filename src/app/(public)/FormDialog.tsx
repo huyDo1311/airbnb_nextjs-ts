@@ -2,6 +2,8 @@
 import SigninForm from "@/app/(public)/auth/SigninForm";
 import SignupForm from "@/app/(public)/auth/SignupForm";
 import {
+  Dialog,
+  DialogPortal,
   DialogContent,
   DialogHeader,
   DialogOverlay,
@@ -9,16 +11,13 @@ import {
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useStore } from "@/store/store";
-import { Dialog, DialogPortal } from "@radix-ui/react-dialog";
 import React, { useEffect, useState } from "react";
 import {
-  DrawerTrigger,
   DrawerContent,
   DrawerHeader,
   DrawerTitle,
   DrawerDescription,
   DrawerFooter,
-  DrawerClose,
   Drawer,
 } from "@/components/ui/drawer";
 

@@ -96,7 +96,7 @@ s        flex  after:border-r items-center`,
                 className={cn(
                   `    cursor-pointer 
                 items-center
-after:h-10  after:border-r before:h-10 before:border-l
+after:h-10   before:h-10 before:border-l
 
                
              text-left w-full h-full  rounded-full  `
@@ -104,7 +104,7 @@ after:h-10  after:border-r before:h-10 before:border-l
               >
                 {dataCalendar?.from ? (
                   <div className="w-full flex-col items-center flex">
-                    <div className="w-full">
+                    <div className="w-full  flex flex-col items-center">
                       <p className="font-semibold text-xs">Nhận phòng</p>
 
                       <p className="text-md">
@@ -114,7 +114,7 @@ after:h-10  after:border-r before:h-10 before:border-l
                   </div>
                 ) : (
                   <div className="w-full flex-col items-center flex">
-                    <div className="w-full">
+                    <div className="w-full flex flex-col items-center">
                       <p className="font-semibold text-xs">Nhận phòng</p>
                       <p className="text-gray-400 font-light text-md">
                         Thêm ngày
@@ -140,7 +140,7 @@ after:h-10  after:border-r before:h-10 before:border-l
               >
                 {dataCalendar?.to ? (
                   <div className="w-full  flex-col items-center flex">
-                    <div className="w-full">
+                    <div className="w-full flex-col items-center flex">
                       {" "}
                       <p className="font-semibold text-xs">Trả phòng</p>
                       <p className="text-md">
@@ -150,7 +150,7 @@ after:h-10  after:border-r before:h-10 before:border-l
                   </div>
                 ) : (
                   <div className="w-full flex-col items-center flex">
-                    <div className="w-full">
+                    <div className="w-full flex-col items-center flex">
                       <p className="font-semibold text-xs">Trả phòng</p>
                       <p className="text-gray-400 font-light text-md">
                         Thêm ngày

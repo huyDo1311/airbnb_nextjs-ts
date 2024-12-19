@@ -5,8 +5,14 @@ import SigninForm from "@/app/(public)/auth/SigninForm";
 import SignupForm from "@/app/(public)/auth/SignupForm";
 import { CustomerPickerDetails } from "@/app/(public)/room-detail/[query]/CustomerPickerDetails";
 import { DatePickerWithRangeDetails } from "@/app/(public)/room-detail/[query]/DatePickerWithRangeDetails";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { DialogHeader } from "@/components/ui/dialog";
+import {
+  DialogHeader,
+  Dialog,
+  DialogContent,
+  DialogOverlay,
+  DialogPortal,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { toast } from "@/hooks/use-toast";
 import { useStore } from "@/store/store";
 import { format } from "date-fns";
@@ -20,15 +26,8 @@ import {
   ModalTrigger,
 } from "@/components/ui/animated-modal";
 import { motion } from "framer-motion";
-import {
-  Dialog,
-  DialogContent,
-  DialogOverlay,
-  DialogPortal,
-  DialogTitle,
-  DialogTrigger,
-} from "@radix-ui/react-dialog";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+import * as tabs from "@/components/ui/tabs";
 import {
   AlertCircle,
   Award,
@@ -275,25 +274,25 @@ export default function FormBooking({
             </DialogHeader>
             <hr />
             <div className="h-auto">
-              <Tabs
+              <tabs.Tabs
                 value={tabValue}
                 onValueChange={setTabValue}
                 className="w-full h-full"
               >
-                <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="signin">Đăng Nhập</TabsTrigger>
-                  <TabsTrigger value="signup">Đăng ký</TabsTrigger>
-                </TabsList>
-                <TabsContent value="signin">
+                <tabs.TabsList className="grid w-full grid-cols-2">
+                  <tabs.TabsTrigger value="signin">Đăng Nhập</tabs.TabsTrigger>
+                  <tabs.TabsTrigger value="signup">Đăng ký</tabs.TabsTrigger>
+                </tabs.TabsList>
+                <tabs.TabsContent value="signin">
                   <SigninForm
                     setFetchData={setFetchData}
                     handleClose={handleClose}
                   />
-                </TabsContent>
-                <TabsContent value="signup">
+                </tabs.TabsContent>
+                <tabs.TabsContent value="signup">
                   <SignupForm handleClick={handleClick} />
-                </TabsContent>
-              </Tabs>
+                </tabs.TabsContent>
+              </tabs.Tabs>
             </div>
           </DialogContent>
         </DialogPortal>
