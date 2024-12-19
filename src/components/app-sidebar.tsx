@@ -520,7 +520,7 @@ export function AppSidebar() {
             <DrawerDescription>Nhanh chóng và tiện lợi!</DrawerDescription>
           </DrawerHeader>
 
-          <div className="h-[550px] sm:h-[600px]  overflow-auto space-y-10">
+          <div className="h-[500px] sm:h-[550px]  overflow-auto space-y-10">
             {/*  destination    */}
 
             <div
@@ -545,7 +545,7 @@ export function AppSidebar() {
                 Đặt ngày nhận và trả phòng
               </p>
 
-              <div id="DatePicker" className="flex justify-center">
+              <div id="DatePickerMobile" className="flex justify-center">
                 <Calendar
                   locale={vi}
                   disabled={matcher}

@@ -118,6 +118,39 @@
   padding: 10px 15px;
 }
 
+
+
+
+
+#DatePickerMobile #react-day-picker-3,
+#react-day-picker-4,
+.text-muted-foreground,
+.rdp-button_reset.rdp-button {
+  font-size: small;
+  margin: 3px;
+}
+#DatePickerMobile #react-day-picker-3,
+#react-day-picker-4 {
+  font-size: large !important
+}
+
+#DatePickerMobile .rdp-button_reset {
+  width: 35px;
+  height: 35px;
+  border-radius: 200px;
+}
+#DatePickerMobile .text-muted-foreground.rounded-md {
+  width: 35px;
+}
+#DatePickerMobile .space-y-4.rdp-caption_end,
+.space-y-4.rdp-caption_start {
+  padding: 10px 
+}
+
+
+
+
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
