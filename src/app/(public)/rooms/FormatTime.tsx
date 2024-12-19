@@ -28,14 +28,23 @@ export default function FormatTime() {
   }, [resultSearch, dataCalendar]);
   return (
     <div className="text-md font-semibold">
-      <div className="flex items-center">
+      <div className="md:flex items-center text-white">
         {" "}
-        Có <span className="text-red-400 text-lg mx-2">{choO}</span> chỗ ở tại{" "}
-        <span className="ms-2 me-1 text-red-400"> {dataStoreDestination2}</span>
-        <Hotel className="me-2" size={20} color="#f96262" />|{" "}
-        <span className="ms-2 w-48">
-          {formatDate} - {formatDate2}
-        </span>
+        <div>
+          <span>Có</span>
+          <span className="text-red-400 text-lg mx-2">{choO}</span>
+          <span>chỗ ở tại</span>
+          <span className="ms-2 me-1 text-red-400">
+            {" "}
+            {dataStoreDestination2}
+          </span>
+        </div>
+        <div className="flex items-center">
+          <Hotel className="me-2" size={20} color="#f96262" />|{" "}
+          <span className="ms-2 w-48">
+            {formatDate} - {formatDate2}
+          </span>
+        </div>
       </div>
     </div>
   );

@@ -66,7 +66,8 @@ export default function FormBooking({
   totalMoney,
   handleSuccess,
 }: DataDetail) {
-  let { star, getUserData, dataApiListRoom, setDataRented } = useStore();
+  let { star, getUserData, dataApiListRoom, setDataRented, setHideHeader } =
+    useStore();
   const handleClose = () => {
     setOpen(false);
     setOpenMobile(false);
@@ -180,19 +181,20 @@ export default function FormBooking({
         <CustomerPickerDetails dataDetail={dataDetail} />
       </div>
 
-      <div className="   flex items-center justify-center my-4">
+      <div className=" my-4">
         <Modal>
           <ModalTrigger
             storageUser={storageUser}
             className="bg-red-500 text-white flex justify-center group/modal-btn w-full rounded-lg "
             dateSubmit={dateSubmit}
             refClick={refClick}
+            setHideHeader={setHideHeader}
           >
-            <span className="group-hover/modal-btn:translate-x-72 text-center transition duration-500 p-1">
+            <span className="group-hover/modal-btn:translate-x-72 text-center transition duration-500 w-full p-1">
               Đặt phòng
             </span>
             <div
-              className=" -translate-x-60 group-hover/modal-btn:translate-x-0 flex items-center justify-center absolute inset-0 transition duration-500 text-white z-20"
+              className=" w-full -translate-x-full group-hover/modal-btn:translate-x-0 flex items-center justify-center absolute inset-0 transition duration-500 text-white z-20"
               onClick={handleOpenModal}
             >
               ✈️
@@ -207,7 +209,7 @@ export default function FormBooking({
                   </span>{" "}
                 </h4>
                 <div className="h-[500px] border-2 rounded-lg">
-                  <div className=" block justify-center items-center border-b-2 space-x-2 p-4  h-1/2">
+                  <div className=" block justify-center items-center border-b-2 space-x-2 p-4  h-[55%] sm:h-1/2">
                     <div className=" w-full h-32">
                       <Image
                         className="h-full w-full object-left object-cover rounded-xl"
@@ -218,13 +220,15 @@ export default function FormBooking({
                       />
                     </div>
                     <div className=" rounded-lg  space-y-1 p-1">
-                      <span className="  text-lg font-medium">
+                      <span className="  text-md sm:text-lg font-medium">
                         {dataDetail?.tenPhong}
                       </span>{" "}
-                      <div className="flex items-center space-x-1">
-                        <Star size={13} color="#FFD602" />
-                        <p className="text-md font-medium">{formatStar()}</p>
-                        <p className="text-sm">({countComments} bình luận)</p>
+                      <div className="sm:flex items-center sm:space-x-1">
+                        <div className="flex items-center space-x-1">
+                          <Star size={13} color="#FFD602" />
+                          <p className="text-md font-medium">{formatStar()}</p>
+                          <p className="text-sm">({countComments} bình luận)</p>
+                        </div>
                         <div className="flex  items-center">
                           {star > 4 && <Award size={13} color="#e26060" />}
 
@@ -241,9 +245,11 @@ export default function FormBooking({
                   </div>
                   <div className="flex w-full p-5 h-1/2">
                     <div className="  flex  flex-col justify-center space-y-2 w-2/3">
-                      <div className="flex items-center space-x-1">
-                        <p className="text-lg font-semibold">Ngày:</p>
-                        <p className="text-lg font-normal">
+                      <div className="sm:flex block items-center sm:space-x-1">
+                        <p className="md:text-lg text-md font-semibold">
+                          Ngày:
+                        </p>
+                        <p className="md:text-lg text-md font-normal">
                           {dateSubmit?.from && format(dateSubmit?.from, "dd ")}{" "}
                           -{" "}
                           {dateSubmit?.to &&
@@ -253,14 +259,20 @@ export default function FormBooking({
                         </p>
                       </div>
                       <div className="flex items-center space-x-1">
-                        <p className="text-lg font-semibold">Khách: </p>
-                        <p className="text-lg font-normal">{total}</p>
+                        <p className="md:text-lg text-md font-semibold">
+                          Khách:{" "}
+                        </p>
+                        <p className="md:text-lg text-md font-normal">
+                          {total}
+                        </p>
                       </div>
-                      <div className="flex items-center space-x-1">
-                        <p className="text-lg font-semibold">
+                      <div className="sm:flex block items-center sm:space-x-1">
+                        <p className="md:text-lg text-md font-semibold text-nowrap">
                           Tổng giá (VNĐ):{" "}
                         </p>
-                        <p className="text-lg font-normal">{totalMoney}</p>
+                        <p className="md:text-lg text-md font-normal">
+                          {totalMoney}
+                        </p>
                       </div>
                     </div>
                     <div className="flex justify-center items-center w-1/3">
@@ -276,6 +288,7 @@ export default function FormBooking({
               </div>
             </ModalContent>
             <ModalFooter
+              setHideHeader={setHideHeader}
               handleSuccess={handleSuccess}
               handlesubmit={handlesubmit}
               className="gap-4"

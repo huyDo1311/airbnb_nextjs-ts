@@ -330,6 +330,7 @@ export const useStore = create<AppState>()(
                   "headerTotal",
                   "dataStoreDestination",
                   "NextStep",
+                  "hideHeader",
                   "removeDataHeader",
                 ].includes(key)
             )

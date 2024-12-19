@@ -258,6 +258,7 @@ export default function RoomDetails() {
         .NextClientToServerPostComments(dataCommentSubmit)
         .then((res) => {
           setFetchCommentData((a) => !a);
+          setUserInput("");
         })
         .catch((err) => {
           console.log(err);
@@ -398,7 +399,7 @@ export default function RoomDetails() {
                 </p>
               </div>
 
-              <div className="hidden">
+              <div className="hidden lg:block">
                 <Dialog>
                   <DialogTrigger asChild>
                     <div className="flex border p-3 lg:p-5  justify-around rounded-2xl my-5 cursor-pointer">
@@ -585,13 +586,17 @@ export default function RoomDetails() {
                           Được khách yêu thích
                         </p>
                       </DialogTitle>
-                      <DialogDescription className="space-y-3 text-center">
-                        Trong số các nhà/phòng cho thuê đủ điều kiện dựa trên
-                        điểm xếp hạng, lượt đánh giá và vcđộ tin cậy, nhà này
-                        nằm trong &nbsp;
-                        <span className="font-bold">
-                          nhóm 10% chỗ ở hàng đầu
-                        </span>
+                      <DialogDescription className="space-y-3 w-full ">
+                        <p className="w-full ">
+                          <span>
+                            Trong số các nhà/phòng cho thuê đủ điều kiện dựa
+                            trên điểm xếp hạng, lượt đánh giá và vcđộ tin cậy,
+                            nhà này nằm trong &nbsp;
+                          </span>
+                          <span className="font-bold">
+                            nhóm 10% chỗ ở hàng đầu
+                          </span>
+                        </p>
                         <span className="text-xl font-semibold text-black dark:text-white text-center flex items-center justify-center ">
                           {countComments} lượt đánh giá{" "}
                           <Sparkles
@@ -611,219 +616,225 @@ export default function RoomDetails() {
                 </Dialog>
               </div>
               <div>
-                <Drawer>
-                  <DrawerTrigger asChild>
-                    <div className="flex border p-3 lg:p-5  justify-around rounded-2xl my-5 cursor-pointer">
-                      <div className="xl:flex hidden items-center">
-                        <Image
-                          src="/assets/barley.png"
-                          width={50}
-                          height={50}
-                          alt="barley"
-                        />
-                        <div className="xl:text-md text-sm font-semibold px-2 line-">
-                          <p className="text-center font-medium  leading-tight w-20">
-                            Được khách yêu thích
-                          </p>
-                        </div>
-                        <Image
-                          className="transform scale-x-[-1]"
-                          src="/assets/barley.png"
-                          width={50}
-                          height={50}
-                          alt="barley"
-                        />
-                      </div>
-                      <p className="text-sm hidden xl:block w-64 px-7 text-center font-semibold">
-                        Khách đánh giá đây là một trong những ngôi nhà được yêu
-                        thích nhất trên Airbnb
-                      </p>
-
-                      <div className="flex items-center flex-col justify-center">
-                        <div>
-                          <p className="lg:text-xl text-lg font-bold text-center w-10 h-8">
-                            {formatStar(star)}
-                          </p>
-                        </div>
-                        <div className="flex space-x-1 text-md lg:text-lg h-3 items-center">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 32 32"
-                            aria-hidden="true"
-                            role="presentation"
-                            focusable="false"
-                            style={{
-                              display: "block",
-                              height: 12,
-                              width: 12,
-                              fill: "currentcolor",
-                            }}
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="m15.1 1.58-4.13 8.88-9.86 1.27a1 1 0 0 0-.54 1.74l7.3 6.57-1.97 9.85a1 1 0 0 0 1.48 1.06l8.62-5 8.63 5a1 1 0 0 0 1.48-1.06l-1.97-9.85 7.3-6.57a1 1 0 0 0-.55-1.73l-9.86-1.28-4.12-8.88a1 1 0 0 0-1.82 0z"
-                            />
-                          </svg>
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 32 32"
-                            aria-hidden="true"
-                            role="presentation"
-                            focusable="false"
-                            style={{
-                              display: "block",
-                              height: 12,
-                              width: 12,
-                              fill: "currentcolor",
-                            }}
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="m15.1 1.58-4.13 8.88-9.86 1.27a1 1 0 0 0-.54 1.74l7.3 6.57-1.97 9.85a1 1 0 0 0 1.48 1.06l8.62-5 8.63 5a1 1 0 0 0 1.48-1.06l-1.97-9.85 7.3-6.57a1 1 0 0 0-.55-1.73l-9.86-1.28-4.12-8.88a1 1 0 0 0-1.82 0z"
-                            />
-                          </svg>
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 32 32"
-                            aria-hidden="true"
-                            role="presentation"
-                            focusable="false"
-                            style={{
-                              display: "block",
-                              height: 12,
-                              width: 12,
-                              fill: "currentcolor",
-                            }}
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="m15.1 1.58-4.13 8.88-9.86 1.27a1 1 0 0 0-.54 1.74l7.3 6.57-1.97 9.85a1 1 0 0 0 1.48 1.06l8.62-5 8.63 5a1 1 0 0 0 1.48-1.06l-1.97-9.85 7.3-6.57a1 1 0 0 0-.55-1.73l-9.86-1.28-4.12-8.88a1 1 0 0 0-1.82 0z"
-                            />
-                          </svg>
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 32 32"
-                            aria-hidden="true"
-                            role="presentation"
-                            focusable="false"
-                            style={{
-                              display: "block",
-                              height: 12,
-                              width: 12,
-                              fill: "currentcolor",
-                            }}
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="m15.1 1.58-4.13 8.88-9.86 1.27a1 1 0 0 0-.54 1.74l7.3 6.57-1.97 9.85a1 1 0 0 0 1.48 1.06l8.62-5 8.63 5a1 1 0 0 0 1.48-1.06l-1.97-9.85 7.3-6.57a1 1 0 0 0-.55-1.73l-9.86-1.28-4.12-8.88a1 1 0 0 0-1.82 0z"
-                            />
-                          </svg>
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 32 32"
-                            aria-hidden="true"
-                            role="presentation"
-                            focusable="false"
-                            style={{
-                              display: "block",
-                              height: 12,
-                              width: 12,
-                              fill: "currentcolor",
-                            }}
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="m15.1 1.58-4.13 8.88-9.86 1.27a1 1 0 0 0-.54 1.74l7.3 6.57-1.97 9.85a1 1 0 0 0 1.48 1.06l8.62-5 8.63 5a1 1 0 0 0 1.48-1.06l-1.97-9.85 7.3-6.57a1 1 0 0 0-.55-1.73l-9.86-1.28-4.12-8.88a1 1 0 0 0-1.82 0z"
-                            />
-                          </svg>
-                        </div>
-                      </div>
-                      <div className="flex items-center xl:hidden justify-center border-x md:w-64 sm:w-52">
-                        <Image
-                          src="/assets/barley.png"
-                          width={50}
-                          height={50}
-                          className="xl:w-14 w-10"
-                          alt="barley"
-                        />
-                        <div className="xl:text-md text-sm font-semibold px-2 line-">
-                          <p className="text-center  leading-tight w-20">
-                            Được khách yêu thích
-                          </p>
-                        </div>
-                        <Image
-                          className="transform scale-x-[-1] xl:w-14 w-10"
-                          src="/assets/barley.png"
-                          width={50}
-                          height={50}
-                          alt="barley"
-                        />
-                      </div>
-                      <div className="flex items-center flex-col justify-center  w-20">
-                        <div className=" flex items-center ">
-                          <p className="text-xl font-bold text-center w-10 h-8">
-                            {countComments}
-                          </p>
-                        </div>
-                        <p className="text-xs underline opacity-90 text-center h-3  flex items-center">
-                          Đánh giá
-                        </p>
-                      </div>
-                    </div>
-                  </DrawerTrigger>
-                  <DrawerContent className="w-full ">
-                    <div className="w-full flex justify-center">
-                      <div className="sm:w-[90%] w-full">
-                        <DrawerHeader>
-                          <DrawerTitle>
-                            <div className="flex justify-center">
-                              <Image
-                                src="/assets/barley.png"
-                                width={50}
-                                height={50}
-                                alt="barley"
-                              />
-                              <p className="text-5xl font-bold ">
-                                {formatStar(star)}
-                              </p>
-                              <Image
-                                className="transform scale-x-[-1]"
-                                src="/assets/barley.png"
-                                width={50}
-                                height={50}
-                                alt="barley"
-                              />
-                            </div>
-                            <p className="text-lg  text-center">
+                <div className="block lg:hidden">
+                  <Drawer>
+                    <DrawerTrigger asChild>
+                      <div className="flex border p-3 lg:p-5  justify-around rounded-2xl my-5 cursor-pointer">
+                        <div className="xl:flex hidden items-center">
+                          <Image
+                            src="/assets/barley.png"
+                            width={50}
+                            height={50}
+                            alt="barley"
+                          />
+                          <div className="xl:text-md text-sm font-semibold px-2 line-">
+                            <p className="text-center font-medium  leading-tight w-20">
                               Được khách yêu thích
                             </p>
-                          </DrawerTitle>
-                          <DrawerDescription>
-                            Trong số các nhà/phòng cho thuê đủ điều kiện dựa
-                            trên điểm xếp hạng, lượt đánh giá và vcđộ tin cậy,
-                            nhà này nằm trong &nbsp;
-                            <span className="font-bold">
-                              nhóm 10% chỗ ở hàng đầu
-                            </span>
-                            <span className="text-xl font-semibold text-black dark:text-white text-center flex items-center justify-center ">
-                              {countComments} lượt đánh giá{" "}
-                              <Sparkles
-                                className="ms-2"
-                                size={20}
-                                color="#a9ff29"
-                                strokeWidth={2}
-                              />
-                            </span>
-                          </DrawerDescription>
-                        </DrawerHeader>
-                        <div>
-                          <Comments commentsOfUsers={commentsOfUsers ?? []} />
+                          </div>
+                          <Image
+                            className="transform scale-x-[-1]"
+                            src="/assets/barley.png"
+                            width={50}
+                            height={50}
+                            alt="barley"
+                          />
                         </div>
-                        <DrawerFooter></DrawerFooter>
+                        <p className="text-sm hidden xl:block w-64 px-7 text-center font-semibold">
+                          Khách đánh giá đây là một trong những ngôi nhà được
+                          yêu thích nhất trên Airbnb
+                        </p>
+
+                        <div className="flex items-center flex-col justify-center">
+                          <div>
+                            <p className="lg:text-xl text-lg font-bold text-center w-10 h-8">
+                              {formatStar(star)}
+                            </p>
+                          </div>
+                          <div className="flex space-x-1 text-md lg:text-lg h-3 items-center">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 32 32"
+                              aria-hidden="true"
+                              role="presentation"
+                              focusable="false"
+                              style={{
+                                display: "block",
+                                height: 12,
+                                width: 12,
+                                fill: "currentcolor",
+                              }}
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="m15.1 1.58-4.13 8.88-9.86 1.27a1 1 0 0 0-.54 1.74l7.3 6.57-1.97 9.85a1 1 0 0 0 1.48 1.06l8.62-5 8.63 5a1 1 0 0 0 1.48-1.06l-1.97-9.85 7.3-6.57a1 1 0 0 0-.55-1.73l-9.86-1.28-4.12-8.88a1 1 0 0 0-1.82 0z"
+                              />
+                            </svg>
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 32 32"
+                              aria-hidden="true"
+                              role="presentation"
+                              focusable="false"
+                              style={{
+                                display: "block",
+                                height: 12,
+                                width: 12,
+                                fill: "currentcolor",
+                              }}
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="m15.1 1.58-4.13 8.88-9.86 1.27a1 1 0 0 0-.54 1.74l7.3 6.57-1.97 9.85a1 1 0 0 0 1.48 1.06l8.62-5 8.63 5a1 1 0 0 0 1.48-1.06l-1.97-9.85 7.3-6.57a1 1 0 0 0-.55-1.73l-9.86-1.28-4.12-8.88a1 1 0 0 0-1.82 0z"
+                              />
+                            </svg>
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 32 32"
+                              aria-hidden="true"
+                              role="presentation"
+                              focusable="false"
+                              style={{
+                                display: "block",
+                                height: 12,
+                                width: 12,
+                                fill: "currentcolor",
+                              }}
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="m15.1 1.58-4.13 8.88-9.86 1.27a1 1 0 0 0-.54 1.74l7.3 6.57-1.97 9.85a1 1 0 0 0 1.48 1.06l8.62-5 8.63 5a1 1 0 0 0 1.48-1.06l-1.97-9.85 7.3-6.57a1 1 0 0 0-.55-1.73l-9.86-1.28-4.12-8.88a1 1 0 0 0-1.82 0z"
+                              />
+                            </svg>
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 32 32"
+                              aria-hidden="true"
+                              role="presentation"
+                              focusable="false"
+                              style={{
+                                display: "block",
+                                height: 12,
+                                width: 12,
+                                fill: "currentcolor",
+                              }}
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="m15.1 1.58-4.13 8.88-9.86 1.27a1 1 0 0 0-.54 1.74l7.3 6.57-1.97 9.85a1 1 0 0 0 1.48 1.06l8.62-5 8.63 5a1 1 0 0 0 1.48-1.06l-1.97-9.85 7.3-6.57a1 1 0 0 0-.55-1.73l-9.86-1.28-4.12-8.88a1 1 0 0 0-1.82 0z"
+                              />
+                            </svg>
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 32 32"
+                              aria-hidden="true"
+                              role="presentation"
+                              focusable="false"
+                              style={{
+                                display: "block",
+                                height: 12,
+                                width: 12,
+                                fill: "currentcolor",
+                              }}
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="m15.1 1.58-4.13 8.88-9.86 1.27a1 1 0 0 0-.54 1.74l7.3 6.57-1.97 9.85a1 1 0 0 0 1.48 1.06l8.62-5 8.63 5a1 1 0 0 0 1.48-1.06l-1.97-9.85 7.3-6.57a1 1 0 0 0-.55-1.73l-9.86-1.28-4.12-8.88a1 1 0 0 0-1.82 0z"
+                              />
+                            </svg>
+                          </div>
+                        </div>
+                        <div className="flex items-center xl:hidden justify-center border-x md:w-64 sm:w-52">
+                          <Image
+                            src="/assets/barley.png"
+                            width={50}
+                            height={50}
+                            className="xl:w-14 w-10"
+                            alt="barley"
+                          />
+                          <div className="xl:text-md text-sm font-semibold px-2 line-">
+                            <p className="text-center  leading-tight w-20">
+                              Được khách yêu thích
+                            </p>
+                          </div>
+                          <Image
+                            className="transform scale-x-[-1] xl:w-14 w-10"
+                            src="/assets/barley.png"
+                            width={50}
+                            height={50}
+                            alt="barley"
+                          />
+                        </div>
+                        <div className="flex items-center flex-col justify-center  w-20">
+                          <div className=" flex items-center ">
+                            <p className="text-xl font-bold text-center w-10 h-8">
+                              {countComments}
+                            </p>
+                          </div>
+                          <p className="text-xs underline opacity-90 text-center h-3  flex items-center">
+                            Đánh giá
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                  </DrawerContent>
-                </Drawer>
+                    </DrawerTrigger>
+                    <DrawerContent className="w-full ">
+                      <div className="w-full flex justify-center">
+                        <div className="sm:w-[90%] w-full">
+                          <DrawerHeader>
+                            <DrawerTitle>
+                              <div className="flex justify-center">
+                                <Image
+                                  src="/assets/barley.png"
+                                  width={50}
+                                  height={50}
+                                  alt="barley"
+                                />
+                                <p className="text-5xl font-bold ">
+                                  {formatStar(star)}
+                                </p>
+                                <Image
+                                  className="transform scale-x-[-1]"
+                                  src="/assets/barley.png"
+                                  width={50}
+                                  height={50}
+                                  alt="barley"
+                                />
+                              </div>
+                              <p className="text-lg  text-center">
+                                Được khách yêu thích
+                              </p>
+                            </DrawerTitle>
+                            <DrawerDescription>
+                              <p className="w-full md:flex justify-center">
+                                <span>
+                                  Trong số các nhà/phòng cho thuê đủ điều kiện
+                                  dựa trên điểm xếp hạng, lượt đánh giá và độ
+                                  tin cậy, nhà này nằm trong &nbsp;
+                                </span>
+                                <span className="font-bold">
+                                  nhóm 10% chỗ ở hàng đầu
+                                </span>
+                              </p>
+                              <span className="text-xl font-semibold text-black dark:text-white text-center flex items-center justify-center ">
+                                {countComments} lượt đánh giá{" "}
+                                <Sparkles
+                                  className="ms-2"
+                                  size={20}
+                                  color="#a9ff29"
+                                  strokeWidth={2}
+                                />
+                              </span>
+                            </DrawerDescription>
+                          </DrawerHeader>
+                          <div>
+                            <Comments commentsOfUsers={commentsOfUsers ?? []} />
+                          </div>
+                          <DrawerFooter></DrawerFooter>
+                        </div>
+                      </div>
+                    </DrawerContent>
+                  </Drawer>
+                </div>
               </div>
 
               <div className="">

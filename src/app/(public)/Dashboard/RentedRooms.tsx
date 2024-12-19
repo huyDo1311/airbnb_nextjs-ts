@@ -25,8 +25,7 @@ interface responseBooking {
 }
 
 export default function RentedRooms() {
-  let { getUserData, dataApiListRoom, setDataRented, dataRented } = useStore();
-  let { resultSearch, dataStoreDestination2, fetchDataStore } = useStore();
+  let { dataRented } = useStore();
   const [data2, setData2] = useState<any>();
   let handleMoney = (money: number): string => {
     let currency = money * 25;
@@ -59,17 +58,20 @@ export default function RentedRooms() {
       return (
         <div
           key={index}
-          className="w-full my-6 border rounded-2xl bg-white dark:bg-black  hover:scale-105 duration-300 "
+          className="w-full my-6 border rounded-2xl md:h-full sm:h-[320px] bg-white dark:bg-black  hover:scale-105 duration-300 "
         >
           {item?.hinhAnh &&
             data2?.map((item2?: any) => {
               return (
-                <div key={item2?.id} className="m-5 group cursor-pointer z-20">
+                <div
+                  key={item2?.id}
+                  className="m-5 group  h-auto cursor-pointer z-20"
+                >
                   {item2?.id == item.maViTri && (
-                    <div className="relative">
-                      <div className="w-full h-[300px]">
+                    <div className="relative h-full">
+                      <div className="w-full lg:h-[300px] sm:h-[200px] h-[190px] ">
                         <Image
-                          className="w-full h-full rounded-xl object-fill"
+                          className="w-full h-full bg-center rounded-xl object-cover"
                           src={item.hinhAnh ?? ""}
                           width={1000}
                           height={1000}
@@ -78,14 +80,16 @@ export default function RentedRooms() {
                       </div>
                       <div className="flex justify-between py-3">
                         <div className="space-y-1">
-                          {item2?.id == item.maViTri && (
-                            <p className="text-sm font-bold ">
+                          {item2?.id == item?.maViTri && (
+                            <p className="text-sm font-bold  ">
                               {item2?.tinhThanh} / Việt Nam
                             </p>
                           )}
-                          <p className="text-sm font-light">{vietnameseDate}</p>
-                          <p className="text-sm font-medium">
-                            {handleMoney(item.giaTien ?? 0)} / Đêm{" "}
+                          <p className="text-sm font-light ">
+                            {vietnameseDate}
+                          </p>
+                          <p className="text-sm font-medium ">
+                            {handleMoney(item?.giaTien ?? 0)} / Đêm{" "}
                           </p>
                         </div>
                         <div className="flex items-start">
