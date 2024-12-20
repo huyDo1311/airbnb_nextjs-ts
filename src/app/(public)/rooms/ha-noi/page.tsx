@@ -5,16 +5,8 @@ import React from "react";
 export default function page() {
   return (
     <div className="">
-      <div className="bg-[url('/assets/banner/ha-noi.jpg')] h-96 bg-center bg-cover flex justify-center items-center">
-        <p
-          className="text-3xl font-semibold  text-accent text-white"
-          style={{ textShadow: "2px 2px #FF0000" }}
-        >
-          Thủ Đô Hà Nội
-        </p>
-      </div>
+      <div className="bg-[url('/assets/banner/ha-noi.jpg')] h-full w-full inset-0 fixed -z-20 bg-center bg-cover "></div>
       <HaNoi />
-      <BackgroundBeams className="-z-10" />
     </div>
   );
 }

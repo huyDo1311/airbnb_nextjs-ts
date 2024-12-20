@@ -59,20 +59,11 @@ export default function DashboardUser() {
 
   return (
     <div className="h">
-      <div className="bg-[url('/assets/Dashboard/travel.jpg')] h-[400px] bg-center bg-cover flex justify-center items-center absolute top-0 w-full left-0 ">
-        <p
-          className="text-3xl font-semibold text-accent"
-          style={{ textShadow: "2px 2px #FF0000" }}
-        >
-          Dashboard
-        </p>
-      </div>
-      <div className="mb-60"></div>
-      <div className="flex relative ">
-        <div className="w-1/3        ">
-          <div className="sticky top-16">
+      <div className="lg:flex block relative ">
+        <div className="lg:w-1/3 w-full       ">
+          <div className="sticky top-36">
             <CardContainer className="z-50">
-              <CardBody className=" h-full bg-white  shadow-xl group border-black border-2 relative group/card space-y-4 dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] w-auto sm:w-[30rem] rounded-xl p-6   ">
+              <CardBody className=" h-full   group border-black relative group/card space-y-4 dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] w-auto  rounded-t-xl p-3  ">
                 <CardItem
                   translateZ={100}
                   translateX={-10}
@@ -118,9 +109,9 @@ export default function DashboardUser() {
                       translateZ={200}
                       translateX={40}
                       as={DialogTrigger}
-                      className="rounded-xl  underline text-lg font-medium group-hover:text-red-400 group-hover:scale-125 transition   dark:text-white w-full"
+                      className="rounded-xl pb-2  underline text-lg font-medium group-hover:text-red-400 group-hover:scale-125 transition   dark:text-white w-full"
                     >
-                      <p> Thay đổi ảnh đại diện</p>
+                      <p className="text-md"> Thay đổi ảnh đại diện</p>
                     </CardItem>
 
                     <DialogContent className="">
@@ -140,27 +131,27 @@ export default function DashboardUser() {
                   className="rounded-xl text-xs font-normal dark:text-white w-full"
                 >
                   {" "}
-                  <div className="space-y-2 border-2 p-4 dark:border-white border-black">
+                  <div className="space-y-4 rounded border-2 p-4 dark:border-white border-black">
                     <div className="flex justify-between">
-                      <p className="text-lg font-semibold">Họ và tên:</p>
+                      <p className="text-md font-semibold">Họ và tên:</p>
                       <CardItem
                         translateZ={200}
                         className="rounded-xl text-xs font-normal dark:text-white "
                       >
-                        <p className="text-lg">{dataUser?.name}</p>
+                        <p className="text-md">{dataUser?.name}</p>
                       </CardItem>
                     </div>
                     <div className="flex justify-between">
-                      <p className="text-lg font-semibold">Email:</p>
-                      <p className="text-lg">{dataUser?.email}</p>
+                      <p className="text-md font-semibold">Email:</p>
+                      <p className="text-md">{dataUser?.email}</p>
                     </div>
                     <div className="flex justify-between">
-                      <p className="text-lg font-semibold">Số điện thoại:</p>
-                      <p className="text-lg">{dataUser?.phone}</p>
+                      <p className="text-md font-semibold">Số điện thoại:</p>
+                      <p className="text-md">{dataUser?.phone}</p>
                     </div>
                     <div className="flex justify-between">
-                      <p className="text-lg font-semibold">Sinh nhật:</p>
-                      <p className="text-lg">{formattedBirthday}</p>
+                      <p className="text-md font-semibold">Sinh nhật:</p>
+                      <p className="text-md">{formattedBirthday}</p>
                     </div>
                   </div>{" "}
                 </CardItem>
@@ -169,7 +160,7 @@ export default function DashboardUser() {
           </div>
         </div>
 
-        <div className="w-2/3 py-20 px-20">
+        <div className="lg:w-2/3 w-full p-10">
           <Tabs defaultValue="rented" className="">
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="rented">Đã thuê</TabsTrigger>

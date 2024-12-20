@@ -78,7 +78,7 @@ export default function SignupForm({ handleClick }: any) {
     <div className="w-full">
       <Card className=" w-full  shadow-none border-0">
         <CardHeader>
-          <CardTitle className="text-2xl">Đăng Ký</CardTitle>
+          <CardTitle className="md:text-2xl text-lg">Đăng Ký</CardTitle>
           <CardDescription>
             Nhập thông tin của bạn để tạo tài khoản
           </CardDescription>

@@ -138,7 +138,7 @@ export function CustomerPickerDetails({ dataDetail }: DataDetail) {
         </PopoverTrigger>
 
         <PopoverContent
-          className="sm:w-[450px] w-full rounded-3xl"
+          className="sm:w-[450px] w-[380px] rounded-3xl"
           align="center"
         >
           <div className="space-y-5 p-5">{renderCustomer()}</div>

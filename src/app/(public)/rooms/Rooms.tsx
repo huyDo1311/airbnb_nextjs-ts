@@ -82,7 +82,10 @@ export default function Rooms({ data2 }: any) {
           {item.hinhAnh &&
             data2.content.data.map((item2: any) => {
               return (
-                <div key={item2.id} className="  group  cursor-pointer z-20">
+                <div
+                  key={item2.id}
+                  className="  group  cursor-pointer z-20 m-2"
+                >
                   {item2.id == item.maViTri && (
                     <CardContainer className="inter-var   ">
                       <CardBody className="group shadow-lg p-4 border  relative group/card  px-5 dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] rounded-xl    ">
@@ -99,9 +102,9 @@ export default function Rooms({ data2 }: any) {
                           }}
                         >
                           <CardItem translateZ="50">
-                            <div className=" xl:h-[250px] w-full  lg:w-full mdCustom:w-[350px] h-[200px] ">
+                            <div className=" lgCustom:h-[200px] overflow-hidden w-full   mdCustom:w-full h-[200px] ">
                               <Image
-                                className="h-full lg:w-full w-[500px] mdCustom:w-full object-left object-cover rounded-xl"
+                                className="h-full lgCustom:w-full w-[500px] mdCustom:w-full object-left object-cover rounded-xl"
                                 src={item.hinhAnh}
                                 width={2000}
                                 height={2000}
@@ -201,8 +204,10 @@ export default function Rooms({ data2 }: any) {
   return (
     <div>
       <FormDialog Open={Open} handleClose={handleClose} />
-      <div className="grid xl:grid-cols-4 mdCustom:grid-cols-2 lg:grid-cols-3 lg:gap-5  gap-8">
-        {renderRooms()}
+      <div className="w-full flex justify-center ">
+        <div className="w-fit grid lgCustom:grid-cols-4 mdCustom:grid-cols-3  smCustom:grid-cols-2 lg:gap-3   gap-5 py-5">
+          {renderRooms()}
+        </div>
       </div>
     </div>
   );

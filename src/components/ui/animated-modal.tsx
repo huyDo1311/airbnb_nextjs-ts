@@ -1,5 +1,7 @@
 "use client";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useStore } from "@/store/store";
 import { AnimatePresence, motion } from "framer-motion";
 import React, {
   ReactNode,
@@ -45,18 +47,26 @@ export const ModalTrigger = ({
   dateSubmit,
   storageUser,
   refClick,
+  setHideHeader,
 }: {
   children: ReactNode;
   className?: string;
   refClick: any;
   storageUser: string | null;
   dateSubmit: any;
+  setHideHeader: (item: any) => void;
 }) => {
   const { setOpen } = useModal();
 
   let handleButton = () => {
-    if (dateSubmit?.from && dateSubmit?.to && storageUser) {
+    if (
+      dateSubmit?.from &&
+      dateSubmit?.to &&
+      storageUser &&
+      window.innerWidth >= 768
+    ) {
       setOpen(true);
+      setHideHeader(true);
     }
   };
   return (
@@ -89,15 +99,18 @@ export const ModalBody = ({
       document.body.style.overflow = "auto";
     }
   }, [open]);
+  let { setHideHeader } = useStore();
 
   const modalRef = useRef(null);
   const { setOpen } = useModal();
-  useOutsideClick(modalRef, () => setOpen(false));
+  useOutsideClick(modalRef, () => {
+    setOpen(false), setHideHeader(false);
+  });
 
   return (
     <AnimatePresence>
       {open && (
-        <div className="">
+        <div className="w-full">
           <Overlay />
           <motion.div
             initial={{
@@ -116,7 +129,7 @@ export const ModalBody = ({
             <motion.div
               ref={modalRef}
               className={cn(
-                "min-h-[50%] max-h-[90%] md:max-w-[40%] bg-white dark:bg-neutral-950 border border-transparent dark:border-neutral-800 md:rounded-2xl relative z-50 flex flex-col flex-1 overflow-hidden",
+                " sm:max-w-[550px] max-w-[95%] bg-white dark:bg-neutral-950 border border-transparent dark:border-neutral-800 md:rounded-2xl relative z-30 flex flex-col flex-1 overflow-hidden",
                 className
               )}
               initial={{
@@ -159,34 +172,42 @@ export const ModalContent = ({
   children: ReactNode;
   className?: string;
 }) => {
-  return (
-    <div className={cn("flex flex-col flex-1 p-8 md:p-10 z-20", className)}>
-      {children}
-    </div>
-  );
+  return <div className={cn("flex flex-col  p-5", className)}>{children}</div>;
 };
 
 export const ModalFooter = ({
   className,
   handlesubmit,
   handleSuccess,
+  setHideHeader,
 }: {
   className?: string;
   handlesubmit: () => Promise<void>;
   handleSuccess: () => void;
+  setHideHeader: (item: any) => void;
 }) => {
   const { setOpen } = useModal();
 
   return (
     <div className={cn("flex justify-end p-4 ", className)}>
-      <button
+      <Button
+        variant="default"
         className="bg-black text-white dark:bg-white dark:text-black text-sm px-2 py-1 rounded-md border border-black w-28"
         onClick={() => {
-          handlesubmit(), setOpen(false), handleSuccess();
+          setOpen(false), setHideHeader(false);
+        }}
+      >
+        Hủy bỏ
+      </Button>
+      <Button
+        variant="default"
+        className="text-white bg-red-400 dark:text-black text-sm px-2 py-1 rounded-md border border-black w-28"
+        onClick={() => {
+          handlesubmit(), setOpen(false), handleSuccess(), setHideHeader(false);
         }}
       >
         Đặt ngay
-      </button>
+      </Button>
     </div>
   );
 };
@@ -215,7 +236,7 @@ const CloseIcon = () => {
   return (
     <button
       onClick={() => setOpen(false)}
-      className="absolute top-4 right-4 group"
+      className="absolute top-4 right-4 z-50"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -227,7 +248,7 @@ const CloseIcon = () => {
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
-        className="text-black dark:text-white h-4 w-4 group-hover:scale-125 group-hover:rotate-3 transition duration-200"
+        className="text-black dark:text-white h-4 w-4 hidden group-hover:scale-125 group-hover:rotate-3 transition duration-200"
       >
         <path stroke="none" d="M0 0h24v24H0z" fill="none" />
         <path d="M18 6l-12 12" />
@@ -246,6 +267,7 @@ export const useOutsideClick = (
   useEffect(() => {
     const listener = (event: any) => {
       // DO NOTHING if the element being clicked is the target element or their children
+
       if (!ref.current || ref.current.contains(event.target)) {
         return;
       }

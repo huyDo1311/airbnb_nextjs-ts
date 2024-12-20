@@ -1,8 +1,6 @@
 "use client";
 import {
   Home,
-  Inbox,
-  Search,
   Settings,
   User,
   LogIn,
@@ -23,8 +21,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
 import SigninForm from "@/app/(public)/auth/SigninForm";
 import { useEffect, useRef, useState } from "react";
 import { useStore } from "@/store/store";
@@ -39,9 +37,6 @@ import {
   DrawerClose,
   Drawer,
 } from "@/components/ui/drawer";
-import { PickDestination } from "@/app/(public)/(QuickSearch)/PickDestination";
-import { DatePickerWithRange } from "@/app/(public)/(QuickSearch)/DatePickerWithRange";
-import { CustomerPicker } from "@/app/(public)/(QuickSearch)/CustomerPicker";
 import http from "@/lib/http";
 import Image from "next/image";
 import { DateBefore, DateRange } from "react-day-picker";
@@ -52,7 +47,6 @@ import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { toast } from "@/hooks/use-toast";
-import { HTMLAttributes } from "highcharts";
 
 interface dataTypeCustomers {
   Object: string;
@@ -124,7 +118,7 @@ export function AppSidebar() {
       action: () => setOpenLogin((a) => !a),
     },
     {
-      title: "Thông tin ",
+      title: "Thông tin",
       url: "/Dashboard",
       icon: User,
     },
@@ -155,51 +149,38 @@ export function AppSidebar() {
   ];
 
   let renderSideTab = (): any => {
-    let cc: any = items.map((item) => {
-      if (item.title == "Quản trị" && getUserData.role == "ADMIN") {
-        return (
-          <SidebarMenuItem key={item.title}>
-            <SidebarMenuButton asChild>
-              <a href={item.url} onClick={item && item.action}>
-                <item.icon />
-                <span>{item.title}</span>
-              </a>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        );
-      } else if (
-        item.title == "Thông tin" ||
-        (item.title == "Đăng xuất" && getUserData.id != 0)
-      ) {
-        return (
-          <SidebarMenuItem key={item.title}>
-            <SidebarMenuButton asChild>
-              <a href={item.url} onClick={item && item.action}>
-                <item.icon />
-                <span>{item.title}</span>
-              </a>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        );
-      } else if (
-        item.title == "Truy cập" ||
-        item.title == "Trang chủ" ||
-        item.title == "Cài đặt" ||
-        (item.title == "Đặt lịch" && getUserData.id == 0)
-      ) {
-        return (
-          <SidebarMenuItem key={item.title}>
-            <SidebarMenuButton asChild>
-              <a href={item.url} onClick={item && item.action}>
-                <item.icon />
-                <span>{item.title}</span>
-              </a>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        );
-      }
-    });
-    return cc;
+    return items
+      .filter((item) => {
+        // Logic for filtering items based on user role and id
+        if (item.title === "Quản trị" && getUserData?.role === "ADMIN") {
+          return true;
+        }
+        if (
+          (item.title === "Thông tin" || item.title === "Đăng xuất") &&
+          getUserData?.id !== 0
+        ) {
+          return true;
+        }
+        if (
+          item.title === "Trang chủ" ||
+          item.title === "Cài đặt" ||
+          (item.title === "Truy cập" && getUserData?.id === 0) || // Show "Truy cập" only when not signed in
+          item.title === "Đặt lịch"
+        ) {
+          return true;
+        }
+        return false;
+      })
+      .map((item) => (
+        <SidebarMenuItem key={item.title}>
+          <SidebarMenuButton asChild>
+            <a href={item.url} onClick={item?.action} className="space-x-2">
+              <item.icon size={50} />
+              <span className="text-xl">{item.title}</span>
+            </a>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      ));
   };
 
   //   DATA DESTINATION
@@ -474,9 +455,9 @@ export function AppSidebar() {
       <Sidebar className="">
         <SidebarContent>
           <SidebarGroup>
-            <SidebarGroupLabel>Ứng dụng</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>{renderSideTab()}</SidebarMenu>
+            <SidebarGroupLabel className="text-lg">Ứng dụng</SidebarGroupLabel>
+            <SidebarGroupContent className="mt-6">
+              <SidebarMenu className="space-y-2">{renderSideTab()}</SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
         </SidebarContent>
@@ -485,29 +466,43 @@ export function AppSidebar() {
       {/* Truy cập */}
       <Drawer open={OpenLogin} onOpenChange={setOpenLogin}>
         <DrawerContent>
-          <DrawerHeader>
+          <DrawerHeader className="flex flex-col items-center">
             <DrawerTitle className=""> Đăng nhập hoặc đăng ký</DrawerTitle>
-            <DrawerDescription>This action cannot be undone.</DrawerDescription>
+            <DrawerDescription>
+              Truy cập ngay để trải nghiệm nhiều tính năng mới
+            </DrawerDescription>
           </DrawerHeader>
-          <Tabs
-            value={tabValue}
-            onValueChange={setTabValue}
-            className="w-full h-full"
-          >
-            <TabsList className="grid w-full grid-cols-2 py-5 ">
-              <TabsTrigger value="signin">Đăng Nhập</TabsTrigger>
-              <TabsTrigger value="signup">Đăng ký</TabsTrigger>
-            </TabsList>
-            <TabsContent value="signin">
-              <SigninForm
-                setFetchData={setFetchData}
-                handleClose={handleClose}
-              />
-            </TabsContent>
-            <TabsContent value="signup">
-              <SignupForm handleClick={handleClick} />
-            </TabsContent>
-          </Tabs>
+          <div className="w-full flex justify-center">
+            <Tabs
+              value={tabValue}
+              onValueChange={setTabValue}
+              className="w-[90%] sm:h-full h-[600px]"
+            >
+              <TabsList className="grid w-full grid-cols-2  h-10 my-2">
+                <TabsTrigger
+                  value="signin"
+                  className=" rounded-lg border focus:bg-gray-300/25"
+                >
+                  Đăng Nhập
+                </TabsTrigger>
+                <TabsTrigger
+                  value="signup"
+                  className="rounded-lg border focus:bg-gray-300/25"
+                >
+                  Đăng ký
+                </TabsTrigger>
+              </TabsList>
+              <TabsContent value="signin">
+                <SigninForm
+                  setFetchData={setFetchData}
+                  handleClose={handleClose}
+                />
+              </TabsContent>
+              <TabsContent value="signup">
+                <SignupForm handleClick={handleClick} />
+              </TabsContent>
+            </Tabs>
+          </div>
           <DrawerFooter></DrawerFooter>
         </DrawerContent>
       </Drawer>
@@ -520,7 +515,11 @@ export function AppSidebar() {
             <DrawerDescription>Nhanh chóng và tiện lợi!</DrawerDescription>
           </DrawerHeader>
 
+<<<<<<< HEAD
           <div className="h-[550px] sm:h-[600px]  overflow-auto space-y-10">
+=======
+          <div className="h-[450px] sm:h-[550px]  overflow-auto space-y-10">
+>>>>>>> f6c888747ad34d385c05da1cff0ce5d50ca99dbf
             {/*  destination    */}
 
             <div
@@ -570,16 +569,13 @@ export function AppSidebar() {
             </div>
           </div>
 
-          <DrawerFooter className="bg-red-400 border-t border-white rounded-t-lg">
+          <DrawerFooter className="bg-red-500 border-t border-white rounded-t-lg">
             {" "}
             <div className=" flex items-center   h-full">
               {" "}
               {/* destination */}
               <div className="w-1/3" onClick={handleRefDestination}>
-                <Button
-                  variant="ghost"
-                  className=" w-full h-full text-left flex justify-center "
-                >
+                <button className=" w-full h-full text-left flex justify-center">
                   <div className="text-wrap text-center ">
                     <p className="font-semibold text-center  text-xs">
                       Địa điểm
@@ -587,7 +583,7 @@ export function AppSidebar() {
                     <p
                       className={` ${
                         dataStoreDestination2
-                          ? "font-semibold text-black"
+                          ? "font-normal text-black"
                           : "font-light  text-black"
                       }`}
                     >
@@ -596,13 +592,12 @@ export function AppSidebar() {
                         : "Điểm đến"}
                     </p>
                   </div>
-                </Button>
+                </button>
               </div>
               {/* calendar */}
               <div className="w-1/3" onClick={handleRefCalendar}>
                 {" "}
-                <Button
-                  variant={"ghost"}
+                <button
                   id="date2"
                   className={cn(
                     `group w-full h-full
@@ -617,16 +612,24 @@ export function AppSidebar() {
                         <p className="font-semibold text-xs text-wrap w-full">
                           Nhận & trả phòng
                         </p>
-                        <p className="text-md text-black">
-                          {format(dataCalendar.to, "dd MMM", { locale: vi })} -
-                          {format(dataCalendar.from, "dd MMM", { locale: vi })}
-                        </p>
+                        <div className="text-md text-black flex">
+                          <p>
+                            {" "}
+                            {format(dataCalendar.to, "dd ", { locale: vi })}
+                          </p>{" "}
+                          -
+                          <p>
+                            {format(dataCalendar.from, "dd MMM", {
+                              locale: vi,
+                            })}
+                          </p>
+                        </div>
                       </div>
                     </div>
                   ) : (
-                    <div className="w-full flex-col items-center flex">
-                      <div className="w-full flex-col items-center flex ">
-                        <p className="font-semibold text-xs text-wrap w-full">
+                    <div className="w-full h-full flex-col items-center justify-center flex">
+                      <div className="w-full h-full flex-col items-center justify-center flex ">
+                        <p className="font-semibold text-xs text-wrap h-full w-full">
                           Nhận & Trả phòng
                         </p>
                         <p className="text-black font-light w-full text-md">
@@ -635,17 +638,14 @@ export function AppSidebar() {
                       </div>
                     </div>
                   )}
-                </Button>
+                </button>
               </div>
               {/* customer */}
               <div
                 className="flex justify-center h-full w-1/3"
                 onClick={handleRefCustomer}
               >
-                <Button
-                  variant="ghost"
-                  className="h-full  w-full flex justify-center "
-                >
+                <button className="h-full  w-full flex justify-center ">
                   <div>
                     <p className="font-semibold text-xs">Khách</p>
                     {headerTotal > 0 ? (
@@ -654,17 +654,18 @@ export function AppSidebar() {
                       <p className="text-black font-light">Thêm khách</p>
                     )}
                   </div>
-                </Button>
+                </button>
               </div>
             </div>
-            <Button
-              variant="default"
-              className="rounded-xl"
-              onClick={handleSearching}
-            >
-              {" "}
-              Tìm kiếm
-            </Button>
+            <div className=" w-full flex justify-center">
+              <button
+                className="rounded-md p-1  bg-black w-1/2 text-sm font-medium"
+                onClick={handleSearching}
+              >
+                {" "}
+                Tìm kiếm
+              </button>
+            </div>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>

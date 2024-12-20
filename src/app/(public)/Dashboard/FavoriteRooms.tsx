@@ -54,18 +54,21 @@ export default function FavoriteRooms() {
     return dataFavorite?.map((item: typeContent, index: number): any => {
       return (
         <div
-          key={item.id}
-          className="w-full my-6 border rounded-2xl  bg-white dark:bg-black   hover:scale-105 duration-300 "
+          key={index}
+          className="w-full my-6 border rounded-2xl md:h-full sm:h-[320px] bg-white dark:bg-black  hover:scale-105 duration-300 "
         >
-          {item.hinhAnh &&
-            data2?.map((item2: any) => {
+          {item?.hinhAnh &&
+            data2?.map((item2?: any) => {
               return (
-                <div key={item2.id} className="m-5 group cursor-pointer z-20">
-                  {item2.id == item.maViTri && (
-                    <div className="relative">
-                      <div className="w-full h-[300px]">
+                <div
+                  key={item2?.id}
+                  className="m-5 group  h-auto cursor-pointer z-20"
+                >
+                  {item2?.id == item.maViTri && (
+                    <div className="relative h-full">
+                      <div className="w-full lg:h-[300px] sm:h-[200px] h-[190px] ">
                         <Image
-                          className="w-full h-full rounded-xl object-fill"
+                          className="w-full h-full bg-center rounded-xl object-cover"
                           src={item.hinhAnh ?? ""}
                           width={1000}
                           height={1000}
@@ -74,14 +77,16 @@ export default function FavoriteRooms() {
                       </div>
                       <div className="flex justify-between py-3">
                         <div className="space-y-1">
-                          {item2.id == item.maViTri && (
-                            <p className="text-sm font-bold ">
-                              {item2.tinhThanh} / Việt Nam
+                          {item2?.id == item?.maViTri && (
+                            <p className="text-sm font-bold  ">
+                              {item2?.tinhThanh} / Việt Nam
                             </p>
                           )}
-                          <p className="text-sm font-light">{vietnameseDate}</p>
-                          <p className="text-sm font-medium">
-                            {handleMoney(item.giaTien ?? 0)} / Đêm{" "}
+                          <p className="text-sm font-light ">
+                            {vietnameseDate}
+                          </p>
+                          <p className="text-sm font-medium ">
+                            {handleMoney(item?.giaTien ?? 0)} / Đêm{" "}
                           </p>
                         </div>
                         <div className="flex items-start">
@@ -90,7 +95,7 @@ export default function FavoriteRooms() {
                               {formatStar(vietnamLocations[index]?.star)}{" "}
                               {/* Display star with comma */}
                             </p>
-                            <i className="fa fa-star text-sm transition duration-300 text-yellow-300"></i>
+                            <i className="fa fa-star text-sm transition duration-300 group-hover:text-yellow-300"></i>
                           </div>
                         </div>
                       </div>
@@ -114,10 +119,10 @@ export default function FavoriteRooms() {
                       )}
                       <button className=" active:text-red-400 absolute top-1 right-1 ">
                         <i
-                          className="fa fa-heart  scale-125    animate-beat duration-300 z-40   
+                          className="fa fa-heart  scale-125    group-hover:animate-beat duration-300 z-40    text-gray-500
                       bg-clip-text 
                       [-webkit-text-stroke:1px_white]
-                  text-red-500 
+                      group-hover:text-red-500 
                       hover:[-webkit-text-stroke:0px]
                       transition-all"
                         ></i>
@@ -141,33 +146,6 @@ export default function FavoriteRooms() {
           Hiện tại bạn vẫn chưa ưa thích chỗ ở nào
         </p>
       )}
-
-      {/* <div className="space-y-3">
-             <div className="w-full space-y-2">
-               <Skeleton className="h-80 w-full rounded-2xl" />
-               <div className="flex w-full justify-between items-center">
-                 <Skeleton className="h-4 w-[150px]" />
-                 <div className="flex items-center space-x-1">
-                   <Skeleton className="h-[20px] w-[40px] " />
-                   <Skeleton className="h-[20px] w-[20px] rounded-full" />
-                 </div>
-               </div>
-               <Skeleton className="h-4 w-[170px]" />
-               <Skeleton className="h-4 w-[150px]" />
-             </div>
-             <div className="w-full space-y-1">
-               <Skeleton className="h-80 w-full" />
-               <div className="flex w-full justify-between">
-                 <Skeleton className="h-4 w-[150px]" />
-                 <div className="flex items-center space-x-1">
-                   <Skeleton className="h-[20px] w-[40px] " />
-                   <Skeleton className="h-[20px] w-[20px] rounded-full" />
-                 </div>
-               </div>
-               <Skeleton className="h-4 w-[170px]" />
-               <Skeleton className="h-4 w-[150px]" />
-             </div>
-           </div> */}
     </div>
   );
 }

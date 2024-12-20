@@ -28,6 +28,7 @@ interface UserProfile {
 }
 
 interface AppState {
+  hideHeader: boolean;
   NextStep: number;
   total: number;
   dataRented: any;
@@ -68,12 +69,14 @@ interface AppState {
   setFavorite: (newFavorite: number) => any;
   setRemoveFavorite: (newRemoveFavorite: number) => any;
   setDataRented: (newDataRented: any) => any;
+  setHideHeader: (newHideHeader: any) => any;
 }
 
 export const useStore = create<AppState>()(
   devtools(
     persist(
       (set) => ({
+        hideHeader: false,
         dataRented: [],
         star: 0,
         favorite: [],
@@ -290,6 +293,9 @@ export const useStore = create<AppState>()(
             headerTotal: 0,
           });
         },
+        setHideHeader: (newHideHeader) => {
+          set({ hideHeader: newHideHeader });
+        },
         clearStorageUser: () => {
           set((state) => {
             console.log("1");
@@ -324,6 +330,7 @@ export const useStore = create<AppState>()(
                   "headerTotal",
                   "dataStoreDestination",
                   "NextStep",
+                  "hideHeader",
                   "removeDataHeader",
                 ].includes(key)
             )

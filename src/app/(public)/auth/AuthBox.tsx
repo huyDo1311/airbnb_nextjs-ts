@@ -36,7 +36,7 @@ export default function AuthBox() {
             className="text-md font-medium w-full cursor-pointer flex justify-start"
             onClick={() => setOpen(true)}
           >
-            <p className="text-sm">Đăng nhập / Đăng ký</p>
+            <p className="text-sm">Truy cập</p>
           </Button>
         </DialogTrigger>
         <DialogPortal>

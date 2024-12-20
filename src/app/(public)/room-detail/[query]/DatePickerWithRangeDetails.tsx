@@ -78,120 +78,139 @@ export function DatePickerWithRangeDetails({
   const wrapperRef2 = React.useRef(null);
   useOutsideAlerter(wrapperRef, wrapperRef2);
   return (
-    <div
-      className={cn(
-        `cursor-pointer 
+    <div className="">
+      <div
+        className={cn(
+          `cursor-pointer 
 s        flex   items-center`,
-        className
-      )}
-    >
-      <Popover open={active}>
-        <PopoverTrigger asChild>
-          <div className="w-full h-full flex group  " ref={wrapperRef}>
-            <div className={`w-1/2 border-r    h-full`}>
-              <Button
-                onClick={() => {
-                  handleClick("button1");
-                }}
-                id="date1"
-                variant={"ghost"}
-                className={cn(
-                  `    
+          className
+        )}
+      >
+        <Popover open={active}>
+          <PopoverTrigger asChild className="hidden md:flex">
+            <div className="w-full h-full flex group  " ref={wrapperRef}>
+              <div className={`w-1/2 border-r    h-full`}>
+                <Button
+                  onClick={() => {
+                    handleClick("button1");
+                  }}
+                  id="date1"
+                  variant={"ghost"}
+                  className={cn(
+                    `    
             
             
              text-left w-full h-full  `
-                )}
-              >
-                {dataCalendar?.from ? (
-                  <div className="w-full flex-col items-center flex">
-                    <div className="w-full">
-                      <p className="font-semibold text-xs">Nhận phòng</p>
-                      <p className="text-md">
-                        {date?.from
-                          ? format(date.from, "dd MMM", { locale: vi })
-                          : format(dataCalendar.from, "dd MMM", { locale: vi })}
-                      </p>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="w-full flex-col items-center flex">
-                    <div className="w-full">
-                      <p className="font-semibold text-xs">Nhận phòng</p>
-                      <p className="text-gray-400 font-light text-md">
-                        {date?.from
-                          ? format(date.from, "dd MMM", { locale: vi })
-                          : "Thêm ngày"}
-                      </p>
-                    </div>
-                  </div>
-                )}
-              </Button>
-            </div>
-            <div className="w-1/2 h-full">
-              {" "}
-              <Button
-                onClick={() => {
-                  handleClick("button2");
-                }}
-                variant={"ghost"}
-                id="date2"
-                className={cn(
-                  `group w-full h-full text-left   
-
-   `
-                )}
-              >
-                {dataCalendar?.to ? (
-                  <div className="w-full  flex-col items-center flex">
-                    <div className="w-full">
-                      {" "}
-                      <p className="font-semibold text-xs">Trả phòng</p>
-                      <div className="text-md">
-                        {date?.to
-                          ? format(date.to, "dd MMM", { locale: vi })
-                          : format(dataCalendar.to, "dd MMM", { locale: vi })}
+                  )}
+                >
+                  {dataCalendar?.from ? (
+                    <div className="w-full flex-col items-center flex">
+                      <div className="w-full">
+                        <p className="font-semibold text-xs">Nhận phòng</p>
+                        <p className="text-md">
+                          {date?.from
+                            ? format(date.from, "dd MMM", { locale: vi })
+                            : format(dataCalendar.from, "dd MMM", {
+                                locale: vi,
+                              })}
+                        </p>
                       </div>
                     </div>
-                  </div>
-                ) : (
-                  <div className="w-full flex-col items-center flex">
-                    <div className="w-full">
-                      <p className="font-semibold text-xs">Trả phòng</p>
-                      <p className="text-gray-400 font-light text-md">
-                        {date?.to
-                          ? format(date.to, "dd MMM", { locale: vi })
-                          : "Thêm ngày"}
-                      </p>
+                  ) : (
+                    <div className="w-full flex-col items-center flex">
+                      <div className="w-full">
+                        <p className="font-semibold text-xs">Nhận phòng</p>
+                        <p className="text-gray-400 font-light text-md">
+                          {date?.from
+                            ? format(date.from, "dd MMM", { locale: vi })
+                            : "Thêm ngày"}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                )}
-              </Button>
-            </div>
-          </div>
-        </PopoverTrigger>
+                  )}
+                </Button>
+              </div>
+              <div className="w-1/2 h-full">
+                {" "}
+                <Button
+                  onClick={() => {
+                    handleClick("button2");
+                  }}
+                  variant={"ghost"}
+                  id="date2"
+                  className={cn(
+                    `group w-full h-full text-left   
 
-        <PopoverContent
-          className=" rounded-2xl w-auto"
-          align="center"
-          side="bottom"
-          ref={wrapperRef2}
-        >
-          <div className="flex justify-center">
-            <Calendar
-              id="DatePicker"
-              locale={vi}
-              disabled={matcher}
-              initialFocus
-              mode="range"
-              defaultMonth={date?.from}
-              selected={date}
-              onSelect={handleDate}
-              numberOfMonths={window.innerWidth < 840 ? 1 : 2}
-              captionLayout="dropdown"
-            />
-          </div>
-        </PopoverContent>
-      </Popover>
+   `
+                  )}
+                >
+                  {dataCalendar?.to ? (
+                    <div className="w-full  flex-col items-center flex">
+                      <div className="w-full">
+                        {" "}
+                        <p className="font-semibold text-xs">Trả phòng</p>
+                        <div className="text-md">
+                          {date?.to
+                            ? format(date.to, "dd MMM", { locale: vi })
+                            : format(dataCalendar.to, "dd MMM", { locale: vi })}
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="w-full flex-col items-center flex">
+                      <div className="w-full">
+                        <p className="font-semibold text-xs">Trả phòng</p>
+                        <p className="text-gray-400 font-light text-md">
+                          {date?.to
+                            ? format(date.to, "dd MMM", { locale: vi })
+                            : "Thêm ngày"}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </Button>
+              </div>
+            </div>
+          </PopoverTrigger>
+
+          <PopoverContent
+            className=" rounded-2xl w-auto"
+            align="center"
+            side="bottom"
+            ref={wrapperRef2}
+          >
+            <div className="flex justify-center">
+              <Calendar
+                id="DatePicker"
+                locale={vi}
+                disabled={matcher}
+                initialFocus
+                mode="range"
+                defaultMonth={date?.from}
+                selected={date}
+                onSelect={handleDate}
+                numberOfMonths={window.innerWidth < 840 ? 1 : 2}
+                captionLayout="dropdown"
+              />
+            </div>
+          </PopoverContent>
+        </Popover>
+
+        <div className="flex justify-center md:hidden w-full">
+          <Calendar
+            id="DatePickerMobile"
+            locale={vi}
+            disabled={matcher}
+            initialFocus
+            mode="range"
+            defaultMonth={date?.from}
+            selected={date}
+            onSelect={handleDate}
+            numberOfMonths={window.innerWidth < 840 ? 1 : 2}
+            captionLayout="dropdown"
+          />
+        </div>
+      </div>
     </div>
   );
 }
