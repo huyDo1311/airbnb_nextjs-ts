@@ -515,11 +515,7 @@ export function AppSidebar() {
             <DrawerDescription>Nhanh chóng và tiện lợi!</DrawerDescription>
           </DrawerHeader>
 
-<<<<<<< HEAD
           <div className="h-[550px] sm:h-[600px]  overflow-auto space-y-10">
-=======
-          <div className="h-[450px] sm:h-[550px]  overflow-auto space-y-10">
->>>>>>> f6c888747ad34d385c05da1cff0ce5d50ca99dbf
             {/*  destination    */}
 
             <div

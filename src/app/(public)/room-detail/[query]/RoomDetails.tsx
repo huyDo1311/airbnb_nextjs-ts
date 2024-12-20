@@ -1071,7 +1071,7 @@ export default function RoomDetails() {
   }, [dataRented, query, showRating]);
 
   return (
-    <div className="">
+    <div className="w-full">
       <div className="flex justify-center flex-col items-center w-full">
         {renderRoomDetails()}
       </div>
