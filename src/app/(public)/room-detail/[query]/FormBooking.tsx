@@ -392,7 +392,7 @@ export default function FormBooking({
           </Drawer>
         </div>
       </div>
-      <div className=" p-3 py-5 w-full left-0 bottom-0 fixed border bg-white text-black flex justify-between px-5 z-50">
+      <div className=" p-3 py-5 w-full left-0 bottom-0 fixed border bg-white text-black flex justify-between px-5 z-50 md:hidden block">
         <div>
           <p className="text-lg font-medium underline">{totalMoney}/ Đêm</p>
           <p className="text-xs  font-normal">
