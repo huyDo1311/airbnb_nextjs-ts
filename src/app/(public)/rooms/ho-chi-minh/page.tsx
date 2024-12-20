@@ -6,14 +6,8 @@ import React from "react";
 export default function page() {
   return (
     <div className="relative">
-      <div className="bg-[url('/assets/banner/hcm.jpg')] h-full -z-20 bg-bottom bg-cover flex justify-center items-center fixed inset-0 ">
-        <p
-          className="text-3xl font-semibold  text-accent text-white "
-          style={{ textShadow: "2px 2px #FF0000" }}
-        ></p>
-      </div>
+      <div className="bg-[url('/assets/banner/hcm.jpg')] fixed inset-0 w-full h-full -z-20 bg-bottom bg-cover  "></div>
       <HoChiMinh />
-      <BackgroundBeams className="-z-10" />
     </div>
   );
 }

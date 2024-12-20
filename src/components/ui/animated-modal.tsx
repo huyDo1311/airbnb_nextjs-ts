@@ -59,7 +59,12 @@ export const ModalTrigger = ({
   const { setOpen } = useModal();
 
   let handleButton = () => {
-    if (dateSubmit?.from && dateSubmit?.to && storageUser) {
+    if (
+      dateSubmit?.from &&
+      dateSubmit?.to &&
+      storageUser &&
+      window.innerWidth >= 768
+    ) {
       setOpen(true);
       setHideHeader(true);
     }
@@ -196,7 +201,7 @@ export const ModalFooter = ({
       </Button>
       <Button
         variant="default"
-        className=" text-white bg-red-400 dark:text-black text-sm px-2 py-1 rounded-md border border-black w-28"
+        className="text-white bg-red-400 dark:text-black text-sm px-2 py-1 rounded-md border border-black w-28"
         onClick={() => {
           handlesubmit(), setOpen(false), handleSuccess(), setHideHeader(false);
         }}

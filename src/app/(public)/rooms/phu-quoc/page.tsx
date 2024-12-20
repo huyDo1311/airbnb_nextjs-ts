@@ -7,7 +7,6 @@ export default function page() {
     <div>
       <div className="bg-[url('/assets/banner/phu-quoc.jpg')] fixed inset-0 w-full h-full -z-20 bg-bottom bg-cover"></div>
       <PhuQuoc />
-      <BackgroundBeams className="-z-10" />
     </div>
   );
 }

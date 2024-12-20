@@ -476,7 +476,7 @@ export function AppSidebar() {
             <Tabs
               value={tabValue}
               onValueChange={setTabValue}
-              className="w-[90%] h-full"
+              className="w-[90%] sm:h-full h-[600px]"
             >
               <TabsList className="grid w-full grid-cols-2  h-10 my-2">
                 <TabsTrigger

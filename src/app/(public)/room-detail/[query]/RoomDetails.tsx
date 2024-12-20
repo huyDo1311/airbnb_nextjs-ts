@@ -71,7 +71,7 @@ const LottieAnimationPurchase = dynamic(
 );
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 export default function RoomDetails() {
   const [commentsOfUsers, setCommentsOfUsers] = useState<
@@ -114,6 +114,8 @@ export default function RoomDetails() {
   });
   const [totalMoney, setTotalMoney] = useState<string | undefined>();
   const [isSuccess, setIsSuccess] = useState(false);
+  const refComments = useRef<HTMLButtonElement | null>(null);
+  const refCommentsMobile = useRef<HTMLButtonElement | null>(null);
   const [end, setEnd] = useState<number>(4);
   const [displayDes, setdisplayDes] = useState<boolean>(false);
   const searchParams = useSearchParams();
@@ -128,10 +130,10 @@ export default function RoomDetails() {
   };
 
   let handleDisplayComment = () => {
-    if (end === 4) {
-      setEnd(countComments);
+    if (window.innerWidth >= 1024) {
+      refComments?.current?.click();
     } else {
-      setEnd(4);
+      refCommentsMobile?.current?.click();
     }
   };
 
@@ -401,7 +403,7 @@ export default function RoomDetails() {
 
               <div className="hidden lg:block">
                 <Dialog>
-                  <DialogTrigger asChild>
+                  <DialogTrigger asChild ref={refComments}>
                     <div className="flex border p-3 lg:p-5  justify-around rounded-2xl my-5 cursor-pointer">
                       <div className="xl:flex hidden items-center">
                         <Image
@@ -618,7 +620,7 @@ export default function RoomDetails() {
               <div>
                 <div className="block lg:hidden">
                   <Drawer>
-                    <DrawerTrigger asChild>
+                    <DrawerTrigger asChild ref={refCommentsMobile}>
                       <div className="flex border p-3 lg:p-5  justify-around rounded-2xl my-5 cursor-pointer">
                         <div className="xl:flex hidden items-center">
                           <Image
@@ -973,8 +975,8 @@ export default function RoomDetails() {
               </div>
             </div>
             <div id="card" className="w-full lg:w-1/2  lg:flex justify-end ">
-              <div className="">
-                <div className="w-full  flex justify-center sticky xl:top-32 top-48 ">
+              <div className="space-y-5">
+                <div className="w-full  hidden md:flex justify-center sticky xl:top-32 top-48 ">
                   <Card
                     className="xl:w-[400px] lg:w-[350px] sm:w-[450px] w-5/6
                    mt-28 lg:mt-0  p-3 shadow-xl  "
@@ -1027,6 +1029,18 @@ export default function RoomDetails() {
                     </CardContent>
                     <CardFooter className="flex justify-between"></CardFooter>
                   </Card>
+                </div>
+                <hr className="md:block hidden" />
+
+                <div className="pt-10 md:hidden block">
+                  <FormBooking
+                    handleSuccess={handleSuccess}
+                    dataDetail={dataDetail}
+                    query={query}
+                    setDifferenceDays={setDifferenceDays}
+                    countComments={countComments}
+                    totalMoney={totalMoney}
+                  />
                 </div>
               </div>
             </div>

@@ -7,7 +7,6 @@ export default function page() {
     <div className="">
       <div className="bg-[url('/assets/banner/ha-noi.jpg')] h-full w-full inset-0 fixed -z-20 bg-center bg-cover "></div>
       <HaNoi />
-      <BackgroundBeams className="-z-10" />
     </div>
   );
 }

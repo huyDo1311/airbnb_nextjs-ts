@@ -14,7 +14,6 @@ export default function page() {
         </p>
       </div>
       <PhanThiet />
-      <BackgroundBeams className="-z-10" />
     </div>
   );
 }
