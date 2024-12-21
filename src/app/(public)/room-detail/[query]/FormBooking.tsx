@@ -89,6 +89,8 @@ export default function FormBooking({
   const [fetchData, setFetchData] = useState<boolean>(false);
   const [tabValue, setTabValue] = useState<string>("signin");
   const [modalMobile, setModalMobile] = useState<boolean>(false);
+  const [modalDesktop, setModalDesktop] = useState<boolean>(false);
+
   const handleClick = () => {
     setTabValue("signin");
   };
@@ -117,7 +119,11 @@ export default function FormBooking({
           ),
         });
       } else {
-        setModalMobile(true);
+        if (window.innerWidth < 767) {
+          setModalMobile(true);
+        } else {
+          setModalDesktop(true);
+        }
       }
     } else {
       toast({
@@ -143,6 +149,10 @@ export default function FormBooking({
         maNguoiDung: storageUser.id,
       };
       await userBooking.mutateAsync(dataSubmit);
+      if (window.innerWidth < 767) {
+        setModalMobile(false);
+        handleSuccess();
+      }
 
       let result = await bookingApiRequest.NextClientToServerGetBookingByUser(
         getUserData.id
@@ -392,7 +402,7 @@ export default function FormBooking({
           </Drawer>
         </div>
       </div>
-      <div className=" p-3 py-5 w-full left-0 bottom-0 fixed border bg-white text-black flex justify-between px-5 z-50 md:hidden block">
+      <div className=" p-3 py-5 w-full left-0 bottom-0 fixed border bg-white text-black flex justify-between px-5 z-50 md:hidden ">
         <div>
           <p className="text-lg font-medium underline">{totalMoney}/ Đêm</p>
           <p className="text-xs  font-normal">
@@ -405,15 +415,11 @@ export default function FormBooking({
         </div>
 
         <Drawer open={modalMobile}>
-          <DrawerTrigger>
+          <DrawerTrigger className="bg-red-400 rounded-lg">
             {" "}
-            <Button
-              variant="default"
-              className="px-8"
-              onClick={handleOpenModal}
-            >
+            <p className="px-8" onClick={handleOpenModal}>
               Đặt phòng
-            </Button>
+            </p>
           </DrawerTrigger>
           <DrawerContent>
             <DrawerHeader>
@@ -493,16 +499,9 @@ export default function FormBooking({
               </div>
             </div>
             <DrawerFooter>
-              <DrawerClose>
-                <Button
-                  onClick={() => {
-                    setModalMobile(false), handlesubmit;
-                  }}
-                  className="w-full"
-                >
-                  Thuê phòng
-                </Button>
-              </DrawerClose>
+              <Button onClick={handlesubmit} className="w-full">
+                Thuê phòng
+              </Button>
               <DrawerClose>
                 <Button
                   variant="outline"
