@@ -1,42 +1,25 @@
-import { typeContent } from "@/app/(public)/(ListRoom)/ListRoom";
-import { vietnamLocations } from "@/app/(public)/(ListRoom)/ListRoomCsr";
-import { Skeleton } from "@/components/ui/skeleton";
+import { typeContent } from "@/lib/helper.type";
 import http from "@/lib/http";
+import {
+  formatStar,
+  handleMoney,
+  vietnameseDate,
+  vietnamLocations,
+} from "@/lib/utils2";
 import { useStore } from "@/store/store";
-import { format } from "date-fns";
-import { vi } from "date-fns/locale";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function FavoriteRooms() {
   let { favorite, dataApiListRoom } = useStore();
   const [dataFavorite, setDataFavorite] = useState<typeContent[]>();
   const [data2, setData2] = useState<any>();
-  let handleMoney = (money: number): string => {
-    let currency = money * 25;
-    let formattedCurrency =
-      new Intl.NumberFormat("vi-VN", {
-        minimumFractionDigits: 3,
-        maximumFractionDigits: 3,
-      }).format(currency) + " đ"; // Adding the "đ" symbol at the end
-    return formattedCurrency.replace(",", ".");
-  };
-  const formatDateToVietnamese = (date: any) => {
-    return format(date, "eeee, dd MMMM yyyy", { locale: vi });
-  };
-  const formatStar = (star: number) => {
-    return star.toFixed(1).replace(".", ",");
-  };
-  const vietnameseDate = formatDateToVietnamese(new Date());
 
   useEffect(() => {
     if (dataApiListRoom && favorite) {
-      console.log("🚀 ~ useEffect ~ favorite:", favorite);
-
       let filterFavorite = dataApiListRoom.filter((listRooms: typeContent) =>
         favorite.some((favoriteRoom: number) => favoriteRoom === listRooms.id)
       );
-      console.log({ filterFavorite });
       setDataFavorite(filterFavorite.reverse().slice(0, 10));
     }
   }, [dataApiListRoom, favorite]);

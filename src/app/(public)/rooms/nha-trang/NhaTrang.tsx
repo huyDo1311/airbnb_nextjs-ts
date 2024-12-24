@@ -1,5 +1,5 @@
 "use client";
-import { vietnamLocations } from "@/app/(public)/(ListRoom)/ListRoomCsr";
+import { handleMoney, vietnameseDate, vietnamLocations } from "@/lib/utils2";
 import { useStore } from "@/store/store";
 import Image from "next/image";
 import React, { useState } from "react";
@@ -25,20 +25,6 @@ export default function NhaTrang() {
     setDataApiListRoom,
     setFavorite,
   } = useStore();
-  let handleMoney = (money: number): string => {
-    let currency = money * 25;
-    let formattedCurrency =
-      new Intl.NumberFormat("vi-VN", {
-        minimumFractionDigits: 3,
-        maximumFractionDigits: 3,
-      }).format(currency) + " đ"; // Adding the "đ" symbol at the end
-    return formattedCurrency.replace(",", ".");
-  };
-  const formatDateToVietnamese = (date: any) => {
-    return format(date, "eeee, dd MMMM yyyy", { locale: vi });
-  };
-
-  const vietnameseDate = formatDateToVietnamese(new Date());
 
   const [Open, setOpen] = useState<boolean>(false);
   const handleClose = () => {

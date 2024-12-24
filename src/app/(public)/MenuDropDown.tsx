@@ -29,9 +29,11 @@ export default function MenuDropDown() {
       await signout.mutateAsync();
       setFetchDataStore();
       clearStorageUser();
-      window.location.href = "/";
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 1000);
     } catch (err) {
-      console.log(err);
+      console.log("loi", err);
     }
   };
   useEffect(() => {

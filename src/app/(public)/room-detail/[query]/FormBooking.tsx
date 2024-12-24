@@ -1,5 +1,5 @@
 "use client";
-import { typeContent } from "@/app/(public)/(ListRoom)/ListRoom";
+import { typeContent } from "@/lib/helper.type";
 import SigninForm from "@/app/(public)/auth/SigninForm";
 import SignupForm from "@/app/(public)/auth/SignupForm";
 import { CustomerPickerDetails } from "@/app/(public)/room-detail/[query]/CustomerPickerDetails";
@@ -320,7 +320,7 @@ export default function FormBooking({
         <div className="">
           <Dialog open={Open} onOpenChange={setOpen}>
             <DialogPortal>
-              <DialogOverlay className="fixed inset-0 md:block hidden w-[500px]  bg-black/50 z-10" />
+              <DialogOverlay className="fixed inset-0 md:block hidden   bg-black/50 z-10" />
               <DialogContent className="md:block hidden w-[500px] p-5 border fixed dark:bg-black bg-white black:bg-black shadow-2xl top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-xl z-50 px-3">
                 <DialogHeader>
                   <DialogTitle className="text-center font-semibold text-lg py-5">

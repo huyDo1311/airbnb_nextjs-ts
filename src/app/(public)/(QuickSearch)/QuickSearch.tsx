@@ -1,3 +1,4 @@
+"use client";
 import { CustomerPicker } from "@/app/(public)/(QuickSearch)/CustomerPicker";
 import { DatePickerWithRange } from "@/app/(public)/(QuickSearch)/DatePickerWithRange";
 import { PickDestination } from "@/app/(public)/(QuickSearch)/PickDestination";

@@ -1,11 +1,7 @@
 import Footer from "@/app/(public)/Footer";
 import MainHeader from "@/app/(public)/header/MainHeader";
 import { AppSidebar } from "@/components/app-sidebar";
-import {
-  SidebarProvider,
-  SidebarTrigger,
-  Sidebar,
-} from "@/components/ui/sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 
 export default function Layout({
   children,

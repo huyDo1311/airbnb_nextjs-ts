@@ -1,19 +1,17 @@
 "use client";
-import { vietnamLocations } from "@/app/(public)/(ListRoom)/ListRoomCsr";
-import { useStore } from "@/store/store";
-import Image from "next/image";
-import React, { useState } from "react";
+import FormDialog from "@/app/(public)/FormDialog";
 import FormatTime from "@/app/(public)/rooms/FormatTime";
-import { format } from "date-fns";
-import { vi } from "date-fns/locale";
 import { BackgroundGradient } from "@/components/ui/background-gradient";
+import { toast } from "@/hooks/use-toast";
+import { handleMoney, vietnameseDate, vietnamLocations } from "@/lib/utils2";
+import { useStore } from "@/store/store";
+import dynamic from "next/dynamic";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 const LottieAnimation = dynamic(() => import("@/components/LottieAnimation"), {
   ssr: false,
 });
-import { useRouter } from "next/navigation";
-import dynamic from "next/dynamic";
-import { toast } from "@/hooks/use-toast";
-import FormDialog from "@/app/(public)/FormDialog";
 export default function DaLat() {
   let {
     resultSearch,
@@ -24,20 +22,6 @@ export default function DaLat() {
     setDataApiListRoom,
     setFavorite,
   } = useStore();
-  let handleMoney = (money: number): string => {
-    let currency = money * 25;
-    let formattedCurrency =
-      new Intl.NumberFormat("vi-VN", {
-        minimumFractionDigits: 3,
-        maximumFractionDigits: 3,
-      }).format(currency) + " đ"; // Adding the "đ" symbol at the end
-    return formattedCurrency.replace(",", ".");
-  };
-  const formatDateToVietnamese = (date: any) => {
-    return format(date, "eeee, dd MMMM yyyy", { locale: vi });
-  };
-
-  const vietnameseDate = formatDateToVietnamese(new Date());
 
   const [Open, setOpen] = useState<boolean>(false);
   const handleClose = () => {

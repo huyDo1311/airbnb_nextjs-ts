@@ -21,7 +21,7 @@ export function DatePickerWithRangeDetails({
   setDifferenceDays,
 }: React.HTMLAttributes<HTMLDivElement> | any) {
   const [date, setDate] = React.useState<DateRange | undefined>();
-  let { NextStep, setDataCalendar, dataCalendar } = useStore();
+  let { dataCalendar } = useStore();
   const [active, setActive] = React.useState(false);
   const [click, setClick] = React.useState<string | null>(null);
   const matcher: DateBefore = { before: new Date() };
@@ -29,14 +29,17 @@ export function DatePickerWithRangeDetails({
     if (date?.from && date?.to) {
       let checkin = new Date(date.from);
       let checkout = new Date(date.to);
+
+      let checkinSubmit = addDays(new Date(date.from), 1);
+      let checkoutSubmit = addDays(new Date(date.to), 1);
+      const updatedDate = { from: checkinSubmit, to: checkoutSubmit };
+      setDateSubmit(updatedDate);
+
       const differenceInTime = checkout.getTime() - checkin.getTime();
       const differenceIndays = differenceInTime / (1000 * 3600 * 24);
       setDifferenceDays(differenceIndays);
     }
-
     setDate(date);
-
-    setDateSubmit(date);
   };
   React.useEffect(() => {
     if (dataCalendar?.from && dataCalendar?.to) {

@@ -1,5 +1,5 @@
 "use client";
-import { vietnamLocations } from "@/app/(public)/(ListRoom)/ListRoomCsr";
+import { vietnamLocations } from "@/lib/utils2";
 import { useStore } from "@/store/store";
 import Image from "next/image";
 import React, { useState } from "react";

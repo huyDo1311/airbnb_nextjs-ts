@@ -1,15 +1,14 @@
 "use client";
 
-import { typeContent } from "@/app/(public)/(ListRoom)/ListRoom";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { typeContent } from "@/lib/helper.type";
 import { CustomerType, useStore } from "@/store/store";
 import { ChevronDown, Minus, Plus } from "lucide-react";
-import { useEffect, useState } from "react";
 
 interface DataDetail {
   dataDetail: typeContent;
@@ -60,7 +59,6 @@ export function CustomerPickerDetails({ dataDetail }: DataDetail) {
         </div>
 
         <div className="flex space-x-2 items-center">
-          {/* Decrement Button */}
           <Button
             onClick={() => decrement((item.id as keyof CustomerType) ?? 0)}
             variant={

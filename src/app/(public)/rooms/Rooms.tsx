@@ -1,14 +1,17 @@
 "use client";
-import { vietnamLocations } from "@/app/(public)/(ListRoom)/ListRoomCsr";
+import FormDialog from "@/app/(public)/FormDialog";
 import { CardBody, CardContainer, CardItem } from "@/components/ui/3d-card";
+import { toast } from "@/hooks/use-toast";
+import {
+  formatDateToVietnamese,
+  formatStar,
+  handleMoney,
+  vietnamLocations,
+} from "@/lib/utils2";
 import { useStore } from "@/store/store";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
-import { format } from "date-fns";
-import { vi } from "date-fns/locale";
-import FormDialog from "@/app/(public)/FormDialog";
-import { toast } from "@/hooks/use-toast";
+import { useState } from "react";
 export default function Rooms({ data2 }: any) {
   let {
     resultSearch,
@@ -27,22 +30,7 @@ export default function Rooms({ data2 }: any) {
     setDataLocation(tinhThanh);
     router.push(`/room-detail/id?name=${id}`);
   };
-  const formatDateToVietnamese = (date: any) => {
-    return format(date, "eeee, dd MMMM yyyy", { locale: vi });
-  };
-  const formatStar = (star: number) => {
-    return star.toFixed(1).replace(".", ",");
-  };
 
-  let handleMoney = (money: number): string => {
-    let currency = money * 25;
-    let formattedCurrency =
-      new Intl.NumberFormat("vi-VN", {
-        minimumFractionDigits: 3,
-        maximumFractionDigits: 3,
-      }).format(currency) + " đ"; // Adding the "đ" symbol at the end
-    return formattedCurrency.replace(",", ".");
-  };
   const [Open, setOpen] = useState<boolean>(false);
   const handleClose = () => {
     setOpen(false);

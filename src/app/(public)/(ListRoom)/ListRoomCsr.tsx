@@ -3,116 +3,30 @@
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
-  PaginationLink,
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
 
+import bookingApiRequest from "@/apiRequests/booking";
+import { typeContent } from "@/lib/helper.type";
+import FormDialog from "@/app/(public)/FormDialog";
+import { CardBody, CardContainer, CardItem } from "@/components/ui/3d-card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from "@/hooks/use-toast";
+import {
+  formatDateToVietnamese,
+  formatStar,
+  handleMoney,
+  vietnamLocations,
+} from "@/lib/utils2";
 import { useStore } from "@/store/store";
-import { Dialog, DialogTrigger } from "@radix-ui/react-dialog";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
-import { CardBody, CardContainer, CardItem } from "@/components/ui/3d-card";
-import { format } from "date-fns";
-import { vi } from "date-fns/locale";
-import { HoverEffect } from "@/components/ui/card-hover-effect";
-import { toast } from "@/hooks/use-toast";
-import FormDialog from "@/app/(public)/FormDialog";
-import { typeContent } from "@/app/(public)/(ListRoom)/ListRoom";
-import bookingApiRequest from "@/apiRequests/booking";
-import { AppSidebar } from "@/components/app-sidebar";
-import { SidebarTrigger } from "@/components/ui/sidebar";
-import {
-  DrawerTrigger,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerClose,
-  Drawer,
-} from "@/components/ui/drawer";
-import { Button } from "react-day-picker";
-export interface Location {
-  star: number;
-}
-
-export const vietnamLocations: Location[] = [
-  { star: 4.3 },
-  { star: 4.8 },
-  { star: 4.2 },
-  { star: 5.0 },
-  { star: 4.2 },
-  { star: 3.6 },
-  { star: 3.5 },
-  { star: 2.5 },
-  { star: 4.5 },
-  { star: 4.5 },
-  { star: 4.5 },
-  { star: 4.5 },
-  { star: 3.5 },
-  { star: 4.3 },
-  { star: 4.8 },
-  { star: 4.2 },
-  { star: 5.0 },
-  { star: 4.2 },
-  { star: 3.6 },
-  { star: 3.5 },
-  { star: 4.5 },
-  { star: 5.0 },
-  { star: 5.0 },
-  { star: 5.0 },
-  { star: 4.5 },
-  { star: 4.2 },
-  { star: 5.0 },
-  { star: 4.5 },
-  { star: 5.0 },
-  { star: 4.5 },
-  { star: 2.5 },
-  { star: 4.5 },
-  { star: 4.2 },
-  { star: 3.6 },
-  { star: 3.5 },
-  { star: 4.5 },
-  { star: 3.5 },
-  { star: 4.5 },
-  { star: 2.5 },
-  { star: 4.5 },
-  { star: 3.5 },
-  { star: 4.5 },
-  { star: 4.2 },
-  { star: 5.0 },
-  { star: 4.2 },
-  { star: 3.6 },
-  { star: 3.5 },
-  { star: 4.5 },
-  { star: 5.0 },
-  { star: 5.0 },
-  { star: 5.0 },
-  { star: 4.5 },
-  { star: 4.2 },
-  { star: 5.0 },
-  { star: 4.5 },
-  { star: 5.0 },
-  { star: 4.5 },
-  { star: 2.5 },
-  { star: 4.5 },
-];
+import { useEffect, useState } from "react";
 
 export default function ListRoomCsr({ data, data2 }: any) {
   const router = useRouter();
-  let handleMoney = (money: number): string => {
-    let currency = money * 25;
-    let formattedCurrency =
-      new Intl.NumberFormat("vi-VN", {
-        minimumFractionDigits: 3,
-        maximumFractionDigits: 3,
-      }).format(currency) + " đ"; // Adding the "đ" symbol at the end
-    return formattedCurrency.replace(",", ".");
-  };
 
   let sliceNumber = 12;
   const [lastRoom, setLastRoom] = useState<number | null>(null);
@@ -127,7 +41,6 @@ export default function ListRoomCsr({ data, data2 }: any) {
     setDataApiListRoom,
     dataApiListRoom,
     setDataRented,
-    fetchDataStore,
   } = useStore();
   const [start, setStart] = useState(0);
   const [end, setEnd] = useState(sliceNumber);
@@ -138,7 +51,6 @@ export default function ListRoomCsr({ data, data2 }: any) {
       let parseListRoomData = localStorage.getItem("app-state")
         ? JSON.parse(localStorage.getItem("app-state")!)
         : null;
-      console.log("here", parseListRoomData.state.dataApiListRoom);
       setLastRoom(data?.content.length - 1);
       let cloneData = [...data.content];
       let addLoving = cloneData.map((item: any, index: number) => {
@@ -166,17 +78,26 @@ export default function ListRoomCsr({ data, data2 }: any) {
               );
             }
           );
-
           let filterDetail = filterSliceData.map((item: any) => {
             return dataApiListRoom.find((item2: typeContent) => {
               return item.maPhong == item2.id ? item.maPhong == item2.id : null;
             });
           });
-          setDataRented(filterDetail);
+          let cloneFilterDetail = [...filterDetail];
+          let newFilterDetail = cloneFilterDetail.map((data, index) => {
+            let ngayDen = filterSliceData[index]?.ngayDen;
+            let ngayDi = filterSliceData[index]?.ngayDi;
+            let newData = { ...data, ngayDen, ngayDi };
+            return newData;
+          });
+
+          setDataRented(newFilterDetail);
         })
         .catch((err) => console.log(err, "err"));
     }
-  }, [fetchDataStore]);
+  }, []);
+
+  useEffect(() => {}, []);
 
   let handleDetail = (id: number, star: number, tinhThanh: string) => {
     setStar(star);
@@ -185,18 +106,25 @@ export default function ListRoomCsr({ data, data2 }: any) {
     resetDataCalendar();
     router.push(`/room-detail/id?name=${id}`);
   };
-
-  const formatStar = (star: number) => {
-    return star ? star.toFixed(1).replace(".", ",") : star;
-  };
-  const formatDateToVietnamese = (date: any) => {
-    return format(date, "eeee, dd MMMM yyyy", { locale: vi });
-  };
   const vietnameseDate = formatDateToVietnamese(data.dateTime);
 
   const [Open, setOpen] = useState<boolean>(false);
   const handleClose = () => {
     setOpen(false);
+  };
+  let renderSkeleton = () => {
+    let array = new Array(20).fill(null);
+    return array.map((_, index) => {
+      return (
+        <div key={index} className="flex flex-col space-y-3">
+          <Skeleton className="h-[250px] w-[350px] rounded-xl" />
+          <div className="space-y-2">
+            <Skeleton className="h-6 w-[350px]" />
+            <Skeleton className="h-6 w-[300px]" />
+          </div>
+        </div>
+      );
+    });
   };
 
   let handleFavorite = (id: number) => {
@@ -357,43 +285,49 @@ export default function ListRoomCsr({ data, data2 }: any) {
   };
   return (
     <div className="w-full">
-      <FormDialog Open={Open} handleClose={handleClose} />
-      <div className="w-full flex justify-center ">
-        <div className="w-fit grid lgCustom:grid-cols-4 mdCustom:grid-cols-3  smCustom:grid-cols-2 lg:gap-3   gap-5 py-5">
-          {renderRooms()}
-        </div>
-      </div>
-      <Pagination className=" ">
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious
-              className={`${
-                start == 0
-                  ? "opacity-50 cursor-not-allowed pointer-events-none"
-                  : ""
-              }`}
-              onClick={() => {
-                setStart(start - sliceNumber), setEnd(end - sliceNumber);
-              }}
-              href="#"
-            />
-          </PaginationItem>
+      {dataApiListRoom.length > 0 ? (
+        <div className="w-full">
+          <FormDialog Open={Open} handleClose={handleClose} />
+          <div className="w-full flex justify-center ">
+            <div className="w-fit grid lgCustom:grid-cols-4 mdCustom:grid-cols-3  smCustom:grid-cols-2 lg:gap-3   gap-5 py-5">
+              {renderRooms()}
+            </div>
+          </div>
+          <Pagination className=" ">
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  className={`${
+                    start == 0
+                      ? "opacity-50 cursor-not-allowed pointer-events-none"
+                      : ""
+                  }`}
+                  onClick={() => {
+                    setStart(start - sliceNumber), setEnd(end - sliceNumber);
+                  }}
+                  href="#"
+                />
+              </PaginationItem>
 
-          <PaginationItem>
-            <PaginationNext
-              className={`${
-                end >= (lastRoom ?? 0)
-                  ? "opacity-50 cursor-not-allowed pointer-events-none"
-                  : ""
-              }`}
-              onClick={() => {
-                setStart(start + sliceNumber), setEnd(end + sliceNumber);
-              }}
-              href="#"
-            />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
+              <PaginationItem>
+                <PaginationNext
+                  className={`${
+                    end >= (lastRoom ?? 0)
+                      ? "opacity-50 cursor-not-allowed pointer-events-none"
+                      : ""
+                  }`}
+                  onClick={() => {
+                    setStart(start + sliceNumber), setEnd(end + sliceNumber);
+                  }}
+                  href="#"
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </div>
+      ) : (
+        <div className="grid grid-cols-4 gap-5">{renderSkeleton()}</div>
+      )}
     </div>
   );
 }

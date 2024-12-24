@@ -29,13 +29,10 @@ export default function DarkModeToggle() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={() => setTheme("light")}>
-          Light
+          <SunIcon /> <span className="font-medium">Giao diện sáng</span>
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme("dark")}>
-          Dark
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("system")}>
-          System
+          <MoonIcon /> <span className="font-medium">Giao diện tối</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

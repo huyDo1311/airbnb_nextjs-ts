@@ -1,10 +1,8 @@
 "use client";
 import bookingApiRequest from "@/apiRequests/booking";
 import commentsRequest from "@/apiRequests/comments";
-import { typeContent } from "@/app/(public)/(ListRoom)/ListRoom";
+import { typeContent } from "@/lib/helper.type";
 import Comments from "@/app/(public)/room-detail/[query]/Comments";
-import { CustomerPickerDetails } from "@/app/(public)/room-detail/[query]/CustomerPickerDetails";
-import { DatePickerWithRangeDetails } from "@/app/(public)/room-detail/[query]/DatePickerWithRangeDetails";
 import FormBooking from "@/app/(public)/room-detail/[query]/FormBooking";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { BackgroundGradient } from "@/components/ui/background-gradient";
@@ -21,14 +19,12 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   Drawer,
-  DrawerClose,
   DrawerContent,
   DrawerDescription,
   DrawerFooter,
@@ -39,10 +35,9 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
+import { formatMoney, formatStar, formatVietNamDate } from "@/lib/utils2";
 import { commentsSchema } from "@/schemaValidations/comments.schema";
 import { useStore } from "@/store/store";
-import { format, isValid } from "date-fns";
-import { vi } from "date-fns/locale";
 
 import {
   AirVent,
@@ -54,24 +49,22 @@ import {
   Languages,
   MountainSnow,
   Send,
-  SendHorizontal,
   Smile,
   Sparkles,
   TvMinimal,
   WashingMachine,
   Wifi,
 } from "lucide-react";
-import moment from "moment";
 import dynamic from "next/dynamic";
+import Image from "next/image";
+import { useSearchParams } from "next/navigation";
+import React, { useEffect, useRef, useState } from "react";
 const LottieAnimationPurchase = dynamic(
   () => import("@/components/animatePurchase"),
   {
     ssr: false,
   }
 );
-import Image from "next/image";
-import { useSearchParams } from "next/navigation";
-import React, { useEffect, useRef, useState } from "react";
 
 export default function RoomDetails() {
   const [commentsOfUsers, setCommentsOfUsers] = useState<
@@ -84,11 +77,11 @@ export default function RoomDetails() {
     star,
     dataLocation,
     setCustomerDetails,
-    total,
     setFetchDataStore,
     getUserData,
     dataRented,
     setDataRented,
+    fetchDataStore,
   } = useStore();
 
   const [dataDetail, setDataDetail] = useState<typeContent>({
@@ -149,26 +142,11 @@ export default function RoomDetails() {
     };
   }, [isSuccess]);
 
-  const formatStar = (star: number) => {
-    return star.toFixed(1).replace(".", ",");
-  };
   let handleMoneyResult = (money: number): number => {
     let result = handleMoney(money) * differenceDays;
     return result;
   };
 
-  let formatVietNamDate = (date: any) => {
-    // console.log({ date });
-    let formatDateString = new Date(date);
-    if (isValid(formatDateString)) {
-      let VietnamDate = format(formatDateString, "eeee, dd MMMM yyyy", {
-        locale: vi,
-      });
-      return VietnamDate;
-    } else {
-      return <p> Ngày không hợp lệ</p>;
-    }
-  };
   useEffect(() => {
     let filterDetail: any = dataApiListRoom.filter(
       (item: any) => item.id == query
@@ -195,18 +173,44 @@ export default function RoomDetails() {
     }
   }, [differenceDays, dataApiListRoom, query]);
 
+  useEffect(() => {
+    if (dataApiListRoom.length > 0) {
+      bookingApiRequest
+        .NextClientToServerGetBookingByUser(getUserData?.id)
+        .then((res: any) => {
+          let sliceData = res.content.reverse().slice(0, 10);
+          let filterSliceData = sliceData.filter(
+            (data: any, index: number, self: any) => {
+              return (
+                index ===
+                self.findIndex((value: any) => value.maPhong === data.maPhong)
+              );
+            }
+          );
+          let filterDetail = filterSliceData.map((item: any) => {
+            return dataApiListRoom.find((item2: typeContent) => {
+              return item.maPhong == item2.id ? item.maPhong == item2.id : null;
+            });
+          });
+          let cloneFilterDetail = [...filterDetail];
+          let newFilterDetail = cloneFilterDetail.map((data, index) => {
+            let ngayDen = filterSliceData[index]?.ngayDen;
+            let ngayDi = filterSliceData[index]?.ngayDi;
+            let newData = { ...data, ngayDen, ngayDi };
+            return newData;
+          });
+
+          setDataRented(newFilterDetail);
+        })
+        .catch((err) => console.log(err, "err"));
+    }
+  }, [dataApiListRoom, fetchDataStore, setDataRented]);
+
   let handleMoney = (money: number): number => {
     let currency = money * 25;
     return currency;
   };
-  let formatMoney = (money: number): string | undefined => {
-    let formattedCurrency =
-      new Intl.NumberFormat("vi-VN", {
-        minimumFractionDigits: 3,
-        maximumFractionDigits: 3,
-      }).format(money) + " đ"; // Adding the "đ" symbol at the end
-    return formattedCurrency.replace(",", ".");
-  };
+
   const [fetchCommentData, setFetchCommentData] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState(-1); // To handle hover effect
   const [selectedIndex, setSelectedIndex] = useState(-1); // To handle click effect
@@ -589,7 +593,7 @@ export default function RoomDetails() {
                         </p>
                       </DialogTitle>
                       <DialogDescription className="space-y-3 w-full ">
-                        <p className="w-full ">
+                        <div className="w-full ">
                           <span>
                             Trong số các nhà/phòng cho thuê đủ điều kiện dựa
                             trên điểm xếp hạng, lượt đánh giá và vcđộ tin cậy,
@@ -598,7 +602,7 @@ export default function RoomDetails() {
                           <span className="font-bold">
                             nhóm 10% chỗ ở hàng đầu
                           </span>
-                        </p>
+                        </div>
                         <span className="text-xl font-semibold text-black dark:text-white text-center flex items-center justify-center ">
                           {countComments} lượt đánh giá{" "}
                           <Sparkles
@@ -1071,129 +1075,137 @@ export default function RoomDetails() {
   }, [dataRented, query, showRating]);
 
   return (
-    <div className="">
-      <div className="flex justify-center flex-col items-center w-full">
-        {renderRoomDetails()}
-      </div>
-      <div className=" mt-10 ">
-        <hr />
-        <div className="my-10">
-          <div className="flex justify-center i">
-            <Image
-              src="/assets/barley.png"
-              width={100}
-              height={100}
-              alt="barley"
-            />
-            <p className="text-7xl font-bold pt-5">{formatStar(star)}</p>
-            <Image
-              className="transform scale-x-[-1] -z-10"
-              src="/assets/barley.png"
-              width={100}
-              height={100}
-              alt="barley"
-            />
+    <div>
+      {renderRoomDetails && (
+        <div className="">
+          <div className="flex justify-center flex-col items-center w-full">
+            {renderRoomDetails()}
           </div>
-          <div className="flex justify-center flex-col items-center">
-            <p className="text-3xl text-center">Được khách yêu thích</p>
-            <div className="">
-              <p className="text-center w-80">
-                <span className="text-gray-600">
-                  Trong số các nhà/phòng cho thuê đủ điều kiện dựa trên điểm xếp
-                  hạng, lượt đánh giá và độ tin cậy, nhà này nằm trong nhóm
-                </span>{" "}
-                10% chỗ ở hàng đầu
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <hr />
-
-        <div className="flex justify-between flex-col items-center my-10">
-          <div className="grid grid-cols-1 md:grid-cols-2 w-full h-56 lg:h-auto overflow-auto  gap-5 b">
-            {renderComments()}
-          </div>
-        </div>
-        <div className=" w-1/2 flex justify-center">
-          {countComments > 4 && (
-            <Button
-              variant="outline"
-              className=""
-              onClick={handleDisplayComment}
-            >
-              {end === 4
-                ? `Hiển thị tất cả ${countComments} đánh giá`
-                : `Thu gọn đánh giá`}
-            </Button>
-          )}
-        </div>
-      </div>
-      {getUserData?.id !== 0 && showRating !== -1 && (
-        <div className="my-14 ">
-          <p className=" my-5 text-center text-3xl font-medium">
-            Bảng đánh giá
-          </p>
-          <div className="w-full h-full flex justify-center ">
-            <div className="xl:w-1/2 md:w-2/3 sm:w-3/4 w-full">
-              <BackgroundGradient className="rounded-[22px] w-full bg-white dark:bg-zinc-900  overflow-hidden">
-                <div className="space-y-3  lg:flex  justify-center items-center lg:space-x-5  p-5  ">
-                  <div className="space-y-1">
-                    <div className="flex flex-col items-center space-y-1">
-                      <Avatar className="w-16 h-16 -z-10">
-                        <AvatarImage
-                          src={
-                            getUserData?.avatar
-                              ? getUserData?.avatar
-                              : "/assets/anonymous.png"
-                          }
-                          className=" rounded-full"
-                          alt="user"
-                        />
-                        <AvatarFallback>User</AvatarFallback>
-                      </Avatar>
-                      <p className="text-md text-center font-medium">
-                        {getUserData?.name}
-                      </p>
-                    </div>
-                    <div className="flex justify-center space-x-1">
-                      {selectStar()}
-                    </div>
-                  </div>
-                  <div className="w-full px-5 ">
-                    <form onSubmit={handleSubmit} className="lg:flex w-full ">
-                      <Textarea
-                        value={userInput}
-                        onChange={handleChange}
-                        className="resize-none   outline-none"
-                        placeholder="Viết đánh giá của bạn vào đây"
-                      />
-                      <button
-                        className="hover:scale-125 transition-all"
-                        type="submit"
-                      >
-                        <Send className="hidden lg:block" size={30} />
-                      </button>
-                      <Button
-                        variant="default"
-                        className="w-full block lg:hidden"
-                      >
-                        <p>Gửi đi</p>
-                      </Button>
-                    </form>
-                  </div>
+          <div className=" mt-10 ">
+            <hr />
+            <div className="my-10">
+              <div className="flex justify-center i">
+                <Image
+                  src="/assets/barley.png"
+                  width={100}
+                  height={100}
+                  alt="barley"
+                />
+                <p className="text-7xl font-bold pt-5">{formatStar(star)}</p>
+                <Image
+                  className="transform scale-x-[-1] -z-10"
+                  src="/assets/barley.png"
+                  width={100}
+                  height={100}
+                  alt="barley"
+                />
+              </div>
+              <div className="flex justify-center flex-col items-center">
+                <p className="text-3xl text-center">Được khách yêu thích</p>
+                <div className="">
+                  <p className="text-center w-80">
+                    <span className="text-gray-600">
+                      Trong số các nhà/phòng cho thuê đủ điều kiện dựa trên điểm
+                      xếp hạng, lượt đánh giá và độ tin cậy, nhà này nằm trong
+                      nhóm
+                    </span>{" "}
+                    10% chỗ ở hàng đầu
+                  </p>
                 </div>
-              </BackgroundGradient>
+              </div>
+            </div>
+
+            <hr />
+
+            <div className="flex justify-between flex-col items-center my-10">
+              <div className="grid grid-cols-1 md:grid-cols-2 w-full h-56 lg:h-auto overflow-auto  gap-5 b">
+                {renderComments()}
+              </div>
+            </div>
+            <div className=" w-1/2 flex justify-center">
+              {countComments > 4 && (
+                <Button
+                  variant="outline"
+                  className=""
+                  onClick={handleDisplayComment}
+                >
+                  {end === 4
+                    ? `Hiển thị tất cả ${countComments} đánh giá`
+                    : `Thu gọn đánh giá`}
+                </Button>
+              )}
             </div>
           </div>
-        </div>
-      )}
+          {getUserData?.id !== 0 && showRating !== -1 && (
+            <div className="my-14 ">
+              <p className=" my-5 text-center text-3xl font-medium">
+                Bảng đánh giá
+              </p>
+              <div className="w-full h-full flex justify-center ">
+                <div className="xl:w-1/2 md:w-2/3 sm:w-3/4 w-full">
+                  <BackgroundGradient className="rounded-[22px] w-full bg-white dark:bg-zinc-900  overflow-hidden">
+                    <div className="space-y-3  lg:flex  justify-center items-center lg:space-x-5  p-5  ">
+                      <div className="space-y-1">
+                        <div className="flex flex-col items-center space-y-1">
+                          <Avatar className="w-16 h-16 -z-10">
+                            <AvatarImage
+                              src={
+                                getUserData?.avatar
+                                  ? getUserData?.avatar
+                                  : "/assets/anonymous.png"
+                              }
+                              className=" rounded-full"
+                              alt="user"
+                            />
+                            <AvatarFallback>User</AvatarFallback>
+                          </Avatar>
+                          <p className="text-md text-center font-medium">
+                            {getUserData?.name}
+                          </p>
+                        </div>
+                        <div className="flex justify-center space-x-1">
+                          {selectStar()}
+                        </div>
+                      </div>
+                      <div className="w-full px-5 ">
+                        <form
+                          onSubmit={handleSubmit}
+                          className="lg:flex w-full "
+                        >
+                          <Textarea
+                            value={userInput}
+                            onChange={handleChange}
+                            className="resize-none   outline-none"
+                            placeholder="Viết đánh giá của bạn vào đây"
+                          />
+                          <button
+                            className="hover:scale-125 transition-all"
+                            type="submit"
+                          >
+                            <Send className="hidden lg:block" size={30} />
+                          </button>
+                          <Button
+                            variant="default"
+                            className="w-full block lg:hidden"
+                          >
+                            <p>Gửi đi</p>
+                          </Button>
+                        </form>
+                      </div>
+                    </div>
+                  </BackgroundGradient>
+                </div>
+              </div>
+            </div>
+          )}
 
-      {isSuccess && (
-        <div className="fixed top-0 left-0  text-4xl  w-full h-full bg-red-400 z-50  flex justify-center items-center ">
-          <div className="lg:w-96 lg:h-96 w-64 h-64">
-            <LottieAnimationPurchase />
-          </div>
+          {isSuccess && (
+            <div className="fixed top-0 left-0  text-4xl  w-full h-full bg-red-400 z-50  flex justify-center items-center ">
+              <div className="lg:w-96 lg:h-96 w-64 h-64">
+                <LottieAnimationPurchase />
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

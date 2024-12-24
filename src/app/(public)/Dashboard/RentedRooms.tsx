@@ -1,28 +1,11 @@
 "use client";
-import bookingApiRequest from "@/apiRequests/booking";
-import { typeContent } from "@/app/(public)/(ListRoom)/ListRoom";
-import { vietnamLocations } from "@/app/(public)/(ListRoom)/ListRoomCsr";
-import { CardBody, CardContainer, CardItem } from "@/components/ui/3d-card";
-import { BackgroundGradient } from "@/components/ui/background-gradient";
+import { typeContent } from "@/lib/helper.type";
 import { Skeleton } from "@/components/ui/skeleton";
 import http from "@/lib/http";
+import { vietnamLocations } from "@/lib/utils2";
 import { useStore } from "@/store/store";
-import { format } from "date-fns";
-import { vi } from "date-fns/locale";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
-
-interface Booking {
-  id: number; // Booking ID
-  maNguoiDung: number; // User ID (maNguoiDung)
-  maPhong: number; // Room ID (maPhong)
-  ngayDen: string; // Check-in date (ISO 8601 string format)
-  ngayDi: string; // Check-out date (ISO 8601 string format)
-  soLuongKhach: number; // Number of guests (soLuongKhach)
-}
-interface responseBooking {
-  content: Booking[];
-}
+import { useEffect, useState } from "react";
 
 export default function RentedRooms() {
   let { dataRented } = useStore();
@@ -37,12 +20,11 @@ export default function RentedRooms() {
     return formattedCurrency.replace(",", ".");
   };
   const formatDateToVietnamese = (date: any) => {
-    return format(date, "eeee, dd MMMM yyyy", { locale: vi });
+    return date;
   };
   const formatStar = (star: number) => {
     return star.toFixed(1).replace(".", ",");
   };
-  const vietnameseDate = formatDateToVietnamese(new Date());
 
   useEffect(() => {
     http
@@ -86,7 +68,8 @@ export default function RentedRooms() {
                             </p>
                           )}
                           <p className="text-sm font-light ">
-                            {vietnameseDate}
+                            {formatDateToVietnamese(item.ngayDen)} -{" "}
+                            {formatDateToVietnamese(item.ngayDi)}
                           </p>
                           <p className="text-sm font-medium ">
                             {handleMoney(item?.giaTien ?? 0)} / Đêm{" "}

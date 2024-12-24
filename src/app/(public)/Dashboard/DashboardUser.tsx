@@ -1,9 +1,9 @@
 "use client";
-import { Input } from "@/components/ui/input";
-import Image from "next/image";
-import React, { useEffect, useState } from "react";
-import { CardBody, CardItem, CardContainer } from "@/components/ui/3d-card";
-import { format } from "date-fns";
+import userApiRequest from "@/apiRequests/user";
+import FavoriteRooms from "@/app/(public)/Dashboard/FavoriteRooms";
+import FormUploadImage from "@/app/(public)/Dashboard/FormUploadImage";
+import RentedRooms from "@/app/(public)/Dashboard/RentedRooms";
+import { CardBody, CardContainer, CardItem } from "@/components/ui/3d-card";
 import {
   Dialog,
   DialogContent,
@@ -12,29 +12,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useUploadMediaMutation } from "@/queries/useRoom";
-import { mediaApiRequest } from "@/apiRequests/media";
-import FormUploadImage from "@/app/(public)/Dashboard/FormUploadImage";
-import { BackgroundBeams } from "@/components/ui/background-beams";
-import { useStore } from "@/store/store";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import SigninForm from "@/app/(public)/auth/SigninForm";
-import RentedRooms from "@/app/(public)/Dashboard/RentedRooms";
-import FavoriteRooms from "@/app/(public)/Dashboard/FavoriteRooms";
-import { useSigninMutation } from "@/queries/useAuth";
-import userApiRequest from "@/apiRequests/user";
-
-interface UserProfile {
-  avatar: string;
-  birthday: string;
-  gender: boolean; // Gender, typically `true` for male and `false` for female, or you can use `enum` for more clarity
-  email: string;
-  id: number; // Unique identifier for the user
-  name: string; // User's name
-  password: string; // User's password (empty string if not set)
-  phone: string;
-  role: "USER" | "ADMIN";
-}
+import { UserProfile } from "@/lib/helper.type";
+import { useStore } from "@/store/store";
+import { format } from "date-fns";
+import Image from "next/image";
+import { useEffect, useState } from "react";
 
 export default function DashboardUser() {
   let { getUserData, setGetUserData } = useStore();

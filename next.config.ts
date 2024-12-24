@@ -40,6 +40,11 @@ const nextConfig: NextConfig = {
         hostname: "robindelaporte.fr",
         pathname: "/codepen/**",
       },
+      {
+        protocol: "https",
+        hostname: "i.pinimg.com",
+        pathname: "/originals/**",
+      },
     ],
   },
   logging: {
