@@ -103,7 +103,7 @@ export let formatVietNamDate = (date: any) => {
     });
     return VietnamDate;
   } else {
-    return `loi hien thi`;
+    return `Lỗi hiển thị`;
   }
 };
 
