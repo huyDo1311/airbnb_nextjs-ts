@@ -15,7 +15,8 @@ export const metadata: Metadata = {
     default: "Airbnbvietnam",
     template: "%s - Airbnbvietnam",
   },
-  description: "Welcome to our Website, this website was built using Next.js.",
+  description:
+    "Chào các bạn đến với website tụi mình, website này được xây dựng từ Nextjs framework",
   keywords: "website, airbnb, nextjs, seo, hotel, motel, accommodation, home",
   authors: [{ name: "Phan Sy" }, { name: "Huy" }],
   openGraph: {
@@ -26,8 +27,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: "/assets/airbnb.png",
-        width: 500,
-        height: 500,
+        width: 300,
+        height: 300,
         alt: "Airbnbvietnam Logo",
       },
     ],
