@@ -21,13 +21,13 @@ const roomApiRequest = {
       headers: token,
     });
   },
-  NextClientToServerGetRoom: (id: number) =>
+  NextClientToServerGetRoom: (id: string) =>
     http.get<GetRoomByIdResType>(`/api/phong-thue/${id}`),
   NextClientToServerGetRoomByLocation: (maViTri: number) =>
     http.get<GetRoomByLocationResType>(
       `/api/phong-thue/lay-phong-theo-vi-tri?maViTri=${maViTri}`
     ),
-  NextClientToServerUpdateRoom: ({id,...body}:RoomType) => {
+  NextClientToServerUpdateRoom: ({ id, ...body }: RoomType) => {
     const token = {
       token: `${localStorage.getItem("userToken") || ""}`,
     };

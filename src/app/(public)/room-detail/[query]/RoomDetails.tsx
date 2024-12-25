@@ -60,6 +60,7 @@ import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import Loading from "@/app/(public)/room-detail/[query]/loading";
+import roomApiRequest from "@/apiRequests/room";
 const LottieAnimationPurchase = dynamic(
   () => import("@/components/animatePurchase"),
   {
@@ -149,29 +150,29 @@ export default function RoomDetails() {
   };
 
   useEffect(() => {
-    let filterDetail: any = dataApiListRoom.filter(
-      (item: any) => item.id == query
-    );
+    if (query)
+      roomApiRequest
+        .NextClientToServerGetRoom(query)
+        .then((res) => {
+          const selectedRoom = res.content;
+          localStorage.setItem("dataDetails", JSON.stringify(selectedRoom));
 
-    if (filterDetail.length > 0) {
-      const selectedRoom = filterDetail[0];
-      localStorage.setItem("dataDetails", JSON.stringify(selectedRoom));
+          let takingDataDetailStorage = JSON.parse(
+            localStorage.getItem("dataDetails") || "null"
+          );
 
-      let takingDataDetailStorage = JSON.parse(
-        localStorage.getItem("dataDetails") || "null"
-      );
-
-      if (takingDataDetailStorage) {
-        setCustomerDetails(takingDataDetailStorage.khach);
-        setDataDetail(takingDataDetailStorage);
-        setFetchDataStore();
-        setTotalMoney(
-          formatMoney(handleMoneyResult(takingDataDetailStorage.giaTien) + 200)
-        );
-      }
-    } else {
-      console.log("No room found with the given query:", query);
-    }
+          if (takingDataDetailStorage) {
+            setCustomerDetails(takingDataDetailStorage.khach);
+            setDataDetail(takingDataDetailStorage);
+            setFetchDataStore();
+            setTotalMoney(
+              formatMoney(
+                handleMoneyResult(takingDataDetailStorage.giaTien) + 200
+              )
+            );
+          }
+        })
+        .catch((err) => console.log(err));
   }, [differenceDays, dataApiListRoom, query]);
 
   useEffect(() => {
