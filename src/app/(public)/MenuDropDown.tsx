@@ -100,7 +100,7 @@ export default function MenuDropDown() {
                         variant="ghost"
                         className="w-full flex justify-start"
                       >
-                        Admin
+                        Quản trị
                       </Button>
                     </Link>
                   </div>
@@ -111,7 +111,7 @@ export default function MenuDropDown() {
                       variant="ghost"
                       className="w-full flex justify-start"
                     >
-                      Dashboard{" "}
+                      Thông tin{" "}
                     </Button>
                   </Link>
                 </div>

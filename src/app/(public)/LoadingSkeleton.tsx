@@ -5,10 +5,8 @@ import React from "react";
 
 export default function LoadingSkeleton() {
   let router = useRouter;
-  console.log("router ne", router);
   let renderSkeleton = () => {
     let array = new Array(20).fill(null);
-
     return array.map((_, index) => {
       return (
         <div key={index} className="flex flex-col space-y-3">

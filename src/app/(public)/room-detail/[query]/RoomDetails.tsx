@@ -59,6 +59,7 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
+import Loading from "@/app/(public)/room-detail/[query]/loading";
 const LottieAnimationPurchase = dynamic(
   () => import("@/components/animatePurchase"),
   {
@@ -382,7 +383,7 @@ export default function RoomDetails() {
                 className="w-full lg:h-[400px] h-[250px]"
               />
             ) : (
-              <Skeleton className=" w-[1000px] h-[500px]" />
+              <Skeleton className=" w-full h-[500px]" />
             )}
           </div>
           <div className="w-full block lg:flex pt-5">
@@ -1076,7 +1077,7 @@ export default function RoomDetails() {
 
   return (
     <div>
-      {renderRoomDetails && (
+      {commentsOfUsers ? (
         <div className="">
           <div className="flex justify-center flex-col items-center w-full">
             {renderRoomDetails()}
@@ -1101,7 +1102,7 @@ export default function RoomDetails() {
                 />
               </div>
               <div className="flex justify-center flex-col items-center">
-                <p className="text-3xl text-center">Được khách yêu thích</p>
+                <p className="text-3xl text-center">Được khách yêu thích </p>
                 <div className="">
                   <p className="text-center w-80">
                     <span className="text-gray-600">
@@ -1207,6 +1208,8 @@ export default function RoomDetails() {
             </div>
           )}
         </div>
+      ) : (
+        <Loading />
       )}
     </div>
   );

@@ -23,6 +23,25 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <title>Airbnbvietnam</title>
+        <meta name="author" content="Phan Sy and Huy" />
+        <meta
+          name="description"
+          content="Welcome to our Website, this website was build by nextjs ."
+        />
+        <meta
+          name="keywords"
+          content="website, airbnb, nextjs, seo, hotel, motel, accommodation, home"
+        />
+        {/* meta */}
+        <meta property="og:title" content="Airbnbvietnam" />
+        <meta
+          property="og:description"
+          content="Welcome to our Website, this website was build by nextjs "
+        />
+        <meta property="og:image" content="/assets/airbnb.png" />
+        <meta property="og:url" content="https://airbnbvietnam.vercel.app/" />
+        <meta property="og:type" content="website" />
         <link
           rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"

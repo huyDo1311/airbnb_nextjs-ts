@@ -565,22 +565,20 @@ export function AppSidebar() {
             </div>
           </div>
 
-          <DrawerFooter className="bg-red-500 border-t border-white rounded-t-lg">
+          <DrawerFooter className=" border-t border-2 rounded-t-lg !p-2">
             {" "}
             <div className=" flex items-center   h-full">
               {" "}
               {/* destination */}
               <div className="w-1/3" onClick={handleRefDestination}>
-                <button className=" w-full h-full text-left flex justify-center">
+                <button className=" w-full h-full text-left ">
                   <div className="text-wrap text-center ">
                     <p className="font-semibold text-center  text-xs">
                       Địa điểm
                     </p>
                     <p
-                      className={` ${
-                        dataStoreDestination2
-                          ? "font-normal text-black"
-                          : "font-light  text-black"
+                      className={` text-sm ${
+                        dataStoreDestination2 ? "font-normal " : "font-light  "
                       }`}
                     >
                       {dataStoreDestination2
@@ -602,13 +600,13 @@ export function AppSidebar() {
                   )}
                 >
                   {dataCalendar?.to && dataCalendar?.from ? (
-                    <div className="w-full  flex-col items-center flex">
-                      <div className="w-full flex-col items-center flex">
+                    <div className="w-full text-sm  flex-col items-center flex">
+                      <div className="w-full flex-col text-sm items-center flex">
                         {" "}
                         <p className="font-semibold text-xs text-wrap w-full">
                           Nhận & trả phòng
                         </p>
-                        <div className="text-md text-black flex">
+                        <div className="text-sm  flex">
                           <p>
                             {" "}
                             {format(dataCalendar.to, "dd ", { locale: vi })}
@@ -623,14 +621,12 @@ export function AppSidebar() {
                       </div>
                     </div>
                   ) : (
-                    <div className="w-full h-full flex-col items-center justify-center flex">
-                      <div className="w-full h-full flex-col items-center justify-center flex ">
-                        <p className="font-semibold text-xs text-wrap h-full w-full">
+                    <div className="w-full h-full ">
+                      <div className="w-full h-full  ">
+                        <p className="font-semibold text-xs text-wrap h-full w-full ">
                           Nhận & Trả phòng
                         </p>
-                        <p className="text-black font-light w-full text-md">
-                          Thêm ngày
-                        </p>
+                        <p className=" font-light w-full text-sm">Thêm ngày</p>
                       </div>
                     </div>
                   )}
@@ -641,13 +637,13 @@ export function AppSidebar() {
                 className="flex justify-center h-full w-1/3"
                 onClick={handleRefCustomer}
               >
-                <button className="h-full  w-full flex justify-center ">
+                <button className="h-full  w-full  ">
                   <div>
                     <p className="font-semibold text-xs">Khách</p>
                     {headerTotal > 0 ? (
-                      <p className=" text-black">{headerTotal} khách</p>
+                      <p className=" ">{headerTotal} khách</p>
                     ) : (
-                      <p className="text-black font-light">Thêm khách</p>
+                      <p className=" font-light text-sm">Thêm khách</p>
                     )}
                   </div>
                 </button>
@@ -655,7 +651,7 @@ export function AppSidebar() {
             </div>
             <div className=" w-full flex justify-center">
               <button
-                className="rounded-md p-1  bg-black w-1/2 text-sm font-medium"
+                className="rounded-md p-1 border-2  w-1/2 text-sm font-medium"
                 onClick={handleSearching}
               >
                 {" "}
