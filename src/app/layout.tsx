@@ -11,8 +11,28 @@ const fontSans = FontSans({
   variable: "--font-sans",
 });
 export const metadata: Metadata = {
-  title: "Aribnb Nextjs Project",
-  description: "Personal project by Huy & Sy",
+  title: {
+    default: "Airbnbvietnam",
+    template: "%s - Airbnbvietnam",
+  },
+  description: "Welcome to our Website, this website was built using Next.js.",
+  keywords: "website, airbnb, nextjs, seo, hotel, motel, accommodation, home",
+  authors: [{ name: "Phan Sy" }, { name: "Huy" }],
+  openGraph: {
+    title: "Airbnbvietnam",
+    description:
+      "Welcome to our Website, this website was built using Next.js.",
+    url: "https://airbnbvietnam.vercel.app/",
+    images: [
+      {
+        url: "/assets/airbnb.png",
+        width: 800,
+        height: 600,
+        alt: "Airbnbvietnam Logo",
+      },
+    ],
+    type: "website",
+  },
 };
 
 export default function RootLayout({
@@ -23,25 +43,6 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <title>Airbnbvietnam</title>
-        <meta name="author" content="Phan Sy and Huy" />
-        <meta
-          name="description"
-          content="Welcome to our Website, this website was build by nextjs ."
-        />
-        <meta
-          name="keywords"
-          content="website, airbnb, nextjs, seo, hotel, motel, accommodation, home"
-        />
-        {/* meta */}
-        <meta property="og:title" content="Airbnbvietnam" />
-        <meta
-          property="og:description"
-          content="Welcome to our Website, this website was build by nextjs "
-        />
-        <meta property="og:image" content="/assets/airbnb.png" />
-        <meta property="og:url" content="https://airbnbvietnam.vercel.app/" />
-        <meta property="og:type" content="website" />
         <link
           rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"

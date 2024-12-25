@@ -68,7 +68,7 @@ const LottieAnimationPurchase = dynamic(
   }
 );
 
-export default function RoomDetails() {
+export default function RoomDetails({ query }: any) {
   const [commentsOfUsers, setCommentsOfUsers] = useState<
     commentsSchema[] | null
   >(null);
@@ -84,29 +84,10 @@ export default function RoomDetails() {
     dataRented,
     setDataRented,
     fetchDataStore,
+    dataDetail,
+    setDataDetail,
   } = useStore();
 
-  const [dataDetail, setDataDetail] = useState<typeContent>({
-    id: 0,
-    tenPhong: "",
-    khach: 1,
-    phongNgu: 1,
-    giuong: 1,
-    phongTam: 1,
-    moTa: "",
-    giaTien: 0,
-    mayGiat: false,
-    banLa: false,
-    tivi: false,
-    dieuHoa: false,
-    wifi: false,
-    bep: false,
-    doXe: false,
-    hoBoi: false,
-    banUi: false,
-    maViTri: 0,
-    hinhAnh: "",
-  });
   const [totalMoney, setTotalMoney] = useState<string | undefined>();
   const [isSuccess, setIsSuccess] = useState(false);
   const refComments = useRef<HTMLButtonElement | null>(null);
@@ -114,7 +95,6 @@ export default function RoomDetails() {
   const [end, setEnd] = useState<number>(4);
   const [displayDes, setdisplayDes] = useState<boolean>(false);
   const searchParams = useSearchParams();
-  const query: string | null = searchParams.get("name");
   let handleSuccess = async () => {
     setIsSuccess(true);
     setFetchDataStore();
@@ -155,57 +135,48 @@ export default function RoomDetails() {
         .NextClientToServerGetRoom(query)
         .then((res) => {
           const selectedRoom = res.content;
-          localStorage.setItem("dataDetails", JSON.stringify(selectedRoom));
+          console.log("🚀 ~ .then ~ selectedRoom:", selectedRoom);
 
-          let takingDataDetailStorage = JSON.parse(
-            localStorage.getItem("dataDetails") || "null"
+          setDataDetail(selectedRoom);
+          setCustomerDetails(selectedRoom.khach);
+          setDataDetail(selectedRoom);
+          setFetchDataStore();
+          setTotalMoney(
+            formatMoney(handleMoneyResult(selectedRoom.giaTien) + 200)
           );
-
-          if (takingDataDetailStorage) {
-            setCustomerDetails(takingDataDetailStorage.khach);
-            setDataDetail(takingDataDetailStorage);
-            setFetchDataStore();
-            setTotalMoney(
-              formatMoney(
-                handleMoneyResult(takingDataDetailStorage.giaTien) + 200
-              )
-            );
-          }
         })
         .catch((err) => console.log(err));
-  }, [differenceDays, dataApiListRoom, query]);
+  }, [query]);
 
   useEffect(() => {
-    if (dataApiListRoom.length > 0) {
-      bookingApiRequest
-        .NextClientToServerGetBookingByUser(getUserData?.id)
-        .then((res: any) => {
-          let sliceData = res.content.reverse().slice(0, 10);
-          let filterSliceData = sliceData.filter(
-            (data: any, index: number, self: any) => {
-              return (
-                index ===
-                self.findIndex((value: any) => value.maPhong === data.maPhong)
-              );
-            }
-          );
-          let filterDetail = filterSliceData.map((item: any) => {
-            return dataApiListRoom.find((item2: typeContent) => {
-              return item.maPhong == item2.id ? item.maPhong == item2.id : null;
-            });
+    bookingApiRequest
+      .NextClientToServerGetBookingByUser(getUserData?.id)
+      .then((res: any) => {
+        let sliceData = res.content.reverse().slice(0, 10);
+        let filterSliceData = sliceData.filter(
+          (data: any, index: number, self: any) => {
+            return (
+              index ===
+              self.findIndex((value: any) => value.maPhong === data.maPhong)
+            );
+          }
+        );
+        let filterDetail = filterSliceData.map((item: any) => {
+          return dataApiListRoom.find((item2: typeContent) => {
+            return item.maPhong == item2.id ? item.maPhong == item2.id : null;
           });
-          let cloneFilterDetail = [...filterDetail];
-          let newFilterDetail = cloneFilterDetail.map((data, index) => {
-            let ngayDen = filterSliceData[index]?.ngayDen;
-            let ngayDi = filterSliceData[index]?.ngayDi;
-            let newData = { ...data, ngayDen, ngayDi };
-            return newData;
-          });
+        });
+        let cloneFilterDetail = [...filterDetail];
+        let newFilterDetail = cloneFilterDetail.map((data, index) => {
+          let ngayDen = filterSliceData[index]?.ngayDen;
+          let ngayDi = filterSliceData[index]?.ngayDi;
+          let newData = { ...data, ngayDen, ngayDi };
+          return newData;
+        });
 
-          setDataRented(newFilterDetail);
-        })
-        .catch((err) => console.log(err, "err"));
-    }
+        setDataRented(newFilterDetail);
+      })
+      .catch((err) => console.log(err, "err"));
   }, [dataApiListRoom, fetchDataStore, setDataRented]);
 
   let handleMoney = (money: number): number => {
@@ -352,7 +323,7 @@ export default function RoomDetails() {
     ));
   };
   let renderRoomDetails = () => {
-    if (dataDetail && star) {
+    if (dataDetail) {
       return (
         <div className="space-y-4 ">
           <p className="text-3xl font-semibold">{dataDetail?.tenPhong}</p>

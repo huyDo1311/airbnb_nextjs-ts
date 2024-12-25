@@ -40,6 +40,7 @@ interface AppState {
   customerDetails: any;
   resultSearch: any;
   star: any;
+  dataDetail: any;
   getUserData: UserProfile;
   dataLocation: any;
   headerTotal: any;
@@ -47,6 +48,7 @@ interface AppState {
   removeDataHeader: boolean;
   favorite: number[];
   setStar: (newStar: any) => void;
+  setDataDetail: (newDataDetail: any) => void;
   setDataLocation: (newLocation: any) => void;
   setSearch: () => void;
   setDataApiListRoom: (newDataApiListRoom: any) => void;
@@ -76,6 +78,7 @@ export const useStore = create<AppState>()(
   devtools(
     persist(
       (set) => ({
+        dataDetail: {},
         hideHeader: false,
         dataRented: [],
         star: 0,
@@ -152,7 +155,7 @@ export const useStore = create<AppState>()(
         setDataApiListRoom: (newDataApiListRoom) => {
           set({ dataApiListRoom: newDataApiListRoom });
         },
-
+        setDataDetail: (newDataDetail) => set({ dataDetail: newDataDetail }),
         setDataCalendar: (newCalendar) => set({ dataCalendar: newCalendar }),
         setCustomers: (newCustomers) => set({ customers: newCustomers }),
         setSearch: () => {
