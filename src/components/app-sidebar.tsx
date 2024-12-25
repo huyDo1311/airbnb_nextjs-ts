@@ -238,7 +238,8 @@ export function AppSidebar() {
           tenViTri: "vn",
           tinhThanh: "Khắp Việt Nam",
           quocGia: "Viet nam",
-          hinhAnh: "/assets/Destinations/Vietnam.jpg",
+          hinhAnh:
+            "https://i.pinimg.com/originals/c0/a7/0f/c0a70f0ab2d1559c9c0faf6eeae938f8.jpg",
         };
         let cloneDataDestination: destinationProps[] = [
           vietNam,

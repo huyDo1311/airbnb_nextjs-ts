@@ -30,10 +30,10 @@ export function DatePickerWithRangeDetails({
       let checkin = new Date(date.from);
       let checkout = new Date(date.to);
 
-      let checkinSubmit = addDays(new Date(date.from), 1);
-      let checkoutSubmit = addDays(new Date(date.to), 1);
-      const updatedDate = { from: checkinSubmit, to: checkoutSubmit };
-      setDateSubmit(updatedDate);
+      // let checkinSubmit = addDays(new Date(date.from), 1);
+      // let checkoutSubmit = addDays(new Date(date.to), 1);
+      // const updatedDate = { from: checkinSubmit, to: checkoutSubmit };
+      setDateSubmit(date);
 
       const differenceInTime = checkout.getTime() - checkin.getTime();
       const differenceIndays = differenceInTime / (1000 * 3600 * 24);

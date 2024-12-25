@@ -543,7 +543,7 @@ export default function RoomDetails({ query }: any) {
                     <DialogHeader>
                       <DialogTitle>
                         {" "}
-                        <div className="flex justify-center">
+                        <span className="flex justify-center">
                           <Image
                             src="/assets/barley.png"
                             width={50}
@@ -560,7 +560,7 @@ export default function RoomDetails({ query }: any) {
                             height={50}
                             alt="barley"
                           />
-                        </div>
+                        </span>
                         <p className="text-lg  text-center">
                           Được khách yêu thích
                         </p>

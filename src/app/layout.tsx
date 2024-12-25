@@ -21,13 +21,13 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Airbnbvietnam",
     description:
-      "Welcome to our Website, this website was built using Next.js.",
+      "Chào các bạn đến với website tụi mình, website này được xây dựng từ Nextjs framework",
     url: "https://airbnbvietnam.vercel.app/",
     images: [
       {
         url: "/assets/airbnb.png",
-        width: 800,
-        height: 600,
+        width: 500,
+        height: 500,
         alt: "Airbnbvietnam Logo",
       },
     ],

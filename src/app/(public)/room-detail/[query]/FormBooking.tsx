@@ -405,13 +405,16 @@ export default function FormBooking({
       <div className=" p-3 py-5 w-full left-0 bottom-0 fixed border bg-white text-black flex justify-between px-5 z-50 md:hidden ">
         <div>
           <p className="text-lg font-medium underline">{totalMoney}/ Đêm</p>
-          <p className="text-xs  font-normal">
-            {dateSubmit?.from && format(dateSubmit?.from, "dd ")} -{" "}
+          <span className="text-xs  font-normal">
+            {dateSubmit?.from && format(dateSubmit?.from, "dd ")}
+          </span>
+          {dateSubmit?.to && <span className="px-1">-</span>}
+          <span className="text-xs  font-normal">
             {dateSubmit?.to &&
               format(dateSubmit?.to, "dd MMM ", {
                 locale: vi,
               })}
-          </p>
+          </span>
         </div>
 
         <Drawer open={modalMobile}>
@@ -482,7 +485,7 @@ export default function FormBooking({
                           })}
                       </p>
                     </div>
-                    <div className="flex items-center space-x-1">
+                    <div className="flex items-center space-x-1 ">
                       <p className="text-lg text-md font-semibold">Khách: </p>
                       <p className="text-lg text-md font-normal">{total}</p>
                     </div>

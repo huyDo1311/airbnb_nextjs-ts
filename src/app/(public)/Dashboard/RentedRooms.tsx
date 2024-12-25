@@ -2,7 +2,7 @@
 import { typeContent } from "@/lib/helper.type";
 import { Skeleton } from "@/components/ui/skeleton";
 import http from "@/lib/http";
-import { vietnamLocations } from "@/lib/utils2";
+import { vietnameseDate, vietnamLocations } from "@/lib/utils2";
 import { useStore } from "@/store/store";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -68,8 +68,7 @@ export default function RentedRooms() {
                             </p>
                           )}
                           <p className="text-sm font-light ">
-                            {formatDateToVietnamese(item.ngayDen)} -{" "}
-                            {formatDateToVietnamese(item.ngayDi)}
+                            {formatDateToVietnamese(vietnameseDate)}
                           </p>
                           <p className="text-sm font-medium ">
                             {handleMoney(item?.giaTien ?? 0)} / Đêm{" "}

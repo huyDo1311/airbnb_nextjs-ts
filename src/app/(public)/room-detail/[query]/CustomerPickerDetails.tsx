@@ -120,7 +120,7 @@ export function CustomerPickerDetails({ dataDetail }: DataDetail) {
   };
 
   return (
-    <div className="relative border rounded-lg border-black w-full">
+    <div className="relative border rounded-lg dark:border-white border-black w-full">
       <Popover>
         <PopoverTrigger asChild>
           <Button
@@ -128,7 +128,7 @@ export function CustomerPickerDetails({ dataDetail }: DataDetail) {
             className="w-full h-full flex justify-between text-left group"
           >
             <div>
-              <p className="font-semibold text-xs">Khách</p>
+              <p className="font-semibold text-xs">Khách </p>
               <p className="text-gray-400 font-light">{total}</p>
             </div>
             <ChevronDown className="group-focus:rotate-180 transition duration-500" />
