@@ -18,19 +18,12 @@ export default function FormatTime() {
     setFormatDate(formatDate);
     setFormatDate2(formatDate2);
     setChoO(resultSearch.length);
-
-    // resultSearch?.forEach((_: any, index: any) => {
-    //   if (index == resultSearch.length - 1) {
-    //     let total = index + 1;
-    //     setChoO(total);
-    //   }
-    // });
   }, [resultSearch, dataCalendar]);
   return (
     <div className="text-md font-semibold">
       <div className="md:flex items-center text-white">
         {" "}
-        <div>
+        <div className="text-black">
           <span>Có</span>
           <span className="text-red-400 text-lg mx-2">{choO}</span>
           <span>chỗ ở tại</span>
@@ -39,7 +32,7 @@ export default function FormatTime() {
             {dataStoreDestination2}
           </span>
         </div>
-        <div className="flex items-center">
+        <div className="flex items-center text-black">
           <Hotel className="me-2" size={20} color="#f96262" />|{" "}
           <span className="ms-2 w-48">
             {formatDate} - {formatDate2}

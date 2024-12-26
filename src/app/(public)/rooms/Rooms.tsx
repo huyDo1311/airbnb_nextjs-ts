@@ -9,9 +9,13 @@ import {
   vietnamLocations,
 } from "@/lib/utils2";
 import { useStore } from "@/store/store";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+const LottieAnimation = dynamic(() => import("@/components/LottieAnimation"), {
+  ssr: false,
+});
 export default function Rooms({ data2 }: any) {
   let {
     resultSearch,
@@ -193,9 +197,21 @@ export default function Rooms({ data2 }: any) {
     <div>
       <FormDialog Open={Open} handleClose={handleClose} />
       <div className="w-full flex justify-center ">
-        <div className="w-fit grid lgCustom:grid-cols-4 mdCustom:grid-cols-3  smCustom:grid-cols-2 lg:gap-3   gap-5 py-5">
-          {renderRooms()}
-        </div>
+        {resultSearch > 0 ? (
+          <div className="w-fit grid lgCustom:grid-cols-4 mdCustom:grid-cols-3  smCustom:grid-cols-2 lg:gap-3   gap-5 py-5">
+            {renderRooms()}
+          </div>
+        ) : (
+          <div className="w-full flex flex-col items-center ">
+            {" "}
+            <div className="w-1/3">
+              <LottieAnimation />
+            </div>
+            <p className="text-2xl text-center mt-20 font-semibold">
+              Hiện tại đang không có nơi ở mà bạn cần...
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

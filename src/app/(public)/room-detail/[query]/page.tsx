@@ -43,7 +43,7 @@ export async function generateMetadata(
       images: [
         {
           url: room.content.hinhAnh,
-          width: 800,
+          width: 700,
           height: 600,
           alt: `${room.content.tenPhong} image`,
         },
