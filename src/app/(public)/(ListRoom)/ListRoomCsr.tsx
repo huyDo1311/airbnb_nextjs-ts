@@ -100,11 +100,11 @@ export default function ListRoomCsr({ data, data2 }: any) {
   useEffect(() => {}, []);
 
   let handleDetail = (id: number, star: number, tinhThanh: string) => {
+    router.push(`/room-detail/id?name=${id}`);
     setStar(star);
     setDataLocation(tinhThanh);
     resetCustomers();
     resetDataCalendar();
-    router.push(`/room-detail/id?name=${id}`);
   };
   const vietnameseDate = formatDateToVietnamese(data.dateTime);
 

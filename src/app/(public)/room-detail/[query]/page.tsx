@@ -23,11 +23,10 @@ export async function generateMetadata(
   try {
     room = await http.get(`/api/phong-thue/${roomId}`);
   } catch (err) {
-    console.error("Error fetching room details:", err);
     room = {
       content: {
-        tenPhong: "Room Not Found",
-        moTa: "We could not retrieve the room details.",
+        tenPhong: "Không tìm thấy phòng",
+        moTa: "không tìm thấy mô tả phòng",
         hinhAnh: "/default-room.jpg",
       },
     };

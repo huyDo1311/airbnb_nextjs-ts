@@ -128,7 +128,7 @@ input[type=number] {
   -moz-appearance: textfield;
 }
 
-@keyframes moveGradient {
+/* @keyframes moveGradient {
   0% {
     background-position: -200% 0;
   }
@@ -142,4 +142,4 @@ input[type=number] {
   background-size: 400% 400%;
   background-position: -200% 0;
   animation: moveGradient 3s linear infinite;
-}
+} */

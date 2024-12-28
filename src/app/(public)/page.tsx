@@ -1,21 +1,26 @@
 import ListRoom from "@/app/(public)/(ListRoom)/ListRoom";
 import Loading from "@/app/(public)/loading";
+import { Metadata } from "next";
 import { Suspense } from "react";
-export const metadata = {
-  title: "Airbnbvietnam",
-  description: "Welcome to our Website, this website was built using Next.js.",
+export const metadata: Metadata = {
+  title: {
+    default: "Airbnbvietnam",
+    template: "%s - Airbnbvietnam",
+  },
+  description:
+    "Chào các bạn đến với website tụi mình, website này được xây dựng từ Nextjs framework",
   keywords: "website, airbnb, nextjs, seo, hotel, motel, accommodation, home",
   authors: [{ name: "Phan Sy" }, { name: "Huy" }],
   openGraph: {
     title: "Airbnbvietnam",
     description:
-      "Welcome to our Website, this website was built using Next.js.",
+      "Chào các bạn đến với website tụi mình, website này được xây dựng từ Nextjs framework",
     url: "https://airbnbvietnam.vercel.app/",
     images: [
       {
         url: "/assets/airbnb.png",
-        width: 800,
-        height: 600,
+        width: 300,
+        height: 300,
         alt: "Airbnbvietnam Logo",
       },
     ],

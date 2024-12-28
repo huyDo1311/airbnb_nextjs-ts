@@ -1,40 +1,14 @@
-import type { Metadata } from "next";
+import AppProvider from "@/components/app-provider";
+import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "@/components/ui/toaster";
+import { cn } from "@/lib/utils";
 import { Inter as FontSans } from "next/font/google";
 import "./globals.css";
-import { cn } from "@/lib/utils";
-import { Toaster } from "@/components/ui/toaster";
-import { ThemeProvider } from "@/components/theme-provider";
-import AppProvider from "@/components/app-provider";
 
 const fontSans = FontSans({
   subsets: ["latin"],
   variable: "--font-sans",
 });
-export const metadata: Metadata = {
-  title: {
-    default: "Airbnbvietnam",
-    template: "%s - Airbnbvietnam",
-  },
-  description:
-    "Chào các bạn đến với website tụi mình, website này được xây dựng từ Nextjs framework",
-  keywords: "website, airbnb, nextjs, seo, hotel, motel, accommodation, home",
-  authors: [{ name: "Phan Sy" }, { name: "Huy" }],
-  openGraph: {
-    title: "Airbnbvietnam",
-    description:
-      "Chào các bạn đến với website tụi mình, website này được xây dựng từ Nextjs framework",
-    url: "https://airbnbvietnam.vercel.app/",
-    images: [
-      {
-        url: "/assets/airbnb.png",
-        width: 300,
-        height: 300,
-        alt: "Airbnbvietnam Logo",
-      },
-    ],
-    type: "website",
-  },
-};
 
 export default function RootLayout({
   children,

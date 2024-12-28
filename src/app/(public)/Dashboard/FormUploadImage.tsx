@@ -54,7 +54,7 @@ export default function FormUploadImage({ setRender, render }: any) {
   });
 
   return (
-    <div className="flex justify-center items-center flex-col space-y-3 ">
+    <div className="flex justify-center items-center flex-col space-y-3 k">
       <div
         {...getRootProps()}
         className="w-64 h-64 flex justify-center items-center border-4 border-dashed border-gray-400  cursor-pointer p-4 rounded-full"

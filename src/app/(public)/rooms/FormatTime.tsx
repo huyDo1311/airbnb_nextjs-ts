@@ -20,7 +20,7 @@ export default function FormatTime() {
     setChoO(resultSearch.length);
   }, [resultSearch, dataCalendar]);
   return (
-    <div className="text-md font-semibold">
+    <div className="text-md font-semibold bg-white p-2 px-3 rounded-xl">
       <div className="md:flex items-center text-white">
         {" "}
         <div className="text-black">

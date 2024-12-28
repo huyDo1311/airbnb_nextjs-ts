@@ -1,20 +1,24 @@
 "use client";
-import { vietnamLocations } from "@/lib/utils2";
-import { useStore } from "@/store/store";
-import Image from "next/image";
-import React, { useState } from "react";
+import FormDialog from "@/app/(public)/FormDialog";
 import FormatTime from "@/app/(public)/rooms/FormatTime";
-import { format } from "date-fns";
-import { vi } from "date-fns/locale";
 import { BackgroundGradient } from "@/components/ui/background-gradient";
+import { toast } from "@/hooks/use-toast";
+import {
+  handleMoney,
+  mapIframe,
+  vietnameseDate,
+  vietnamLocations,
+} from "@/lib/utils2";
+import { useStore } from "@/store/store";
+import dynamic from "next/dynamic";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 const LottieAnimation = dynamic(() => import("@/components/LottieAnimation"), {
   ssr: false,
 });
-import { useRouter } from "next/navigation";
-import dynamic from "next/dynamic";
-import { toast } from "@/hooks/use-toast";
-import FormDialog from "@/app/(public)/FormDialog";
-export default function DaNang() {
+
+export default function RoomDestinaion({ idDestination, destination }: any) {
   let {
     resultSearch,
     dataStoreDestination2,
@@ -23,21 +27,8 @@ export default function DaNang() {
     setRemoveFavorite,
     setDataApiListRoom,
     setFavorite,
+    setStar,
   } = useStore();
-  let handleMoney = (money: number): string => {
-    let currency = money * 25;
-    let formattedCurrency =
-      new Intl.NumberFormat("vi-VN", {
-        minimumFractionDigits: 3,
-        maximumFractionDigits: 3,
-      }).format(currency) + " đ"; // Adding the "đ" symbol at the end
-    return formattedCurrency.replace(",", ".");
-  };
-  const formatDateToVietnamese = (date: any) => {
-    return format(date, "eeee, dd MMMM yyyy", { locale: vi });
-  };
-
-  const vietnameseDate = formatDateToVietnamese(new Date());
 
   const [Open, setOpen] = useState<boolean>(false);
   const handleClose = () => {
@@ -82,7 +73,12 @@ export default function DaNang() {
                   <div
                     className="xl:h-[350px] h-[200px]  "
                     onClick={() => {
-                      handleDetail(item.id);
+                      handleDetail(
+                        item.id,
+                        vietnamLocations[index]?.star
+                          ? vietnamLocations[index]?.star
+                          : 4.5
+                      );
                     }}
                   >
                     <Image
@@ -147,7 +143,8 @@ export default function DaNang() {
     });
   };
   let router = useRouter();
-  let handleDetail = (id: number) => {
+  let handleDetail = (id: number, star: number) => {
+    setStar(star);
     router.push(`/room-detail/id?name=${id}`);
   };
   return (
@@ -179,7 +176,7 @@ export default function DaNang() {
           <div className="sticky xl:top-28 top-52">
             <BackgroundGradient className="rounded-[22px] bg-white dark:bg-zinc-900 overflow-hidden ">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d501725.4184472557!2d106.36556595347503!3d10.755292861627074!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x317529292e8d3dd1%3A0xf15f5aad773c112b!2zVGjDoG5oIHBo4buRIEjhu5MgQ2jDrSBNaW5oLCBI4buTIENow60gTWluaCwgVmnhu4d0IE5hbQ!5e0!3m2!1svi!2s!4v1732295370863!5m2!1svi!2s"
+                src={mapIframe[idDestination - 1].src}
                 className="xl:h-[700px] md:h-[500px] h-[360px] w-full z-50"
                 style={{ border: 0 }}
                 allowFullScreen
@@ -191,6 +188,13 @@ export default function DaNang() {
         </div>
       </div>
       <FormDialog Open={Open} handleClose={handleClose} />
+      <Image
+        className={` fixed inset-0 w-full h-full -z-20 bg-bottom bg-cover`}
+        src={`/assets/Destinations/${destination}.jpg`}
+        alt={""}
+        width={1000}
+        height={1000}
+      />
     </div>
   );
 }

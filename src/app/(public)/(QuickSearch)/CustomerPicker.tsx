@@ -25,7 +25,6 @@ export function CustomerPicker() {
     dataCalendar,
     setCustomers,
     setSearch,
-    setDataApiListRoom,
     dataStoreDestination,
     dataStoreDestination2,
     setHeaderTotal,
@@ -103,25 +102,15 @@ export function CustomerPicker() {
         babies: quantityOfBabies,
         pets: quantityOfPets,
       });
-      if (dataStoreDestination == 1) {
-        router.push("/rooms/ho-chi-minh");
-      } else if (dataStoreDestination == 2) {
-        router.push("/rooms/can-tho");
-      } else if (dataStoreDestination == 3) {
-        router.push("/rooms/nha-trang");
-      } else if (dataStoreDestination == 4) {
-        router.push("/rooms/ha-noi");
-      } else if (dataStoreDestination == 5) {
-        router.push("/rooms/phu-quoc");
-      } else if (dataStoreDestination == 6) {
-        router.push("/rooms/da-nang");
-      } else if (dataStoreDestination == 7) {
-        router.push("/rooms/da-lat");
-      } else if (dataStoreDestination == 8) {
-        router.push("/rooms/phan-thiet");
-      } else {
+      const formattedDestination = dataStoreDestination2.replace(/\s+/g, "-");
+      if (dataStoreDestination == 0) {
         router.push("/rooms");
+      } else {
+        router.push(
+          `/room-destination/location?name=${formattedDestination}&id=${dataStoreDestination}`
+        );
       }
+
       setSearch();
     }
   };
