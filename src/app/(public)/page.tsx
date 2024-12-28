@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     url: "https://airbnbvietnam.vercel.app/",
     images: [
       {
-        url: "/assets/airbnb.png",
+        url: "/assets/airbnbmobile.png",
         width: 300,
         height: 300,
         alt: "Airbnbvietnam Logo",

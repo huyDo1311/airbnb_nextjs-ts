@@ -186,7 +186,7 @@ export default function ListRoomCsr({ data, data2 }: any) {
                           <CardItem translateZ="50">
                             <div className=" lgCustom:h-[200px] overflow-hidden w-full   mdCustom:w-full h-[200px] ">
                               <Image
-                                className="h-full lgCustom:w-full w-[500px] mdCustom:w-full object-left object-cover rounded-xl"
+                                className="h-full w-[520px] object-left object-cover rounded-xl"
                                 src={item.hinhAnh}
                                 width={2000}
                                 height={2000}

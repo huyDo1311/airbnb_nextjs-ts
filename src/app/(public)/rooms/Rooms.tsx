@@ -80,7 +80,7 @@ export default function Rooms({ data2 }: any) {
                 >
                   {item2.id == item.maViTri && (
                     <CardContainer className="inter-var   ">
-                      <CardBody className="group shadow-lg p-4 border  relative group/card  px-5 dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] rounded-xl    ">
+                      <CardBody className="group shadow-lg p-4 border  relative group/card  px-6 dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] rounded-xl    ">
                         <div
                           className=""
                           onClick={() => {
@@ -96,7 +96,7 @@ export default function Rooms({ data2 }: any) {
                           <CardItem translateZ="50">
                             <div className=" lgCustom:h-[200px] overflow-hidden w-full   mdCustom:w-full h-[200px] ">
                               <Image
-                                className="h-full lgCustom:w-full w-[500px] mdCustom:w-full object-left object-cover rounded-xl"
+                                className="h-full w-[500px] object-left object-cover rounded-xl"
                                 src={item.hinhAnh}
                                 width={2000}
                                 height={2000}
@@ -136,7 +136,7 @@ export default function Rooms({ data2 }: any) {
                             </div>
                           </CardItem>
 
-                          {(vietnamLocations[index]?.star ?? 4.5) <= 4.5 &&
+                          {(vietnamLocations[index]?.star ?? 4.5) < 4.5 &&
                             (vietnamLocations[index]?.star ?? 5) > 4 && (
                               <CardItem
                                 className="absolute top-2 left-2"
@@ -150,7 +150,7 @@ export default function Rooms({ data2 }: any) {
                                 </div>
                               </CardItem>
                             )}
-                          {(vietnamLocations[index]?.star ?? 4.5) == 5 && (
+                          {(vietnamLocations[index]?.star ?? 4.5) >= 4.5 && (
                             <CardItem
                               className="absolute top-2 left-2"
                               translateZ={100}
