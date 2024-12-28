@@ -1,19 +1,17 @@
 "use client";
+import FormDialog from "@/app/(public)/FormDialog";
+import FormatTime from "@/app/(public)/rooms/FormatTime";
+import { BackgroundGradient } from "@/components/ui/background-gradient";
+import { toast } from "@/hooks/use-toast";
 import { handleMoney, vietnameseDate, vietnamLocations } from "@/lib/utils2";
 import { useStore } from "@/store/store";
+import dynamic from "next/dynamic";
 import Image from "next/image";
-import React, { useState } from "react";
-import FormatTime from "@/app/(public)/rooms/FormatTime";
-import { format } from "date-fns";
-import { vi } from "date-fns/locale";
-import { BackgroundGradient } from "@/components/ui/background-gradient";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 const LottieAnimation = dynamic(() => import("@/components/LottieAnimation"), {
   ssr: false,
 });
-import { useRouter } from "next/navigation";
-import dynamic from "next/dynamic";
-import { toast } from "@/hooks/use-toast";
-import FormDialog from "@/app/(public)/FormDialog";
 
 export default function PhanThiet() {
   let {

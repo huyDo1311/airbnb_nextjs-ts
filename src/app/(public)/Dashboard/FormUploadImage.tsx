@@ -1,11 +1,10 @@
 "use client";
-import { mediaApiRequest } from "@/apiRequests/media";
 import { Button } from "@/components/ui/button";
-import { DialogFooter } from "@/components/ui/dialog";
+import { toast } from "@/hooks/use-toast";
 import { useUploadMediaMutation } from "@/queries/useMedia";
 import { useStore } from "@/store/store";
 import { DialogClose } from "@radix-ui/react-dialog";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useDropzone } from "react-dropzone";
 
 export default function FormUploadImage({ setRender, render }: any) {
@@ -15,7 +14,8 @@ export default function FormUploadImage({ setRender, render }: any) {
   const { setFetchDataStore, setGetUserData } = useStore();
 
   const handleUpAvatar = async () => {
-    if (imageFile) {
+    if (imageFile && imageFile.size <= 1024 * 1024) {
+      console.log({ imageFile });
       const formData = new FormData();
       formData.append("formFile", imageFile);
       try {
@@ -23,8 +23,16 @@ export default function FormUploadImage({ setRender, render }: any) {
         setRender(!render);
         setFetchDataStore();
       } catch (err) {
+        toast({
+          title: "tối đa 1mb",
+        });
         console.log(err);
       }
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Dung lượng ảnh tối đa 1mb",
+      });
     }
   };
   const { getRootProps, getInputProps } = useDropzone({
@@ -46,7 +54,7 @@ export default function FormUploadImage({ setRender, render }: any) {
   });
 
   return (
-    <div className="flex justify-center items-center flex-col space-y-4">
+    <div className="flex justify-center items-center flex-col space-y-3 ">
       <div
         {...getRootProps()}
         className="w-64 h-64 flex justify-center items-center border-4 border-dashed border-gray-400  cursor-pointer p-4 rounded-full"

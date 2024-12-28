@@ -170,7 +170,7 @@ export default function ListRoomCsr({ data, data2 }: any) {
                 >
                   {item2.id == item.maViTri && (
                     <CardContainer className="inter-var   ">
-                      <CardBody className="group shadow-lg p-4 border  relative group/card  px-5 dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] rounded-xl    ">
+                      <CardBody className="group shadow-lg p-4 border  relative group/card  px-6 dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] rounded-xl    ">
                         <div
                           className=""
                           onClick={() => {
@@ -226,7 +226,7 @@ export default function ListRoomCsr({ data, data2 }: any) {
                             </div>
                           </CardItem>
 
-                          {(vietnamLocations[index]?.star ?? 4.5) <= 4.5 &&
+                          {(vietnamLocations[index]?.star ?? 4.5) < 4.5 &&
                             (vietnamLocations[index]?.star ?? 5) > 4 && (
                               <CardItem
                                 className="absolute top-2 left-2"
@@ -240,7 +240,7 @@ export default function ListRoomCsr({ data, data2 }: any) {
                                 </div>
                               </CardItem>
                             )}
-                          {(vietnamLocations[index]?.star ?? 4.5) == 5 && (
+                          {(vietnamLocations[index]?.star ?? 4.5) >= 4.5 && (
                             <CardItem
                               className="absolute top-2 left-2"
                               translateZ={100}

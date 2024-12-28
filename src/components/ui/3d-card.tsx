@@ -81,9 +81,10 @@ export const CardBody = ({
   className?: string;
 }) => {
   return (
+    // xlCustom:w-[320px]  lgCustom:h-[325px] lgCustom:w-[290px]  mdCustom:h-[320px] mdCustom:w-[320px] smCustom:w-[340px]
     <div
       className={cn(
-        "  xlCustom:w-[320px]  lgCustom:h-[325px] lgCustom:w-[290px]  mdCustom:h-[320px] mdCustom:w-[320px] smCustom:w-[340px] [transform-style:preserve-3d]  [&>*]:[transform-style:preserve-3d]",
+        "   [transform-style:preserve-3d]  [&>*]:[transform-style:preserve-3d]",
         className
       )}
     >

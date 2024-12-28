@@ -21,6 +21,8 @@ export default function HoChiMinh() {
     setRemoveFavorite,
     setDataApiListRoom,
     setFavorite,
+    setStar,
+    setDataLocation,
   } = useStore();
 
   const [Open, setOpen] = useState<boolean>(false);
@@ -66,7 +68,12 @@ export default function HoChiMinh() {
                   <div
                     className="xl:h-[350px] h-[200px]  "
                     onClick={() => {
-                      handleDetail(item.id);
+                      handleDetail(
+                        item.id,
+                        vietnamLocations[index]?.star
+                          ? vietnamLocations[index]?.star
+                          : 4.5
+                      );
                     }}
                   >
                     <Image
@@ -131,7 +138,8 @@ export default function HoChiMinh() {
     });
   };
   let router = useRouter();
-  let handleDetail = (id: number) => {
+  let handleDetail = (id: number, star: number) => {
+    setStar(star);
     router.push(`/room-detail/id?name=${id}`);
   };
   return (
