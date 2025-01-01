@@ -1,11 +1,10 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { decodeToken } from "./lib/utils";
-import { Role } from "./constants/type";
 
 const managePaths = ["/manage"];
-const userPaths = ["/user"];
-const privatePaths = [...managePaths, ...userPaths];
+const userPaths = ["/Dashboard"];
+const privatePaths = [...managePaths];
 const unAuthPaths = ["/signin"];
 
 // This function can be marked `async` if using `await` inside
@@ -33,18 +32,13 @@ export function middleware(request: NextRequest) {
     }
 
     // Restrict non-USER roles from accessing userPaths
-    if (
-      role !== "USER" &&
-      userPaths.some((path) => pathname.startsWith(path))
-    ) {
-      return NextResponse.redirect(new URL("/", request.url));
-    }
+  } else if (!isAuth && userPaths.some((path) => pathname.startsWith(path))) {
+    return NextResponse.redirect(new URL("/", request.url));
   }
-
   return NextResponse.next();
 }
 
 // See "Matching Paths" below to learn more
 export const config = {
-  matcher: ["/manage/:path*", "/signin", "/user/:path*"],
+  matcher: ["/manage/:path*", "/:path*"],
 };

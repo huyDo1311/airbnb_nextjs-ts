@@ -21,7 +21,6 @@ import { useEffect, useState } from "react";
 
 export default function DashboardUser() {
   let { getUserData, setGetUserData } = useStore();
-
   const [avatarUser, setAvatarUser] = useState<string | null>(null);
   const [render, setRender] = useState(false);
   const [dataUser, setDataUser] = useState<UserProfile | null>(null);

@@ -135,48 +135,49 @@ export default function RoomDetails({ query }: any) {
         .NextClientToServerGetRoom(query)
         .then((res) => {
           const selectedRoom = res.content;
-          console.log("🚀 ~ .then ~ selectedRoom:", selectedRoom);
-
           setDataDetail(selectedRoom);
           setCustomerDetails(selectedRoom.khach);
           setDataDetail(selectedRoom);
           setFetchDataStore();
-          setTotalMoney(
-            formatMoney(handleMoneyResult(selectedRoom.giaTien) + 200)
-          );
         })
         .catch((err) => console.log(err));
   }, [query]);
 
   useEffect(() => {
-    bookingApiRequest
-      .NextClientToServerGetBookingByUser(getUserData?.id)
-      .then((res: any) => {
-        let sliceData = res.content.reverse().slice(0, 10);
-        let filterSliceData = sliceData.filter(
-          (data: any, index: number, self: any) => {
-            return (
-              index ===
-              self.findIndex((value: any) => value.maPhong === data.maPhong)
-            );
-          }
-        );
-        let filterDetail = filterSliceData.map((item: any) => {
-          return dataApiListRoom.find((item2: typeContent) => {
-            return item.maPhong == item2.id ? item.maPhong == item2.id : null;
-          });
-        });
-        let cloneFilterDetail = [...filterDetail];
-        let newFilterDetail = cloneFilterDetail.map((data, index) => {
-          let ngayDen = filterSliceData[index]?.ngayDen;
-          let ngayDi = filterSliceData[index]?.ngayDi;
-          let newData = { ...data, ngayDen, ngayDi };
-          return newData;
-        });
+    setTotalMoney(formatMoney(handleMoneyResult(dataDetail.giaTien) + 200));
+  }, [differenceDays]);
 
-        setDataRented(newFilterDetail);
-      })
-      .catch((err) => console.log(err, "err"));
+  useEffect(() => {
+    if (getUserData?.id) {
+      bookingApiRequest
+        .NextClientToServerGetBookingByUser(getUserData?.id)
+        .then((res: any) => {
+          let sliceData = res.content.reverse().slice(0, 10);
+          let filterSliceData = sliceData.filter(
+            (data: any, index: number, self: any) => {
+              return (
+                index ===
+                self.findIndex((value: any) => value.maPhong === data.maPhong)
+              );
+            }
+          );
+          let filterDetail = filterSliceData.map((item: any) => {
+            return dataApiListRoom.find((item2: typeContent) => {
+              return item.maPhong == item2.id ? item.maPhong == item2.id : null;
+            });
+          });
+          let cloneFilterDetail = [...filterDetail];
+          let newFilterDetail = cloneFilterDetail.map((data, index) => {
+            let ngayDen = filterSliceData[index]?.ngayDen;
+            let ngayDi = filterSliceData[index]?.ngayDi;
+            let newData = { ...data, ngayDen, ngayDi };
+            return newData;
+          });
+
+          setDataRented(newFilterDetail);
+        })
+        .catch((err) => console.log(err, "err"));
+    }
   }, [dataApiListRoom, fetchDataStore, setDataRented]);
 
   let handleMoney = (money: number): number => {
@@ -986,7 +987,7 @@ export default function RoomDetails({ query }: any) {
                           <p>
                             {formatMoney(
                               handleMoneyResult(dataDetail?.giaTien ?? 0)
-                            )}
+                            )}{" "}
                           </p>
                         </div>
                         <div className="flex justify-between">
