@@ -17,7 +17,7 @@ import { toast } from "@/hooks/use-toast";
 import { handleErrorApi, setUserToLocalStorage } from "@/lib/utils";
 import { useSigninMutation } from "@/queries/useAuth";
 import Image from "next/image";
-import { Eye, EyeClosed } from "lucide-react";
+import { Eye, EyeClosed, LoaderCircle } from "lucide-react";
 import { useState } from "react";
 import { useStore } from "@/store/store";
 import { useRouter } from "next/navigation";
@@ -144,7 +144,10 @@ export default function SigninForm({
                   )}
                 />
                 <Button type="submit" className="w-full">
-                  Đăng nhập
+                  {signinMutation.isPending && (
+                    <LoaderCircle className="mr-2 animate-spin" />
+                  )}
+                  <span> Đăng nhập</span>
                 </Button>
                 <Button variant="outline" className="w-full" type="button">
                   <div className="w-52 flex justify-start space-x-4 items-center ">

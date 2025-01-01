@@ -33,7 +33,7 @@ export default function RootLayout({
           fontSans.variable
         )}
       >
-        <NextTopLoader color="red" showSpinner />
+        <NextTopLoader color="red" showSpinner={false} height={5} />
 
         <AppProvider>
           <ThemeProvider

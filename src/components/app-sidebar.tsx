@@ -330,6 +330,7 @@ export function AppSidebar() {
     setQuantityOfBaby(0);
     setQuantityOfPets(0);
   }, [setRemoveDataHeader, removeDataHeader]);
+  const formattedDestination = dataStoreDestination2.replace(/\s+/g, "-");
 
   let handleSearching = () => {
     if (!dataStoreDestination2) {
@@ -351,25 +352,11 @@ export function AppSidebar() {
         babies: quantityOfBabies,
         pets: quantityOfPets,
       });
-      if (dataStoreDestination == 1) {
-        window.location.href = "/rooms/ho-chi-minh";
-      } else if (dataStoreDestination == 2) {
-        window.location.href = "/rooms/can-tho";
-      } else if (dataStoreDestination == 3) {
-        window.location.href = "/rooms/nha-trang";
-      } else if (dataStoreDestination == 4) {
-        window.location.href = "/rooms/ha-noi";
-      } else if (dataStoreDestination == 5) {
-        window.location.href = "/rooms/phu-quoc";
-      } else if (dataStoreDestination == 6) {
-        window.location.href = "/rooms/da-nang";
-      } else if (dataStoreDestination == 7) {
-        window.location.href = "/rooms/da-lat";
-      } else if (dataStoreDestination == 8) {
-        window.location.href = "/rooms/phan-thiet";
-      } else {
-        window.location.href = "/rooms";
+      if (dataStoreDestination == 0) {
+        router.push("/rooms");
       }
+
+      window.location.href = `/room-destination/location?name=${formattedDestination}&id=${dataStoreDestination}`;
       setSearch();
     }
   };

@@ -165,14 +165,14 @@ export default function RoomDestinaion({ idDestination, destination }: any) {
                 <div>
                   <LottieAnimation />
                 </div>
-                <p className="text-2xl text-center mt-20 font-semibold">
+                <p className="text-2xl text-center  md:mt-20 font-semibold">
                   Hiện tại đang không có nơi ở mà bạn cần...
                 </p>
               </div>
             )}
           </div>
         </div>
-        <div className="">
+        <div className=" mt-5">
           <div className="sticky xl:top-28 top-52">
             <BackgroundGradient className="rounded-[22px] bg-white dark:bg-zinc-900 overflow-hidden ">
               <iframe
@@ -189,7 +189,7 @@ export default function RoomDestinaion({ idDestination, destination }: any) {
       </div>
       <FormDialog Open={Open} handleClose={handleClose} />
       <Image
-        className={` fixed inset-0 w-full h-full -z-20 bg-bottom bg-cover`}
+        className={` fixed sm:block inset-0 w-full h-full hidden -z-20 bg-bottom bg-cover`}
         src={`/assets/Destinations/${destination}.jpg`}
         alt={""}
         width={1000}
