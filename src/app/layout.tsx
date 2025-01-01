@@ -1,3 +1,4 @@
+import NextTopLoader from "nextjs-toploader";
 import AppProvider from "@/components/app-provider";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
@@ -32,6 +33,8 @@ export default function RootLayout({
           fontSans.variable
         )}
       >
+        <NextTopLoader color="red" showSpinner />
+
         <AppProvider>
           <ThemeProvider
             attribute="class"
