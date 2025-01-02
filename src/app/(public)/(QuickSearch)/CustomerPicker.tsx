@@ -204,6 +204,7 @@ export function CustomerPicker() {
         <div className="absolute top-0 xl:right-8 right-1 h-full cursor-pointer w-1/2">
           <div className="h-full  flex items-center justify-center   ">
             <Link
+              className="h-full flex items-center"
               href={
                 dataStoreDestination == 0
                   ? "/rooms"
@@ -211,7 +212,7 @@ export function CustomerPicker() {
               }
             >
               <div
-                className="items-center  bg-red-500 rounded-full lg:rounded-3xl w-14 h-14 lg:h-3/4 lg:w-full md:px-5 flex cursor-pointer justify-center"
+                className="items-center  bg-red-500 rounded-full h-11 lg:rounded-3xl lg:w-full md:px-5 flex cursor-pointer justify-center"
                 onClick={handleSearching}
               >
                 <svg

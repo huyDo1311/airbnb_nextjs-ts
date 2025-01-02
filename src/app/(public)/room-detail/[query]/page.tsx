@@ -1,7 +1,8 @@
 import RoomDetails from "@/app/(public)/room-detail/[query]/RoomDetails";
-import React from "react";
+import React, { Suspense } from "react";
 import type { Metadata, ResolvingMetadata } from "next";
 import http from "@/lib/http";
+import Loading from "@/app/(public)/room-detail/[query]/loading";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -63,7 +64,9 @@ export default async function Page({ params, searchParams }: Props) {
     <div className="w-full lg:px-20 py-5 flex justify-center z-50">
       <div className="w-full">
         {/* Pass query to RoomDetails */}
-        <RoomDetails query={name} />
+        <Suspense fallback={<Loading />}>
+          <RoomDetails query={name} />
+        </Suspense>
       </div>
     </div>
   );
