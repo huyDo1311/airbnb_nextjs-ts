@@ -1,5 +1,4 @@
 import roomApiRequest from "@/apiRequests/room";
-import ListRoom from "@/app/(public)/(ListRoom)/ListRoom";
 import ListRoomCsr from "@/app/(public)/(ListRoom)/ListRoomCsr";
 import Loading from "@/app/(public)/(ListRoom)/loading";
 import { ListRoomProps } from "@/lib/helper.type";
@@ -38,7 +37,6 @@ export default async function Home() {
   const data2: any = await http.get(
     "/api/vi-tri/phan-trang-tim-kiem?pageIndex=1&pageSize=8"
   );
-  await new Promise((resolve) => setTimeout(resolve, 2000));
   return (
     <div className="w-full space-y-4">
       <Suspense fallback={<Loading />}>
