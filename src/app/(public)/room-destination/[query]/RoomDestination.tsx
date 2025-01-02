@@ -12,6 +12,7 @@ import {
 import { useStore } from "@/store/store";
 import dynamic from "next/dynamic";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 const LottieAnimation = dynamic(() => import("@/components/LottieAnimation"), {
@@ -67,85 +68,84 @@ export default function RoomDestinaion({ idDestination, destination }: any) {
       return (
         <div key={item.id}>
           {item.hinhAnh && (
-            <BackgroundGradient className="rounded-[22px] p-5 bg-white dark:bg-zinc-900 overflow-hidden">
-              <div className="relative cursor-pointer">
-                <div>
-                  <div
-                    className="xl:h-[350px] h-[200px]  "
-                    onClick={() => {
-                      handleDetail(
-                        item.id,
-                        vietnamLocations[index]?.star
-                          ? vietnamLocations[index]?.star
-                          : 4.5
-                      );
-                    }}
-                  >
-                    <Image
-                      className="h-full object-left object-cover rounded-xl w-full"
-                      src={item.hinhAnh}
-                      width={1000}
-                      height={1000}
-                      alt="ks"
-                    />
-                  </div>
-                  <div className="space-y-2 mt-2">
-                    <div className="flex justify-between ">
-                      <p className="text-sm font-bold">
-                        {dataStoreDestination2} / Việt Nam
-                      </p>
-                      <div className="flex items-center space-x-2">
-                        <p className="text-sm">
-                          {vietnamLocations[index]?.star ?? 4.5}
-                        </p>
-                        <i className="fa fa-star text-sm"></i>
-                      </div>
+            <Link href={`/room-detail/id?name=${item.id}`}>
+              <BackgroundGradient className="rounded-[22px] p-5 bg-white dark:bg-zinc-900 overflow-hidden">
+                <div className="relative cursor-pointer">
+                  <div>
+                    <div
+                      className="xl:h-[350px] h-[200px]  "
+                      onClick={() => {
+                        handleDetail(
+                          vietnamLocations[index]?.star
+                            ? vietnamLocations[index]?.star
+                            : 4.5
+                        );
+                      }}
+                    >
+                      <Image
+                        className="h-full object-left object-cover rounded-xl w-full"
+                        src={item.hinhAnh}
+                        width={1000}
+                        height={1000}
+                        alt="ks"
+                      />
                     </div>
-                    <p className="text-sm font-normal ">{vietnameseDate}</p>
-                    <p className="text-sm font-medium">
-                      {handleMoney(item.giaTien)} / Đêm{" "}
-                    </p>
+                    <div className="space-y-2 mt-2">
+                      <div className="flex justify-between ">
+                        <p className="text-sm font-bold">
+                          {dataStoreDestination2} / Việt Nam
+                        </p>
+                        <div className="flex items-center space-x-2">
+                          <p className="text-sm">
+                            {vietnamLocations[index]?.star ?? 4.5}
+                          </p>
+                          <i className="fa fa-star text-sm"></i>
+                        </div>
+                      </div>
+                      <p className="text-sm font-normal ">{vietnameseDate}</p>
+                      <p className="text-sm font-medium">
+                        {handleMoney(item.giaTien)} / Đêm{" "}
+                      </p>
+                    </div>
                   </div>
+                  <div className="absolute top-1 right-1 z-50">
+                    <button
+                      onClick={() => {
+                        handleFavorite(item.id);
+                      }}
+                      className="active:scale-150 "
+                    >
+                      <i
+                        className={`fa fa-heart scale-125 ${
+                          item.loving ? "text-red-500" : "text-gray-500"
+                        }  group-hover:animate-beat duration-300 z-40 bg-clip-text [-webkit-text-stroke:1px_white]  hover:[-webkit-text-stroke:0px] transition-all`}
+                      ></i>
+                    </button>
+                  </div>
+                  {(vietnamLocations[index]?.star ?? 4.5) <= 4.5 &&
+                  (vietnamLocations[index]?.star ?? 4.5) > 4 ? (
+                    <div className="bg-white rounded-xl absolute top-1 left-1 ">
+                      <p className="text-sm text-black font-semibold p-1 px-2">
+                        Được khách yêu thích
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="bg-red-400 rounded-xl absolute top-1 left-1">
+                      <p className="text-sm text-black font-semibold p-1 px-2">
+                        Chủ nhà siêu cấp
+                      </p>
+                    </div>
+                  )}
                 </div>
-                <div className="absolute top-1 right-1 z-50">
-                  <button
-                    onClick={() => {
-                      handleFavorite(item.id);
-                    }}
-                    className="active:scale-150 "
-                  >
-                    <i
-                      className={`fa fa-heart scale-125 ${
-                        item.loving ? "text-red-500" : "text-gray-500"
-                      }  group-hover:animate-beat duration-300 z-40 bg-clip-text [-webkit-text-stroke:1px_white]  hover:[-webkit-text-stroke:0px] transition-all`}
-                    ></i>
-                  </button>
-                </div>
-                {(vietnamLocations[index]?.star ?? 4.5) <= 4.5 &&
-                (vietnamLocations[index]?.star ?? 4.5) > 4 ? (
-                  <div className="bg-white rounded-xl absolute top-1 left-1 ">
-                    <p className="text-sm text-black font-semibold p-1 px-2">
-                      Được khách yêu thích
-                    </p>
-                  </div>
-                ) : (
-                  <div className="bg-red-400 rounded-xl absolute top-1 left-1">
-                    <p className="text-sm text-black font-semibold p-1 px-2">
-                      Chủ nhà siêu cấp
-                    </p>
-                  </div>
-                )}
-              </div>
-            </BackgroundGradient>
+              </BackgroundGradient>
+            </Link>
           )}
         </div>
       );
     });
   };
-  let router = useRouter();
-  let handleDetail = (id: number, star: number) => {
+  let handleDetail = (star: number) => {
     setStar(star);
-    router.push(`/room-detail/id?name=${id}`);
   };
   return (
     <div className="">

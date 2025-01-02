@@ -94,7 +94,6 @@ export default function RoomDetails({ query }: any) {
   const refCommentsMobile = useRef<HTMLButtonElement | null>(null);
   const [end, setEnd] = useState<number>(4);
   const [displayDes, setdisplayDes] = useState<boolean>(false);
-  const searchParams = useSearchParams();
   let handleSuccess = async () => {
     setIsSuccess(true);
     setFetchDataStore();

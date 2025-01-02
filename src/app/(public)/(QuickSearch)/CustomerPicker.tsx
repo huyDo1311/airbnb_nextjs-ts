@@ -10,6 +10,7 @@ import {
 import { toast } from "@/hooks/use-toast";
 import { useStore } from "@/store/store";
 import { Minus, Plus } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 interface dataTypeCustomers {
@@ -41,6 +42,7 @@ export function CustomerPicker() {
   // useEffect(() => {
 
   // }, [quantityOfAdult, quantityOfChildren, setCustomers]);
+  const formattedDestination = dataStoreDestination2.replace(/\s+/g, "-");
 
   useEffect(() => {
     // setTotal(quantityOfAdult + quantityOfChildren);
@@ -102,15 +104,6 @@ export function CustomerPicker() {
         babies: quantityOfBabies,
         pets: quantityOfPets,
       });
-      const formattedDestination = dataStoreDestination2.replace(/\s+/g, "-");
-      if (dataStoreDestination == 0) {
-        router.push("/rooms");
-      } else {
-        router.push(
-          `/room-destination/location?name=${formattedDestination}&id=${dataStoreDestination}`
-        );
-      }
-
       setSearch();
     }
   };
@@ -210,29 +203,37 @@ export function CustomerPicker() {
         </PopoverTrigger>
         <div className="absolute top-0 xl:right-8 right-1 h-full cursor-pointer w-1/2">
           <div className="h-full  flex items-center justify-center   ">
-            <div
-              className="items-center  bg-red-500 rounded-full lg:rounded-3xl w-14 h-14 lg:h-3/4 lg:w-full md:px-5 flex cursor-pointer justify-center"
-              onClick={handleSearching}
+            <Link
+              href={
+                dataStoreDestination == 0
+                  ? "/rooms"
+                  : `/room-destination/location?name=${formattedDestination}&id=${dataStoreDestination}`
+              }
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width={28}
-                height={28}
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeWidth="2px"
-                strokeLinejoin="round"
-                className="lucide lucide-search hover:scale-110 transition cursor-pointer text-white  "
+              <div
+                className="items-center  bg-red-500 rounded-full lg:rounded-3xl w-14 h-14 lg:h-3/4 lg:w-full md:px-5 flex cursor-pointer justify-center"
+                onClick={handleSearching}
               >
-                <circle cx={11} cy={11} r={8} />
-                <path d="m21 21-4.3-4.3" />
-              </svg>
-              <p className="text-md ps-2 font-medium text-white lg:block hidden">
-                Tìm kiếm
-              </p>
-            </div>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width={28}
+                  height={28}
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeWidth="2px"
+                  strokeLinejoin="round"
+                  className="lucide lucide-search hover:scale-110 transition cursor-pointer text-white  "
+                >
+                  <circle cx={11} cy={11} r={8} />
+                  <path d="m21 21-4.3-4.3" />
+                </svg>
+                <p className="text-md ps-2 font-medium text-white lg:block hidden">
+                  Tìm kiếm
+                </p>
+              </div>
+            </Link>
           </div>
         </div>
         <PopoverContent className="w-[480px] rounded-3xl" align="end">
