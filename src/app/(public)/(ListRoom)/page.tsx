@@ -34,7 +34,6 @@ export default function Home() {
       <Suspense fallback={<Loading />}>
         <ListRoom />
       </Suspense>
-      {/* <Destinations /> */}
     </div>
   );
 }
