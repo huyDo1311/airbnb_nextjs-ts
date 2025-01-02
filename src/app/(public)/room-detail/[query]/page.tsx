@@ -2,8 +2,7 @@ import RoomDetails from "@/app/(public)/room-detail/[query]/RoomDetails";
 import React, { Suspense } from "react";
 import type { Metadata, ResolvingMetadata } from "next";
 import http from "@/lib/http";
-import Loading from "@/app/(public)/loading";
-import { resolve } from "path";
+import Loading from "@/app/(public)/room-detail/[query]/loading";
 
 type Props = {
   params: Promise<{ id: string }>;

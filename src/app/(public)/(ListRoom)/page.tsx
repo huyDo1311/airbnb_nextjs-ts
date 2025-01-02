@@ -1,5 +1,5 @@
 import ListRoom from "@/app/(public)/(ListRoom)/ListRoom";
-import Loading from "@/app/(public)/loading";
+import Loading from "@/app/(public)/(ListRoom)/loading";
 import { Metadata } from "next";
 import { Suspense } from "react";
 export const metadata: Metadata = {

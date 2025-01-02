@@ -1,7 +1,8 @@
 import RoomDestination from "@/app/(public)/room-destination/[query]/RoomDestination";
+import Loading from "@/app/(public)/room-destination/loading";
 import { mapIframe } from "@/lib/utils2";
 import { Metadata } from "next";
-import React from "react";
+import React, { Suspense } from "react";
 
 type Props = {
   searchParams: Promise<{
@@ -40,6 +41,7 @@ export default async function page({ searchParams }: Props) {
 
   return (
     <div>
+      <Suspense fallback={<Loading />}></Suspense>
       <RoomDestination idDestination={id} destination={name} />
     </div>
   );
