@@ -1,6 +1,5 @@
 "use client";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useRouter } from "next/navigation";
 import React from "react";
 
 export default function LoadingSkeleton() {
