@@ -38,11 +38,12 @@ export async function generateMetadata({
 export default async function page({ searchParams }: Props) {
   const resolvedSearchParams = await searchParams;
   const { name, id } = resolvedSearchParams;
-
+  await new Promise((resolve) => setTimeout(resolve, 500));
   return (
     <div>
-      <Suspense fallback={<Loading />}></Suspense>
-      <RoomDestination idDestination={id} destination={name} />
+      <Suspense fallback={<Loading />}>
+        <RoomDestination idDestination={id} destination={name} />
+      </Suspense>
     </div>
   );
 }

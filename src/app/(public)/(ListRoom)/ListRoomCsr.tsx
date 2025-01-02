@@ -1,4 +1,5 @@
 "use client";
+
 import {
   Pagination,
   PaginationContent,
@@ -110,6 +111,20 @@ export default function ListRoomCsr({ data, data2 }: any) {
   const [Open, setOpen] = useState<boolean>(false);
   const handleClose = () => {
     setOpen(false);
+  };
+  let renderSkeleton = () => {
+    let array = new Array(20).fill(null);
+    return array.map((_, index) => {
+      return (
+        <div key={index} className="flex flex-col space-y-3">
+          <Skeleton className="h-[250px] w-full sm:w-[350px] rounded-xl" />
+          <div className="space-y-2">
+            <Skeleton className="h-6 w-[300px]" />
+            <Skeleton className="h-6 w-[250px]" />
+          </div>
+        </div>
+      );
+    });
   };
 
   let handleFavorite = (id: number) => {
@@ -271,45 +286,51 @@ export default function ListRoomCsr({ data, data2 }: any) {
   };
   return (
     <div className="w-full">
-      <div className="w-full">
-        <FormDialog Open={Open} handleClose={handleClose} />
-        <div className="w-full flex justify-center ">
-          <div className="w-fit grid lgCustom:grid-cols-4 mdCustom:grid-cols-3  smCustom:grid-cols-2 lg:gap-3   gap-5 py-5">
-            {renderRooms()}
+      {dataApiListRoom.length > 0 ? (
+        <div className="w-full">
+          <FormDialog Open={Open} handleClose={handleClose} />
+          <div className="w-full flex justify-center ">
+            <div className="w-fit grid lgCustom:grid-cols-4 mdCustom:grid-cols-3  smCustom:grid-cols-2 lg:gap-3   gap-5 py-5">
+              {renderRooms()}
+            </div>
           </div>
-        </div>
-        <Pagination className=" ">
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                className={`${
-                  start == 0
-                    ? "opacity-50 cursor-not-allowed pointer-events-none"
-                    : ""
-                }`}
-                onClick={() => {
-                  setStart(start - sliceNumber), setEnd(end - sliceNumber);
-                }}
-                href="#"
-              />
-            </PaginationItem>
+          <Pagination className=" ">
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  className={`${
+                    start == 0
+                      ? "opacity-50 cursor-not-allowed pointer-events-none"
+                      : ""
+                  }`}
+                  onClick={() => {
+                    setStart(start - sliceNumber), setEnd(end - sliceNumber);
+                  }}
+                  href="#"
+                />
+              </PaginationItem>
 
-            <PaginationItem>
-              <PaginationNext
-                className={`${
-                  end >= (lastRoom ?? 0)
-                    ? "opacity-50 cursor-not-allowed pointer-events-none"
-                    : ""
-                }`}
-                onClick={() => {
-                  setStart(start + sliceNumber), setEnd(end + sliceNumber);
-                }}
-                href="#"
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-      </div>
+              <PaginationItem>
+                <PaginationNext
+                  className={`${
+                    end >= (lastRoom ?? 0)
+                      ? "opacity-50 cursor-not-allowed pointer-events-none"
+                      : ""
+                  }`}
+                  onClick={() => {
+                    setStart(start + sliceNumber), setEnd(end + sliceNumber);
+                  }}
+                  href="#"
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </div>
+      ) : (
+        <div className="w-fit grid lgCustom:grid-cols-4 mdCustom:grid-cols-3  smCustom:grid-cols-2  gap-5 py-5">
+          {renderSkeleton()}
+        </div>
+      )}
     </div>
   );
 }
