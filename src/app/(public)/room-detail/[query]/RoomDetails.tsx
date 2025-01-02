@@ -1,7 +1,6 @@
 "use client";
 import bookingApiRequest from "@/apiRequests/booking";
 import commentsRequest from "@/apiRequests/comments";
-import { typeContent } from "@/lib/helper.type";
 import Comments from "@/app/(public)/room-detail/[query]/Comments";
 import FormBooking from "@/app/(public)/room-detail/[query]/FormBooking";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -35,10 +34,12 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
+import { typeContent } from "@/lib/helper.type";
 import { formatMoney, formatStar, formatVietNamDate } from "@/lib/utils2";
 import { commentsSchema } from "@/schemaValidations/comments.schema";
 import { useStore } from "@/store/store";
 
+import roomApiRequest from "@/apiRequests/room";
 import {
   AirVent,
   Award,
@@ -57,10 +58,7 @@ import {
 } from "lucide-react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
-import { useSearchParams } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
-import Loading from "@/app/(public)/room-detail/[query]/loading";
-import roomApiRequest from "@/apiRequests/room";
 const LottieAnimationPurchase = dynamic(
   () => import("@/components/animatePurchase"),
   {
@@ -68,7 +66,7 @@ const LottieAnimationPurchase = dynamic(
   }
 );
 
-export default function RoomDetails({ query }: any) {
+export default function RoomDetails({ query, dataDetailName }: any) {
   const [commentsOfUsers, setCommentsOfUsers] = useState<
     commentsSchema[] | null
   >(null);
@@ -97,7 +95,6 @@ export default function RoomDetails({ query }: any) {
   let handleSuccess = async () => {
     setIsSuccess(true);
     setFetchDataStore();
-
     setTimeout(() => {
       setIsSuccess(false);
     }, 2000);
@@ -129,17 +126,12 @@ export default function RoomDetails({ query }: any) {
   };
 
   useEffect(() => {
-    if (query)
-      roomApiRequest
-        .NextClientToServerGetRoom(query)
-        .then((res) => {
-          const selectedRoom = res.content;
-          setDataDetail(selectedRoom);
-          setCustomerDetails(selectedRoom.khach);
-          setDataDetail(selectedRoom);
-          setFetchDataStore();
-        })
-        .catch((err) => console.log(err));
+    if (query) {
+      const selectedRoom = dataDetailName;
+      setCustomerDetails(selectedRoom.khach);
+      setDataDetail(selectedRoom);
+      setFetchDataStore();
+    }
   }, [query]);
 
   useEffect(() => {
@@ -1049,7 +1041,7 @@ export default function RoomDetails({ query }: any) {
 
   return (
     <div>
-      {commentsOfUsers ? (
+      {
         <div className="">
           <div className="flex justify-center flex-col items-center w-full">
             {renderRoomDetails()}
@@ -1180,9 +1172,7 @@ export default function RoomDetails({ query }: any) {
             </div>
           )}
         </div>
-      ) : (
-        <Loading />
-      )}
+      }
     </div>
   );
 }

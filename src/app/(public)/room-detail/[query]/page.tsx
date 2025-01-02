@@ -3,6 +3,7 @@ import React, { Suspense } from "react";
 import type { Metadata, ResolvingMetadata } from "next";
 import http from "@/lib/http";
 import Loading from "@/app/(public)/room-detail/[query]/loading";
+import { resolve } from "path";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -56,16 +57,21 @@ export async function generateMetadata(
 export default async function Page({ params, searchParams }: Props) {
   const resolvedParams = await params; // Resolve params if it's a Promise
   const resolvedSearchParams = await searchParams; // Resolve searchParams if it's a Promise
-
   const { id } = resolvedParams;
   const name = resolvedSearchParams.name as string;
+  const dataDetailName = await http
+    .get(`/api/phong-thue/${name}`)
+    .then((res) => {
+      return res.content;
+    })
+    .catch((err) => console.log(err));
 
   return (
     <div className="w-full lg:px-20 py-5 flex justify-center z-50">
       <div className="w-full">
         {/* Pass query to RoomDetails */}
         <Suspense fallback={<Loading />}>
-          <RoomDetails query={name} />
+          <RoomDetails query={name} dataDetailName={dataDetailName} />
         </Suspense>
       </div>
     </div>
