@@ -24,15 +24,13 @@ export function DatePickerWithRangeDetails({
   let { dataCalendar } = useStore();
   const [active, setActive] = React.useState(false);
   const [click, setClick] = React.useState<string | null>(null);
+  const [windowWidth, setWindowWidth] = React.useState<number | undefined>();
   const matcher: DateBefore = { before: new Date() };
   let handleDate = (date: DateRange | undefined) => {
     if (date?.from && date?.to) {
       let checkin = new Date(date.from);
       let checkout = new Date(date.to);
 
-      // let checkinSubmit = addDays(new Date(date.from), 1);
-      // let checkoutSubmit = addDays(new Date(date.to), 1);
-      // const updatedDate = { from: checkinSubmit, to: checkoutSubmit };
       setDateSubmit(date);
 
       const differenceInTime = checkout.getTime() - checkin.getTime();
@@ -41,6 +39,14 @@ export function DatePickerWithRangeDetails({
     }
     setDate(date);
   };
+
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      if (window.innerWidth < 840) setWindowWidth(1);
+      else setWindowWidth(2);
+    }
+  }, []);
+
   React.useEffect(() => {
     if (dataCalendar?.from && dataCalendar?.to) {
       setDate(dataCalendar);
@@ -85,7 +91,7 @@ export function DatePickerWithRangeDetails({
       <div
         className={cn(
           `cursor-pointer 
-s        flex   items-center`,
+        flex   items-center`,
           className
         )}
       >
@@ -192,7 +198,7 @@ s        flex   items-center`,
                 defaultMonth={date?.from}
                 selected={date}
                 onSelect={handleDate}
-                numberOfMonths={window.innerWidth < 840 ? 1 : 2}
+                numberOfMonths={windowWidth}
                 captionLayout="dropdown"
               />
             </div>
@@ -209,7 +215,7 @@ s        flex   items-center`,
             defaultMonth={date?.from}
             selected={date}
             onSelect={handleDate}
-            numberOfMonths={window.innerWidth < 840 ? 1 : 2}
+            numberOfMonths={windowWidth}
             captionLayout="dropdown"
           />
         </div>
