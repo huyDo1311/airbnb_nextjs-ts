@@ -23,7 +23,7 @@ export interface typeContent {
   giuong?: number;
   phongTam?: number;
   moTa?: string;
-  giaTien?: number;
+  giaTien: number;
   mayGiat?: boolean;
   banLa?: boolean;
   tivi?: boolean;
@@ -45,7 +45,7 @@ export interface ListRoomProps {
 }
 
 // userProfile
-export  interface UserProfile {
+export interface UserProfile {
   avatar: string;
   birthday: string;
   gender: boolean; // Gender, typically `true` for male and `false` for female, or you can use `enum` for more clarity

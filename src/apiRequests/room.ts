@@ -12,7 +12,7 @@ import {
 
 const roomApiRequest = {
   NextClientToServerGetListRoom: () =>
-    http.get<RoomListResType>(`/api/phong-thue`),
+    http.get<RoomListResType>(`/api/phong-thue`, { cache: "no-store" }),
   NextClinetToServerAddRoom: (body: CreateRoomBodyType) => {
     const token = {
       token: `${localStorage.getItem("userToken") || ""}`,

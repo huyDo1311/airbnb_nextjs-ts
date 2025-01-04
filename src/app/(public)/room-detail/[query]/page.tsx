@@ -3,6 +3,7 @@ import React, { Suspense } from "react";
 import type { Metadata, ResolvingMetadata } from "next";
 import http from "@/lib/http";
 import Loading from "@/app/(public)/room-detail/loading";
+import commentsRequest from "@/apiRequests/comments";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -65,12 +66,23 @@ export default async function Page({ params, searchParams }: Props) {
     })
     .catch((err) => console.log(err));
 
+  let commentsOfUsers = await commentsRequest
+    .NextClientToServerGetComments(name)
+    .then((res: any) => {
+      return res?.content.reverse();
+    })
+    .catch((err) => console.log(err));
+
   return (
     <div className="w-full lg:px-20 py-5 flex justify-center z-50">
       <div className="w-full">
         {/* Pass query to RoomDetails */}
         <Suspense fallback={<Loading />}>
-          <RoomDetails query={name} dataDetailName={dataDetailName} />
+          <RoomDetails
+            query={name}
+            dataDetailName={dataDetailName}
+            commentsOfUsers={commentsOfUsers}
+          />
         </Suspense>
       </div>
     </div>

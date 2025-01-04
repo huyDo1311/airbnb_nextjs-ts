@@ -9,11 +9,11 @@ import {
 } from "@/components/ui/pagination";
 
 import bookingApiRequest from "@/apiRequests/booking";
-import { typeContent } from "@/lib/helper.type";
 import FormDialog from "@/app/(public)/FormDialog";
 import { CardBody, CardContainer, CardItem } from "@/components/ui/3d-card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/hooks/use-toast";
+import { typeContent } from "@/lib/helper.type";
 import {
   formatDateToVietnamese,
   formatStar,
@@ -22,13 +22,10 @@ import {
 } from "@/lib/utils2";
 import { useStore } from "@/store/store";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { MouseEventHandler, useEffect, useState } from "react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function ListRoomCsr({ data, data2 }: any) {
-  const router = useRouter();
-
   let sliceNumber = 12;
   const [lastRoom, setLastRoom] = useState<number | null>(null);
   let {

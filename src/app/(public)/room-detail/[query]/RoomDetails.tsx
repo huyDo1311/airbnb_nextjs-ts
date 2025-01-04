@@ -35,11 +35,15 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
 import { typeContent } from "@/lib/helper.type";
-import { formatMoney, formatStar, formatVietNamDate } from "@/lib/utils2";
+import {
+  formatMoney,
+  formatStar,
+  formatVietNamDate,
+  handleMoney,
+} from "@/lib/utils2";
 import { commentsSchema } from "@/schemaValidations/comments.schema";
 import { useStore } from "@/store/store";
 
-import roomApiRequest from "@/apiRequests/room";
 import {
   AirVent,
   Award,
@@ -66,12 +70,17 @@ const LottieAnimationPurchase = dynamic(
   }
 );
 
-export default function RoomDetails({ query, dataDetailName }: any) {
-  const [commentsOfUsers, setCommentsOfUsers] = useState<
-    commentsSchema[] | null
-  >(null);
+export default function RoomDetails({
+  query,
+  dataDetailName,
+  commentsOfUsers,
+}: {
+  query: string;
+  dataDetailName: typeContent;
+  commentsOfUsers: commentsSchema[];
+}) {
   const [differenceDays, setDifferenceDays] = useState<number>(1);
-  const [countComments, setCountComments] = useState(0);
+
   let {
     dataApiListRoom,
     star,
@@ -85,12 +94,14 @@ export default function RoomDetails({ query, dataDetailName }: any) {
     dataDetail,
     setDataDetail,
   } = useStore();
-
+  const [money, setMoney] = useState<string | null>(null);
+  const [moneyNumberOfDays, setMoneyNumberOfDays] = useState<string | null>(
+    null
+  );
   const [totalMoney, setTotalMoney] = useState<string | undefined>();
   const [isSuccess, setIsSuccess] = useState(false);
   const refComments = useRef<HTMLButtonElement | null>(null);
   const refCommentsMobile = useRef<HTMLButtonElement | null>(null);
-  const [end, setEnd] = useState<number>(4);
   const [displayDes, setdisplayDes] = useState<boolean>(false);
   let handleSuccess = async () => {
     setIsSuccess(true);
@@ -99,6 +110,23 @@ export default function RoomDetails({ query, dataDetailName }: any) {
       setIsSuccess(false);
     }, 2000);
   };
+
+  useEffect(() => {
+    if (dataDetailName) {
+      let giaTien = dataDetailName.giaTien;
+      let moneyDetail = handleMoney(giaTien);
+      setMoney(moneyDetail);
+      let moneyOfDays = handleMoney(giaTien, { numberOfDays: differenceDays });
+      setMoneyNumberOfDays(moneyOfDays);
+
+      let totalMoneyNe = handleMoney(
+        giaTien,
+        { numberOfDays: differenceDays },
+        { cleaningFee: 10 }
+      );
+      setTotalMoney(totalMoneyNe);
+    }
+  }, [differenceDays]);
 
   let handleDisplayComment = () => {
     if (window.innerWidth >= 1024) {
@@ -120,11 +148,6 @@ export default function RoomDetails({ query, dataDetailName }: any) {
     };
   }, [isSuccess]);
 
-  let handleMoneyResult = (money: number): number => {
-    let result = handleMoney(money) * differenceDays;
-    return result;
-  };
-
   useEffect(() => {
     if (query) {
       const selectedRoom = dataDetailName;
@@ -133,10 +156,6 @@ export default function RoomDetails({ query, dataDetailName }: any) {
       setFetchDataStore();
     }
   }, [query]);
-
-  useEffect(() => {
-    setTotalMoney(formatMoney(handleMoneyResult(dataDetail.giaTien) + 200));
-  }, [differenceDays]);
 
   useEffect(() => {
     if (getUserData?.id) {
@@ -171,12 +190,6 @@ export default function RoomDetails({ query, dataDetailName }: any) {
     }
   }, [dataApiListRoom, fetchDataStore, setDataRented]);
 
-  let handleMoney = (money: number): number => {
-    let currency = money * 25;
-    return currency;
-  };
-
-  const [fetchCommentData, setFetchCommentData] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState(-1); // To handle hover effect
   const [selectedIndex, setSelectedIndex] = useState(-1); // To handle click effect
   const [showRating, setShowRating] = useState<number>(-1);
@@ -228,7 +241,6 @@ export default function RoomDetails({ query, dataDetailName }: any) {
       commentsRequest
         .NextClientToServerPostComments(dataCommentSubmit)
         .then((res) => {
-          setFetchCommentData((a) => !a);
           setUserInput("");
         })
         .catch((err) => {
@@ -274,7 +286,7 @@ export default function RoomDetails({ query, dataDetailName }: any) {
     return resultStar;
   };
   const renderComments = () => {
-    return commentsOfUsers?.slice(0, end).map((item: commentsSchema) => (
+    return commentsOfUsers?.slice(0, 4).map((item: commentsSchema) => (
       <div
         key={item.id}
         className="  flex justify-center flex-col items-center p-5 px-10 lg:p-0 lg:border-none border rounded-2xl"
@@ -522,7 +534,7 @@ export default function RoomDetails({ query, dataDetailName }: any) {
                       <div className="flex items-center flex-col justify-center  w-20">
                         <div className=" flex items-center ">
                           <p className="text-xl font-bold text-center w-10 h-8">
-                            {countComments}
+                            {commentsOfUsers?.length ?? 0}
                           </p>
                         </div>
                         <p className="text-xs underline opacity-90 text-center h-3  flex items-center">
@@ -558,7 +570,7 @@ export default function RoomDetails({ query, dataDetailName }: any) {
                         </p>
                       </DialogTitle>
                       <DialogDescription className="space-y-3 w-full ">
-                        <div className="w-full ">
+                        <span className="w-full ">
                           <span>
                             Trong số các nhà/phòng cho thuê đủ điều kiện dựa
                             trên điểm xếp hạng, lượt đánh giá và vcđộ tin cậy,
@@ -567,9 +579,9 @@ export default function RoomDetails({ query, dataDetailName }: any) {
                           <span className="font-bold">
                             nhóm 10% chỗ ở hàng đầu
                           </span>
-                        </div>
+                        </span>
                         <span className="text-xl font-semibold text-black dark:text-white text-center flex items-center justify-center ">
-                          {countComments} lượt đánh giá{" "}
+                          {commentsOfUsers?.length} lượt đánh giá{" "}
                           <Sparkles
                             className="ms-2"
                             size={20}
@@ -739,7 +751,7 @@ export default function RoomDetails({ query, dataDetailName }: any) {
                         <div className="flex items-center flex-col justify-center  w-20">
                           <div className=" flex items-center ">
                             <p className="text-xl font-bold text-center w-10 h-8">
-                              {countComments}
+                              {commentsOfUsers?.length}
                             </p>
                           </div>
                           <p className="text-xs underline opacity-90 text-center h-3  flex items-center">
@@ -787,7 +799,7 @@ export default function RoomDetails({ query, dataDetailName }: any) {
                                 </span>
                               </p>
                               <span className="text-xl font-semibold text-black dark:text-white text-center flex items-center justify-center ">
-                                {countComments} lượt đánh giá{" "}
+                                {commentsOfUsers?.length} lượt đánh giá{" "}
                                 <Sparkles
                                   className="ms-2"
                                   size={20}
@@ -875,7 +887,7 @@ export default function RoomDetails({ query, dataDetailName }: any) {
                   <p>Dịch sang tiếng Anh</p>
                   <Languages />
                 </div>
-                <div className={`  ${displayDes ? "" : "line-clamp-3"}`}>
+                <div className={`  ${displayDes ? "" : "line-clamp-2"}`}>
                   <p className="text-lg">{dataDetail?.moTa}</p>
                 </div>
                 <Button
@@ -952,7 +964,7 @@ export default function RoomDetails({ query, dataDetailName }: any) {
                   >
                     <CardHeader>
                       <CardTitle className="text-xl">
-                        {formatMoney(handleMoney(dataDetail?.giaTien ?? 0))}{" "}
+                        {money}
                         <span className="text-sm font-normal"> / Đêm</span>
                       </CardTitle>
                       <CardDescription></CardDescription>
@@ -963,7 +975,7 @@ export default function RoomDetails({ query, dataDetailName }: any) {
                         dataDetail={dataDetail}
                         query={query}
                         setDifferenceDays={setDifferenceDays}
-                        countComments={countComments}
+                        countComments={commentsOfUsers?.length}
                         totalMoney={totalMoney}
                       />
                       <p className="text-sm text-gray-400 text-center">
@@ -972,20 +984,15 @@ export default function RoomDetails({ query, dataDetailName }: any) {
                       <div className="space-y-4 mt-3">
                         <div className="flex justify-between">
                           <p className="text-md font-light underline">
-                            {formatMoney(handleMoney(dataDetail?.giaTien ?? 0))}{" "}
-                            x {differenceDays} đêm
+                            {money}x {differenceDays} đêm
                           </p>
-                          <p>
-                            {formatMoney(
-                              handleMoneyResult(dataDetail?.giaTien ?? 0)
-                            )}{" "}
-                          </p>
+                          <p>{moneyNumberOfDays}</p>
                         </div>
                         <div className="flex justify-between">
                           <p className="text-md font-light underline">
                             Phí vệ sinh
                           </p>
-                          <p>{formatMoney(200)}</p>
+                          <p>{formatMoney(250)}</p>
                         </div>
                         <hr />
                         <div className="flex justify-between">
@@ -1007,7 +1014,7 @@ export default function RoomDetails({ query, dataDetailName }: any) {
                     dataDetail={dataDetail}
                     query={query}
                     setDifferenceDays={setDifferenceDays}
-                    countComments={countComments}
+                    countComments={commentsOfUsers?.length}
                     totalMoney={totalMoney}
                   />
                 </div>
@@ -1020,20 +1027,8 @@ export default function RoomDetails({ query, dataDetailName }: any) {
   };
 
   useEffect(() => {
-    if (query) {
-      commentsRequest
-        .NextClientToServerGetComments(query)
-        .then((res: any) => {
-          setCommentsOfUsers(res?.content.reverse());
-          setCountComments(res.content.length);
-        })
-        .catch((err) => console.log(err));
-    }
-  }, [query, fetchCommentData]);
-
-  useEffect(() => {
     let findIndex = dataRented.findIndex(
-      (item: typeContent) => item?.id == query
+      (item: typeContent) => item?.id == Number(query)
     );
 
     setShowRating(findIndex);
@@ -1088,15 +1083,13 @@ export default function RoomDetails({ query, dataDetailName }: any) {
               </div>
             </div>
             <div className=" w-1/2 flex justify-center">
-              {countComments > 4 && (
+              {commentsOfUsers?.length > 4 && (
                 <Button
                   variant="outline"
                   className=""
                   onClick={handleDisplayComment}
                 >
-                  {end === 4
-                    ? `Hiển thị tất cả ${countComments} đánh giá`
-                    : `Thu gọn đánh giá`}
+                  Hiển thị tất cả {commentsOfUsers?.length} đánh giá
                 </Button>
               )}
             </div>

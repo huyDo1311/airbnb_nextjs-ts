@@ -68,13 +68,32 @@ export const formatStar = (star: number) => {
 };
 
 // handle usd to vietnamese
-export let handleMoney = (money: number): string => {
-  let currency = money * 25;
+export let handleMoney = (
+  money: number,
+  ...detailMoney: {
+    cleaningFee?: number;
+    numberOfDays?: number;
+  }[]
+): string => {
+  let cleaningFee = detailMoney[1]?.cleaningFee
+    ? detailMoney[1].cleaningFee
+    : 0;
+  let numberOfDays = detailMoney[0]?.numberOfDays
+    ? detailMoney[0].numberOfDays
+    : 1;
+
+  let totalMoney = money * 25;
+  if (cleaningFee) {
+    totalMoney = (money * numberOfDays + cleaningFee) * 25;
+  } else if (numberOfDays) {
+    totalMoney = money * numberOfDays * 25;
+  }
+
   let formattedCurrency =
     new Intl.NumberFormat("vi-VN", {
       minimumFractionDigits: 3,
       maximumFractionDigits: 3,
-    }).format(currency) + " đ"; // Adding the "đ" symbol at the end
+    }).format(totalMoney) + " đ"; // Adding the "đ" symbol at the end
   return formattedCurrency.replace(",", ".");
 };
 
@@ -88,7 +107,7 @@ export let formatMoney = (money: number): string | undefined => {
   return formattedCurrency.replace(",", ".");
 };
 
-// handle money
+// handlemoney +  cleaning fee
 
 // convert vietnameseCalendar
 export const formatDateToVietnamese = (date: any) => {

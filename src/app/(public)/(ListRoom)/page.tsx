@@ -34,6 +34,7 @@ export const metadata: Metadata = {
 export default async function Home() {
   const data: ListRoomProps =
     await roomApiRequest.NextClientToServerGetListRoom();
+
   const data2: any = await http.get(
     "/api/vi-tri/phan-trang-tim-kiem?pageIndex=1&pageSize=8"
   );
