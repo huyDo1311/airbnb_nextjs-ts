@@ -5,10 +5,27 @@ import Logo from "@/app/(public)/Logo";
 import MenuDropDown from "@/app/(public)/MenuDropDown";
 import DarkModeToggle from "@/components/dark-mode-toggle";
 import { useStore } from "@/store/store";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 export default function HeaderTablet() {
   let { hideHeader } = useStore();
+  const [isMinimized, setIsMinimized] = useState<boolean>(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setIsMinimized(true);
+      } else {
+        setIsMinimized(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
   return (
     <header
       className={`bg-white dark:bg-black fixed w-full top-0 shadow-lg  ${
@@ -24,7 +41,10 @@ export default function HeaderTablet() {
         </div>
       </div>
       <div className="focus:bg-black py-4 mx-14">
-        <QuickSearch />
+        <QuickSearch
+          isMinimized={isMinimized}
+          setIsMinimized={setIsMinimized}
+        />
       </div>
     </header>
   );

@@ -18,7 +18,7 @@ export interface typeContent {
   id: number | null;
   tenPhong?: string;
   loving?: boolean;
-  khach?: number;
+  khach: number;
   phongNgu?: number;
   giuong?: number;
   phongTam?: number;

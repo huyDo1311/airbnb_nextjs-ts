@@ -8,9 +8,14 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import http from "@/lib/http";
+import {
+  formatHistoryDateToVietnamese,
+  formattedDestination,
+} from "@/lib/utils2";
 import { useStore } from "@/store/store";
 import { Clock9 } from "lucide-react";
 import Image from "next/image";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 interface destinationProps {
@@ -22,6 +27,23 @@ interface destinationProps {
 }
 
 export function PickDestination() {
+  const [isMinimized, setIsMinimized] = useState<boolean>(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 100) {
+        setIsMinimized(false);
+      } else {
+        setIsMinimized(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
   const [pickDataDestination, setPickDataDestination] = useState<
     destinationProps[]
   >([]);
@@ -46,40 +68,65 @@ export function PickDestination() {
       })
       .catch((err) => console.log(err));
   }, []);
-  let { dataStoreDestination2 } = useStore();
+  let { dataStoreDestination2, headerTotal } = useStore();
 
-  const [history, setHistory] = useState<string[]>([]);
-  const [location, setLocation] = useState<string | null>(null);
-  const { setNextStep, setDataStoreDestination, setDataStoreDestination2 } =
-    useStore();
+  const {
+    setNextStep,
+    setDataStoreDestination,
+    setDataStoreDestination2,
+    searchingHistory,
+    setCustomers,
+    setDataCalendar,
+    setResetHistory,
+    setTotal,
+  } = useStore();
   let handleDestination = (id: number, tinhThanh: string): void => {
     // setLocation(tinhThanh);
     setDataStoreDestination(id);
     setDataStoreDestination2(tinhThanh);
-  };
-
-  let handleHistory = (name: string) => {
-    let cloneHistory = [...history];
-    let findIndex = cloneHistory.filter((itemNe: string) => itemNe == name);
-    if (findIndex.length == 0) {
-      cloneHistory.push(name);
-      setLocation(name);
-    }
-    setHistory(cloneHistory);
     setNextStep(1);
   };
+  const router = useRouter();
+
   let renderHistory = () => {
-    let cloneHistory = [...history];
+    let cloneHistory = [...searchingHistory];
     cloneHistory.reverse();
     return cloneHistory.map((itemHistory, index) => {
       return (
-        <Button key={index} variant={"ghost"} className="w-full ">
-          <div className="flex w-full items-center space-x-2 text-lg ">
-            <span className="">
+        <Button
+          key={index}
+          variant={"ghost"}
+          className="w-full py-5 "
+          onClick={() => (
+            setCustomers(itemHistory?.customers),
+            setTotal(itemHistory?.totalOfCustomers),
+            setDataStoreDestination2(itemHistory?.destination2),
+            setDataCalendar(itemHistory?.calendar),
+            setIsMinimized(false),
+            router.push(
+              `/room-destination/location?name=${formattedDestination(
+                itemHistory.destination2
+              )}&id=${itemHistory.destination}`
+            )
+          )}
+        >
+          <div className="flex w-full items-center justify-start space-x-1  text-md  ">
+            <p className="me-2">
               {" "}
               <Clock9 />
-            </span>
-            <p className=""> {itemHistory}</p>
+            </p>
+            <p>{itemHistory?.destination2}</p>,
+            <p className="">
+              {" "}
+              {formatHistoryDateToVietnamese(
+                itemHistory?.calendar?.from
+              )} - {formatHistoryDateToVietnamese(itemHistory?.calendar?.to)},
+            </p>
+            <p className="t">
+              {itemHistory.totalOfCustomers > 0
+                ? itemHistory.totalOfCustomers + " khách"
+                : ""}{" "}
+            </p>
           </div>
         </Button>
       );
@@ -91,9 +138,6 @@ export function PickDestination() {
         <div
           key={item.id}
           className="flex justify-center cursor-pointer hover:scale-110 transition duration-300"
-          onClick={() => {
-            handleHistory(item.tinhThanh);
-          }}
         >
           <div className="space-y-1">
             <div
@@ -122,22 +166,22 @@ export function PickDestination() {
 
   return (
     <div className="w-full">
-      <Popover>
+      <Popover open={isMinimized} onOpenChange={setIsMinimized}>
         <PopoverTrigger asChild>
           <Button
             onClick={() => {
               setNextStep(-1);
             }}
             variant="ghost"
-            className=" w-full h-full text-left flex justify-start "
+            className=" w-full h-20 text-left flex justify-start "
           >
-            <div className="ps-3 ">
-              <p className="font-semibold text-xs">Địa điểm</p>
+            <div className="ps-3  dark:text-white">
+              <p className="font-semibold text-xs text-black dark:text-white">
+                Địa điểm
+              </p>
               <p
-                className={` ${
-                  dataStoreDestination2
-                    ? "font-semibold"
-                    : "font-light  text-gray-400"
+                className={` font-medium  ${
+                  dataStoreDestination2 ? "  text-red-500" : "  text-gray-500"
                 }`}
               >
                 {dataStoreDestination2
@@ -149,19 +193,29 @@ export function PickDestination() {
         </PopoverTrigger>
         <PopoverContent
           className={`${
-            history.length > 0 ? "w-[800px]" : "w-auto"
+            searchingHistory.length > 0 ? "w-[800px]" : "w-auto"
           }  rounded-3xl flex`}
           align="start"
         >
-          {history.length > 0 && (
+          {searchingHistory.length > 0 && (
             <div className="w-1/2">
               <p className="text-md font-medium">Tìm kiếm gần đây</p>
-              <div className="mt-3 transition duration-300">
+              <div className="mt-3 transition duration-300 overflow-y-auto h-96">
                 {renderHistory()}
+              </div>
+              <div className="flex justify-center">
+                <button
+                  className="text-md font-medium text-red-500 text-center mt-4 cursor-pointer"
+                  onClick={() => setResetHistory()}
+                >
+                  Xóa lịch sử
+                </button>
               </div>
             </div>
           )}
-          <div className={`${history.length > 0 ? "w-1/2" : "w-full"}`}>
+          <div
+            className={`${searchingHistory.length > 0 ? "w-1/2" : "w-full"}`}
+          >
             <p className="text-md font-medium">Tìm kiếm địa điểm</p>
             <div className="grid grid-cols-3 gap-3 mt-3">
               {renderDestination()}

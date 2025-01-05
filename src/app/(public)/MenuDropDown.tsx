@@ -1,8 +1,7 @@
 "use client";
-import userApiRequest from "@/apiRequests/user";
 import Authenticate from "@/app/(public)/auth/Authenticate";
-import { BackgroundGradient } from "@/components/ui/background-gradient";
 import { Button } from "@/components/ui/button";
+import { RainbowButton } from "@/components/ui/rainbow-button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useSignoutMutation } from "@/queries/useAuth";
 import { useStore } from "@/store/store";
@@ -12,10 +11,10 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@radix-ui/react-popover";
-import { Menu, UserRound } from "lucide-react";
+import { Menu } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import React, { LegacyRef, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function MenuDropDown() {
   let refSidebar = useRef<HTMLButtonElement | null>(null);
@@ -48,7 +47,7 @@ export default function MenuDropDown() {
       <SidebarTrigger ref={refSidebar} className="hidden" />
       <Button
         variant="outline"
-        className="rounded-3xl w-[100px] py-6 md:hidden flex"
+        className="rounded-3xl w-[100px]  md:hidden flex"
         onClick={clickref}
       >
         <div className=" w-full flex justify-between items-center ">
@@ -69,12 +68,13 @@ export default function MenuDropDown() {
       <div className="hidden md:block">
         <Popover>
           <PopoverTrigger asChild>
-            <Button variant="outline" className="rounded-3xl w-[100px] py-6 ">
-              <div className=" w-full flex justify-between items-center ">
-                <div className="">
-                  <Menu className="w-10" size={50} />
-                </div>
-                <div className="w-8 h-8">
+            <RainbowButton className="rounded-3xl border-3 shadow-lg w-[100px] p-5 ">
+              <div className=" w-[100px]  flex items-center ">
+                <Menu
+                  className="w-5 text-black/70 dark:text-white me-3"
+                  size={50}
+                />
+                <div className="w-8 h-8 z-50">
                   <Image
                     src={
                       avatarUser
@@ -88,7 +88,7 @@ export default function MenuDropDown() {
                   />
                 </div>
               </div>
-            </Button>
+            </RainbowButton>
           </PopoverTrigger>
           <PopoverContent className="bg-white  border-2 border-black p-3 rounded-xl px-5 z-50">
             {getUserData?.id ? (

@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import classNames from "classnames";
 import {
   Popover,
   PopoverContent,
@@ -9,6 +10,7 @@ import {
 import { typeContent } from "@/lib/helper.type";
 import { CustomerType, useStore } from "@/store/store";
 import { ChevronDown, Minus, Plus } from "lucide-react";
+import { CoolMode } from "@/components/ui/cool-mode";
 
 interface DataDetail {
   dataDetail: typeContent;
@@ -59,65 +61,66 @@ export function CustomerPickerDetails({ dataDetail }: DataDetail) {
         </div>
 
         <div className="flex space-x-2 items-center">
-          <Button
-            onClick={() => decrement((item.id as keyof CustomerType) ?? 0)}
-            variant={
-              customers[item.id as keyof CustomerType] === 0
-                ? "secondary"
-                : "ghost"
-            }
-            className={`rounded-full border-2 h-10 w-10 ${
-              customers[item.id as keyof CustomerType] === 0 ||
-              (item.id == "adults" &&
-                customers[item.id as keyof CustomerType] === 1)
-                ? "cursor-not-allowed opacity-30"
-                : ""
-            }`}
-          >
-            <Minus />
-          </Button>
+          <CoolMode>
+            <div
+              onClick={() => decrement((item.id as keyof CustomerType) ?? 0)}
+              className={`rounded-full border-2 h-10 w-10 flex items-center justify-center ${
+                customers[item.id as keyof CustomerType] === 0 ||
+                (item.id == "adults" &&
+                  customers[item.id as keyof CustomerType] === 1)
+                  ? "cursor-not-allowed opacity-30"
+                  : "cursor-pointer"
+              }`}
+            >
+              <Minus className="w-4 h-4" />
+            </div>
+          </CoolMode>
 
           <p className="w-10 text-center text-md">
             {customers[item.id as keyof CustomerType] ?? 0}
           </p>
 
-          <Button
-            onClick={() => increment((item.id as keyof CustomerType) ?? 0)}
-            variant={
-              customers[item.id as keyof CustomerType] === dataDetail?.khach
-                ? "secondary"
-                : "ghost"
-            }
-            className={`rounded-full border-2 h-10 w-10 ${(() => {
-              if (
-                customers[item.id as keyof CustomerType] === 3 &&
-                item.id === "pets"
-              ) {
-                return "cursor-not-allowed opacity-30"; // Disable if there are 3 pets
-              } else if (
-                customers[item.id as keyof CustomerType] === 4 &&
-                item.id === "babies"
-              ) {
-                return "cursor-not-allowed opacity-30"; // Disable if there are 3 pets
-              } else if (item.id == "adults" || item.id == "children") {
-                if (
-                  total == customerDetails ||
-                  customers[item.id as keyof CustomerType] == customerDetails
-                ) {
-                  return "cursor-not-allowed opacity-30"; // Disable for other conditions
-                }
-                return "";
-              } else {
-                return "";
-              }
-            })()}`}
+          <div
+            className={`${
+              (item.id == "adults" || item.id == "children") &&
+              total == customerDetails &&
+              "cursor-not-allowed"
+            }`}
           >
-            <Plus />
-          </Button>
+            <CoolMode>
+              <div
+                onClick={() => increment((item.id as keyof CustomerType) ?? 0)}
+                className={classNames(
+                  "rounded-full",
+                  "w-10",
+                  "h-10",
+                  "flex justify-center items-center cursor-pointer",
+                  "border-2",
+                  {
+                    "pointer-events-none opacity-30":
+                      (item.id == "adults" || item.id == "children") &&
+                      total == customerDetails,
+                  },
+                  {
+                    "cursor-not-allowed":
+                      (item.id == "babies" && customers.babies == 5) ||
+                      (item.id == "pets" && customers.pets == 5),
+                  }
+                )}
+              >
+                <Plus className="w-4 h-4" />
+              </div>
+            </CoolMode>
+          </div>
         </div>
       </div>
     ));
   };
+
+  //   const buttonClass =  classNames({
+  //     'cursor-not-allowed':
+
+  // })
 
   return (
     <div className="relative border rounded-lg dark:border-white border-black w-full">

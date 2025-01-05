@@ -47,6 +47,7 @@ interface AppState {
   fetchDataStore: boolean;
   removeDataHeader: boolean;
   favorite: number[];
+  searchingHistory: any;
   setStar: (newStar: any) => void;
   setDataDetail: (newDataDetail: any) => void;
   setDataLocation: (newLocation: any) => void;
@@ -72,6 +73,8 @@ interface AppState {
   setRemoveFavorite: (newRemoveFavorite: number) => any;
   setDataRented: (newDataRented: any) => any;
   setHideHeader: (newHideHeader: any) => any;
+  setTotal: (newTotal: any) => any;
+  setResetHistory: () => any;
 }
 
 export const useStore = create<AppState>()(
@@ -115,6 +118,12 @@ export const useStore = create<AppState>()(
           from: undefined,
           to: undefined,
         },
+        searchingHistory: [],
+
+        setResetHistory: () =>
+          set({
+            searchingHistory: [],
+          }),
 
         setDataRented: (newDataRented: any) => {
           set({ dataRented: newDataRented });
@@ -157,53 +166,54 @@ export const useStore = create<AppState>()(
         },
         setDataDetail: (newDataDetail) => set({ dataDetail: newDataDetail }),
         setDataCalendar: (newCalendar) => set({ dataCalendar: newCalendar }),
+
         setCustomers: (newCustomers) => set({ customers: newCustomers }),
+
+        setTotal: (newTotal) =>
+          set({
+            total: newTotal,
+          }),
+
         setSearch: () => {
           set((state) => {
-            let cloneDataApiListRoom = [...state.dataApiListRoom];
-
+            let cloneCalendar = { ...state.dataCalendar };
             let cloneDataStoreDestination = state.dataStoreDestination;
-            // localStorage.setItem("storeTotal", resultTotal.toString());
-            if (cloneDataStoreDestination !== 0) {
-              let filterListRooms = cloneDataApiListRoom.filter(
-                (item) =>
-                  item.maViTri === cloneDataStoreDestination &&
-                  item.khach >= state.headerTotal
-              );
-              return {
-                resultSearch: filterListRooms,
-                total: state.headerTotal,
-              };
-            }
-            let filterListRooms = cloneDataApiListRoom.filter(
-              (item) => item.khach >= state.headerTotal
-            );
-            return { resultSearch: filterListRooms, total: state.headerTotal };
+            let cloneDataStoreDestination2 = state.dataStoreDestination2;
+            let cloneCustomers = { ...state.customers };
+            return {
+              total: state.total,
+              searchingHistory: [
+                ...state.searchingHistory,
+                {
+                  calendar: cloneCalendar,
+                  destination: cloneDataStoreDestination,
+                  destination2: cloneDataStoreDestination2,
+                  customers: cloneCustomers,
+                  totalOfCustomers: state.total,
+                },
+              ],
+            };
           });
         },
         setCustomerDetails: (newCustomerDetails: any) =>
           set({ customerDetails: newCustomerDetails }),
         increment: (category: keyof CustomerType) =>
           set((state) => {
-            if (category === "pets" && state.customers.pets < 3) {
+            if (category === "pets" && state.customers.pets < 5) {
               return {
                 customers: {
                   ...state.customers,
                   pets: state.customers.pets + 1,
                 },
               };
-            } else if (category === "babies" && state.customers.babies < 4) {
+            } else if (category === "babies" && state.customers.babies < 5) {
               return {
                 customers: {
                   ...state.customers,
                   babies: state.customers.babies + 1,
                 },
               };
-            } else if (
-              category == "adults" &&
-              state.customers.adults < state.customerDetails &&
-              state.total < state.customerDetails
-            ) {
+            } else if (category == "adults") {
               const newTotal =
                 state.customers.adults + state.customers.children + 1;
               return {
@@ -213,11 +223,7 @@ export const useStore = create<AppState>()(
                 },
                 total: newTotal,
               };
-            } else if (
-              category == "children" &&
-              state.customers.children < state.customerDetails &&
-              state.total < state.customerDetails
-            ) {
+            } else if (category == "children") {
               const newTotal =
                 state.customers.adults + state.customers.children + 1;
               return {
@@ -293,7 +299,7 @@ export const useStore = create<AppState>()(
               babies: 0,
               pets: 0,
             },
-            headerTotal: 0,
+            total: 0,
           });
         },
         setHideHeader: (newHideHeader) => {
@@ -330,8 +336,10 @@ export const useStore = create<AppState>()(
             Object.entries(state).filter(
               ([key]) =>
                 ![
+                  "customers",
                   "headerTotal",
                   "dataStoreDestination",
+                  "dataStoreDestination2",
                   "NextStep",
                   "hideHeader",
                   "removeDataHeader",

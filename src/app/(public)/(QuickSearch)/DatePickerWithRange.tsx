@@ -15,7 +15,7 @@ import {
 import { vi } from "date-fns/locale";
 import { useStore } from "@/store/store";
 
-export function   DatePickerWithRange({
+export function DatePickerWithRange({
   className,
 }: React.HTMLAttributes<HTMLDivElement>) {
   const [date, setDate] = React.useState<DateRange | undefined>();
@@ -26,6 +26,20 @@ export function   DatePickerWithRange({
     removeDataHeader,
     setRemoveDataHeader,
   } = useStore();
+
+  React.useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setActive(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   React.useEffect(() => {
     setDataCalendar(date);
@@ -105,9 +119,11 @@ after:h-10   before:h-10 before:border-l
                 {dataCalendar?.from ? (
                   <div className="w-full flex-col items-center flex">
                     <div className="w-full  flex flex-col items-center">
-                      <p className="font-semibold text-xs">Nhận phòng</p>
+                      <p className="font-semibold text-black dark:text-white text-xs">
+                        Nhận phòng
+                      </p>
 
-                      <p className="text-md">
+                      <p className="text-md text-red-500">
                         {format(dataCalendar.from, "dd MMM", { locale: vi })}
                       </p>
                     </div>
@@ -115,8 +131,10 @@ after:h-10   before:h-10 before:border-l
                 ) : (
                   <div className="w-full flex-col items-center flex">
                     <div className="w-full flex flex-col items-center">
-                      <p className="font-semibold text-xs">Nhận phòng</p>
-                      <p className="text-gray-400 font-light text-md">
+                      <p className="font-semibold text-xs  text-black dark:text-white">
+                        Nhận phòng
+                      </p>
+                      <p className="text-gray-500 font-medium text-md">
                         Thêm ngày
                       </p>
                     </div>
@@ -142,8 +160,10 @@ after:h-10   before:h-10 before:border-l
                   <div className="w-full  flex-col items-center flex">
                     <div className="w-full flex-col items-center flex">
                       {" "}
-                      <p className="font-semibold text-xs">Trả phòng</p>
-                      <p className="text-md">
+                      <p className="font-semibold text-xs  text-black dark:text-white">
+                        Trả phòng
+                      </p>
+                      <p className="text-md text-red-500">
                         {format(dataCalendar.to, "dd MMM", { locale: vi })}
                       </p>
                     </div>
@@ -151,8 +171,10 @@ after:h-10   before:h-10 before:border-l
                 ) : (
                   <div className="w-full flex-col items-center flex">
                     <div className="w-full flex-col items-center flex">
-                      <p className="font-semibold text-xs">Trả phòng</p>
-                      <p className="text-gray-400 font-light text-md">
+                      <p className="font-semibold text-xs  text-black dark:text-white">
+                        Trả phòng
+                      </p>
+                      <p className="text-gray-500 font-medium text-md">
                         Thêm ngày
                       </p>
                     </div>

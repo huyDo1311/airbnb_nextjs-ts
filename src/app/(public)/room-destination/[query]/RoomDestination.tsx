@@ -1,9 +1,11 @@
 "use client";
 import FormDialog from "@/app/(public)/FormDialog";
-import FormatTime from "@/app/(public)/rooms/FormatTime";
+import FormatTime from "@/app/(public)/room-destination/[query]/FormatTime";
 import { BackgroundGradient } from "@/components/ui/background-gradient";
 import { toast } from "@/hooks/use-toast";
+import { typeContent } from "@/lib/helper.type";
 import {
+  formattedDestination2,
   handleMoney,
   mapIframe,
   vietnameseDate,
@@ -13,24 +15,42 @@ import { useStore } from "@/store/store";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 const LottieAnimation = dynamic(() => import("@/components/LottieAnimation"), {
   ssr: false,
 });
 
-export default function RoomDestinaion({ idDestination, destination }: any) {
+export default function RoomDestinaion({
+  idDestination,
+  destination,
+  dataRoomDestinaion,
+}: {
+  idDestination: string;
+  destination: string;
+  dataRoomDestinaion: [typeContent];
+}) {
   let {
-    resultSearch,
-    dataStoreDestination2,
     getUserData,
     dataApiListRoom,
     setRemoveFavorite,
     setDataApiListRoom,
+    setDataLocation,
     setFavorite,
     setStar,
+    total,
   } = useStore();
+  const [filterRoomDestination, setFilterRoomDestination] = useState<
+    typeContent[]
+  >([]);
 
+  useEffect(() => {
+    console.log(dataRoomDestinaion);
+    let data = dataRoomDestinaion.filter(
+      (itemFilter) => itemFilter.khach >= total
+    );
+    setFilterRoomDestination(data);
+  }, [total, dataRoomDestinaion]);
   const [Open, setOpen] = useState<boolean>(false);
   const handleClose = () => {
     setOpen(false);
@@ -63,8 +83,11 @@ export default function RoomDestinaion({ idDestination, destination }: any) {
     }
   };
 
+  const params = useSearchParams();
+  const newParams = params.get("name");
+
   let renderRooms = () => {
-    return resultSearch?.map((item: any, index: any) => {
+    return filterRoomDestination?.map((item: any, index: any) => {
       return (
         <div key={item.id}>
           {item.hinhAnh && (
@@ -93,7 +116,7 @@ export default function RoomDestinaion({ idDestination, destination }: any) {
                     <div className="space-y-2 mt-2">
                       <div className="flex justify-between ">
                         <p className="text-sm font-bold">
-                          {dataStoreDestination2} / Việt Nam
+                          {formattedDestination2(newParams)} / Việt Nam
                         </p>
                         <div className="flex items-center space-x-2">
                           <p className="text-sm">
@@ -146,17 +169,19 @@ export default function RoomDestinaion({ idDestination, destination }: any) {
   };
   let handleDetail = (star: number) => {
     setStar(star);
+    setDataLocation(formattedDestination2(newParams));
   };
   return (
     <div className="">
       <div className="grid lg:grid-cols-2 grid-cols-1 gap-4 mt-10 relative">
         <div className=" ">
           <div className="flex justify-center">
-            <FormatTime />
+            <FormatTime filterRoomDestination={filterRoomDestination} />
           </div>
           <div className="flex justify-center mt-10">
-            {resultSearch.length >= 1 ? (
-              <div className="md:w-2/3 w-[95%] grid grid-cols-1 gap-5">
+            {filterRoomDestination?.length &&
+            filterRoomDestination.length > 0 ? (
+              <div className="md:w-2/3 w-[95%] grid grid-cols-1 gap-5 ">
                 {renderRooms()}
               </div>
             ) : (
@@ -176,7 +201,7 @@ export default function RoomDestinaion({ idDestination, destination }: any) {
           <div className="sticky xl:top-28 top-52">
             <BackgroundGradient className="rounded-[22px] bg-white dark:bg-zinc-900 overflow-hidden ">
               <iframe
-                src={mapIframe[idDestination - 1].src}
+                src={mapIframe[Number(idDestination) - 1].src}
                 className="xl:h-[700px] md:h-[500px] h-[360px] w-full z-50"
                 style={{ border: 0 }}
                 allowFullScreen

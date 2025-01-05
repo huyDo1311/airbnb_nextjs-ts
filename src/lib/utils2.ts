@@ -126,6 +126,10 @@ export let formatVietNamDate = (date: any) => {
   }
 };
 
+export const formatHistoryDateToVietnamese = (date: any) => {
+  return format(date, " dd MMM", { locale: vi });
+};
+
 export const vietnameseDate = formatDateToVietnamese(new Date());
 
 // Destination map
@@ -181,3 +185,15 @@ export let mapIframe = [
     desc: "Phan Thiết còn có nền văn hóa đa dạng và những món ăn đặc sản hấp dẫn như bánh căn, cá lóc nướng, và hải sản tươi sống. Thành phố này không chỉ là điểm du lịch nổi tiếng mà còn là trung tâm kinh tế, văn hóa của tỉnh Bình Thuận, thu hút hàng triệu lượt khách mỗi năm.",
   },
 ];
+
+// format destination
+
+export const formattedDestination = (item: any) => {
+  let formatResult = item.replace(/\s+/g, "-");
+  return formatResult;
+};
+
+export const formattedDestination2 = (item: any) => {
+  let formatResult = item.replace(/-/g, " ");
+  return formatResult;
+};

@@ -1,6 +1,7 @@
 "use client";
 import roomApiRequest from "@/apiRequests/room";
 import { Button } from "@/components/ui/button";
+import { CoolMode } from "@/components/ui/cool-mode";
 
 import {
   Popover,
@@ -8,15 +9,17 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { toast } from "@/hooks/use-toast";
-import { useStore } from "@/store/store";
+import { CustomerType, useStore } from "@/store/store";
 import { Minus, Plus } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 interface dataTypeCustomers {
+  id: string;
   Object: string;
   Age: string;
   Quantity: any;
+  QuantityStore: any;
   HandleQuantityPlus: any;
   HandleQuantityMinus: any;
 }
@@ -28,13 +31,15 @@ export function CustomerPicker() {
     setSearch,
     dataStoreDestination,
     dataStoreDestination2,
-    setHeaderTotal,
-    headerTotal,
+    total,
     removeDataHeader,
     setRemoveDataHeader,
+    decrement,
+    increment,
+    customers,
   } = useStore();
   let router = useRouter();
-  const [quantityOfAdult, setQuantityOfAdult] = useState<number>(0);
+  const [quantityOfAdult, setQuantityOfAdult] = useState<number>(1);
   const [quantityOfChildren, setQuantityOfChildren] = useState<number>(0);
   const [quantityOfBabies, setQuantityOfBaby] = useState<number>(0);
   const [quantityOfPets, setQuantityOfPets] = useState<number>(0);
@@ -44,40 +49,58 @@ export function CustomerPicker() {
   // }, [quantityOfAdult, quantityOfChildren, setCustomers]);
   const formattedDestination = dataStoreDestination2.replace(/\s+/g, "-");
 
-  useEffect(() => {
-    // setTotal(quantityOfAdult + quantityOfChildren);
-    setHeaderTotal(quantityOfAdult + quantityOfChildren);
-  }, [quantityOfAdult, quantityOfChildren]);
   let dataCustomers: dataTypeCustomers[] = [
     {
+      id: "adults",
       Object: "Người lớn",
       Age: "Từ 13 tuổi trở lên",
       Quantity: quantityOfAdult,
-      HandleQuantityPlus: setQuantityOfAdult,
-      HandleQuantityMinus: setQuantityOfAdult,
+      QuantityStore: customers?.adults,
+      HandleQuantityPlus: (id: any) => increment(id),
+      HandleQuantityMinus: (id: any) => decrement(id),
     },
     {
+      id: "children",
       Object: "Trẻ em",
       Age: "Độ tuổi 2-12 ",
       Quantity: quantityOfChildren,
-      HandleQuantityPlus: setQuantityOfChildren,
-      HandleQuantityMinus: setQuantityOfChildren,
+      QuantityStore: customers?.children,
+      HandleQuantityPlus: (id: any) => increment(id),
+      HandleQuantityMinus: (id: any) => decrement(id),
     },
     {
+      id: "babies",
       Object: "Em bé",
       Age: "Dưới 2 tuổi",
       Quantity: quantityOfBabies,
-      HandleQuantityPlus: setQuantityOfBaby,
-      HandleQuantityMinus: setQuantityOfBaby,
+      QuantityStore: customers?.babies,
+      HandleQuantityPlus: (id: any) => increment(id),
+      HandleQuantityMinus: (id: any) => decrement(id),
     },
     {
+      id: "pets",
       Object: "Thú cưng",
       Age: "Bạn sẽ mang theo động vật để phục vụ?",
       Quantity: quantityOfPets,
-      HandleQuantityPlus: setQuantityOfPets,
-      HandleQuantityMinus: setQuantityOfPets,
+      QuantityStore: customers?.pets,
+      HandleQuantityPlus: (id: any) => increment(id),
+      HandleQuantityMinus: (id: any) => decrement(id),
     },
   ];
+  const [active, setActive] = useState<boolean>(false);
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setActive(false);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   useEffect(() => {
     setQuantityOfAdult(0);
     setQuantityOfChildren(0);
@@ -93,17 +116,7 @@ export function CustomerPicker() {
       toast({
         description: "Không được bỏ trống ngày nhận và trả phòng",
       });
-    } else if (headerTotal === 0) {
-      toast({
-        description: "Không được bỏ trống số lượng khách",
-      });
     } else {
-      setCustomers({
-        adults: quantityOfAdult,
-        children: quantityOfChildren,
-        babies: quantityOfBabies,
-        pets: quantityOfPets,
-      });
       if (dataStoreDestination == 0) router.push("/rooms");
       else {
         router.push(
@@ -113,6 +126,7 @@ export function CustomerPicker() {
       setSearch();
     }
   };
+
   let renderCustomer = () => {
     return dataCustomers.map((item, index) => {
       return (
@@ -133,56 +147,52 @@ export function CustomerPicker() {
             </p>
           </div>
           <div className="flex space-x-2 items-center">
-            <div>
-              {item.Object == "Người lớn" ? (
-                <Button
+            <div
+              className={`${
+                item.QuantityStore == 0 ? "cursor-not-allowed" : ""
+              }`}
+            >
+              <CoolMode>
+                <div
                   onClick={() => {
-                    item.HandleQuantityMinus((prev: any) =>
-                      prev == 1 ? 1 : prev - 1
-                    );
+                    item.HandleQuantityMinus(item.id);
                   }}
-                  variant={`${item.Quantity == 0 ? "secondary" : "ghost"}`}
-                  className={`rounded-full border-2 h-10 w-10 ${
-                    item.Quantity == 1 ? "cursor-not-allowed opacity-30" : ""
+                  className={` flex justify-center items-center rounded-full border-2 h-10 w-10 ${
+                    item.QuantityStore == 0
+                      ? "pointer-events-none opacity-30"
+                      : "cursor-pointer"
                   }`}
                 >
-                  <Minus />
-                </Button>
-              ) : (
-                <Button
-                  onClick={() => {
-                    item.HandleQuantityMinus((prev: any) =>
-                      prev == 0 ? 0 : prev - 1
-                    );
-                  }}
-                  variant={`${item.Quantity == 0 ? "secondary" : "ghost"}`}
-                  className={`rounded-full border-2 h-10 w-10 ${
-                    item.Quantity == 0 ? "cursor-not-allowed opacity-30" : ""
-                  }`}
-                >
-                  <Minus />
-                </Button>
-              )}
+                  <Minus className="w-4 h-4" />
+                </div>
+              </CoolMode>
             </div>
             <div className="w-10">
               <p className="text-center text-md">
-                {item.Quantity == 5 ? "5+" : item.Quantity}
+                {item.QuantityStore == 5 ? "5+" : item.QuantityStore}
               </p>
             </div>
-            <div>
-              <Button
-                onClick={() => {
-                  item.HandleQuantityPlus((prev: any) =>
-                    prev == 5 ? 5 : prev + 1
-                  );
-                }}
-                variant={`${item.Quantity == 5 ? "secondary" : "ghost"}`}
-                className={`rounded-full border-2 h-10 w-10 ${
-                  item.Quantity >= 5 ? "cursor-not-allowed opacity-30" : ""
-                }`}
-              >
-                <Plus />
-              </Button>
+            <div
+              className={`${
+                item.QuantityStore >= 5
+                  ? "cursor-not-allowed"
+                  : "cursor-pointer"
+              }`}
+            >
+              <CoolMode>
+                <div
+                  onClick={() => {
+                    item.HandleQuantityPlus(item.id);
+                  }}
+                  className={`flex justify-center items-center rounded-full border-2 h-10 w-10 ${
+                    item.QuantityStore >= 5
+                      ? " pointer-events-none  opacity-30"
+                      : ""
+                  }`}
+                >
+                  <Plus className="w-4 h-4" />
+                </div>
+              </CoolMode>
             </div>
           </div>
         </div>
@@ -191,18 +201,23 @@ export function CustomerPicker() {
   };
   return (
     <div className="relative w-full">
-      <Popover>
+      <Popover open={active} onOpenChange={setActive}>
         <PopoverTrigger asChild>
           <Button
+            onClick={() => setActive(true)}
             variant="ghost"
-            className="w-full h-full flex justify-start text-left"
+            className="w-full h-20 flex justify-start text-left"
           >
             <div>
-              <p className="font-semibold  text-xs">Khách</p>
-              {headerTotal > 0 ? (
-                <p className=" ">{headerTotal} khách</p>
+              <p className="font-semibold  text-black dark:text-white text-xs">
+                Khách
+              </p>
+              {total > 0 ? (
+                <p className="text-md font-semibold text-red-500 ">
+                  {total} khách
+                </p>
               ) : (
-                <p className="text-gray-400 font-light">Thêm khách</p>
+                <p className="text-gray-500 font-medium text-md">Thêm khách</p>
               )}
             </div>
           </Button>

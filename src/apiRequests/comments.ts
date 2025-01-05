@@ -6,7 +6,9 @@ interface commentsProps {
 
 const commentsRequest = {
   NextClientToServerGetComments: (id: any) =>
-    http.get<commentsProps>(`/api/binh-luan/lay-binh-luan-theo-phong/${id}`),
+    http.get<commentsProps>(`/api/binh-luan/lay-binh-luan-theo-phong/${id}`, {
+      next: { tags: ["comments"] },
+    }),
   NextClientToServerPostComments: (body: any) => {
     const token = {
       token: `${localStorage.getItem("userToken") || ""}`,

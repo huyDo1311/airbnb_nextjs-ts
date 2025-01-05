@@ -1,6 +1,7 @@
 "use client";
 import bookingApiRequest from "@/apiRequests/booking";
 import commentsRequest from "@/apiRequests/comments";
+import revalidateApiRequest from "@/apiRequests/revalidate";
 import Comments from "@/app/(public)/room-detail/[query]/Comments";
 import FormBooking from "@/app/(public)/room-detail/[query]/FormBooking";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -31,8 +32,12 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
+import GradualSpacing from "@/components/ui/gradual-spacing";
+import NumberTicker from "@/components/ui/number-ticker";
 import { Skeleton } from "@/components/ui/skeleton";
+import SparklesText from "@/components/ui/sparkles-text";
 import { Textarea } from "@/components/ui/textarea";
+import WordPullUp from "@/components/ui/word-pull-up";
 import { toast } from "@/hooks/use-toast";
 import { typeContent } from "@/lib/helper.type";
 import {
@@ -43,6 +48,7 @@ import {
 } from "@/lib/utils2";
 import { commentsSchema } from "@/schemaValidations/comments.schema";
 import { useStore } from "@/store/store";
+import confetti from "canvas-confetti";
 
 import {
   AirVent,
@@ -108,6 +114,36 @@ export default function RoomDetails({
     setFetchDataStore();
     setTimeout(() => {
       setIsSuccess(false);
+    }, 2000);
+
+    const end = Date.now() + 3 * 1000; // 3 seconds
+    const colors = ["#a786ff", "#fd8bbc", "#eca184", "#f8deb1"];
+
+    setTimeout(() => {
+      const frame = () => {
+        if (Date.now() > end) return;
+
+        confetti({
+          particleCount: 2,
+          angle: 60,
+          spread: 55,
+          startVelocity: 60,
+          origin: { x: 0, y: 0.5 },
+          colors: colors,
+        });
+        confetti({
+          particleCount: 2,
+          angle: 120,
+          spread: 55,
+          startVelocity: 60,
+          origin: { x: 1, y: 0.5 },
+          colors: colors,
+        });
+
+        requestAnimationFrame(frame);
+      };
+
+      frame();
     }, 2000);
   };
 
@@ -240,8 +276,9 @@ export default function RoomDetails({
       };
       commentsRequest
         .NextClientToServerPostComments(dataCommentSubmit)
-        .then((res) => {
+        .then(async (res) => {
           setUserInput("");
+          await revalidateApiRequest("comments");
         })
         .catch((err) => {
           console.log(err);
@@ -330,22 +367,27 @@ export default function RoomDetails({
     if (dataDetail) {
       return (
         <div className="space-y-4 ">
-          <p className="text-3xl font-semibold">{dataDetail?.tenPhong}</p>
+          <WordPullUp className="text-3xl font-semibold">
+            {dataDetail?.tenPhong}
+          </WordPullUp>
           <div className="flex space-x-2">
             {star > 4 ? (
               <>
                 <Award color="#e26060" />
-
-                <p className="text-md font-semibold">
-                  {star == 5 ? "Chủ nhà siêu cấp" : "Chủ nhà được ưa thích"}
-                </p>
+                <GradualSpacing
+                  className="text-md font-semibold"
+                  text={
+                    star == 5 ? "Chủ nhà siêu cấp" : "Chủ nhà được ưa thích"
+                  }
+                />
               </>
             ) : (
               <>
                 <Smile color="#e26060" />
-                <p className="text-md font-semibold">
-                  Chủ nhà chưa đạt được thành tựu nào
-                </p>
+                <GradualSpacing
+                  className="text-md font-semibold"
+                  text="Chủ nhà chưa đạt được thành tựu nào"
+                />
               </>
             )}
           </div>
@@ -394,9 +436,11 @@ export default function RoomDetails({
                           alt="barley"
                         />
                         <div className="xl:text-md text-sm font-semibold px-2 line-">
-                          <p className="text-center font-medium  leading-tight w-20">
-                            Được khách yêu thích
-                          </p>
+                          <SparklesText
+                            sparklesCount={5}
+                            className="text-center font-medium !z-10  text-sm leading-tight w-24"
+                            text="Được khách yêu thích  "
+                          />
                         </div>
                         <Image
                           className="transform scale-x-[-1]"
@@ -519,9 +563,11 @@ export default function RoomDetails({
                           alt="barley"
                         />
                         <div className="xl:text-md text-sm font-semibold px-2 line-">
-                          <p className="text-center  leading-tight w-20">
-                            Được khách yêu thích
-                          </p>
+                          <SparklesText
+                            sparklesCount={5}
+                            className="text-center font-medium   text-sm leading-tight w-24"
+                            text="Được khách yêu  thích "
+                          />
                         </div>
                         <Image
                           className="transform scale-x-[-1] xl:w-14 w-10"
@@ -534,7 +580,7 @@ export default function RoomDetails({
                       <div className="flex items-center flex-col justify-center  w-20">
                         <div className=" flex items-center ">
                           <p className="text-xl font-bold text-center w-10 h-8">
-                            {commentsOfUsers?.length ?? 0}
+                            <NumberTicker value={commentsOfUsers?.length} />
                           </p>
                         </div>
                         <p className="text-xs underline opacity-90 text-center h-3  flex items-center">
@@ -565,9 +611,11 @@ export default function RoomDetails({
                             alt="barley"
                           />
                         </span>
-                        <p className="text-lg  text-center">
-                          Được khách yêu thích
-                        </p>
+                        <SparklesText
+                          sparklesCount={5}
+                          className="text-center font-medium   text-sm leading-tight w-full"
+                          text="Được khách yêu thích   "
+                        />
                       </DialogTitle>
                       <DialogDescription className="space-y-3 w-full ">
                         <span className="w-full ">
@@ -581,7 +629,8 @@ export default function RoomDetails({
                           </span>
                         </span>
                         <span className="text-xl font-semibold text-black dark:text-white text-center flex items-center justify-center ">
-                          {commentsOfUsers?.length} lượt đánh giá{" "}
+                          <NumberTicker value={commentsOfUsers?.length} />
+                          lượt đánh giá{" "}
                           <Sparkles
                             className="ms-2"
                             size={20}
@@ -611,9 +660,11 @@ export default function RoomDetails({
                             alt="barley"
                           />
                           <div className="xl:text-md text-sm font-semibold px-2 line-">
-                            <p className="text-center font-medium  leading-tight w-20">
-                              Được khách yêu thích
-                            </p>
+                            <SparklesText
+                              sparklesCount={5}
+                              className="text-center font-medium   text-sm leading-tight w-24"
+                              text="Được khách yêu thích "
+                            />
                           </div>
                           <Image
                             className="transform scale-x-[-1]"
@@ -736,9 +787,11 @@ export default function RoomDetails({
                             alt="barley"
                           />
                           <div className="xl:text-md text-sm font-semibold px-2 line-">
-                            <p className="text-center  leading-tight w-20">
-                              Được khách yêu thích
-                            </p>
+                            <SparklesText
+                              sparklesCount={5}
+                              className="text-center font-medium   text-sm leading-tight w-24"
+                              text="Được khách yêu thích "
+                            />
                           </div>
                           <Image
                             className="transform scale-x-[-1] xl:w-14 w-10"
@@ -783,9 +836,11 @@ export default function RoomDetails({
                                   alt="barley"
                                 />
                               </div>
-                              <p className="text-lg  text-center">
-                                Được khách yêu thích
-                              </p>
+                              <SparklesText
+                                sparklesCount={5}
+                                className="text-center font-medium   text-sm leading-tight w-24"
+                                text="Được khách yêu thích "
+                              />
                             </DrawerTitle>
                             <DrawerDescription>
                               <p className="w-full md:flex justify-center">
@@ -1061,7 +1116,11 @@ export default function RoomDetails({
                 />
               </div>
               <div className="flex justify-center flex-col items-center">
-                <p className="text-3xl text-center">Được khách yêu thích </p>
+                <SparklesText
+                  className="text-3xl font-medium mb-4"
+                  text="Được khách yêu thích"
+                />
+
                 <div className="">
                   <p className="text-center w-80">
                     <span className="text-gray-600">
@@ -1094,6 +1153,7 @@ export default function RoomDetails({
               )}
             </div>
           </div>
+
           {getUserData?.id !== 0 && showRating !== -1 && (
             <div className="my-14 ">
               <p className=" my-5 text-center text-3xl font-medium">

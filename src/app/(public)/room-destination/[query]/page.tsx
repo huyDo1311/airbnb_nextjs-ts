@@ -1,5 +1,7 @@
+import roomApiRequest from "@/apiRequests/room";
 import RoomDestination from "@/app/(public)/room-destination/[query]/RoomDestination";
 import Loading from "@/app/(public)/room-destination/loading";
+import { typeContent } from "@/lib/helper.type";
 import { mapIframe } from "@/lib/utils2";
 import { Metadata } from "next";
 import React, { Suspense } from "react";
@@ -39,10 +41,22 @@ export default async function page({ searchParams }: Props) {
   const resolvedSearchParams = await searchParams;
   const { name, id } = resolvedSearchParams;
   await new Promise((resolve) => setTimeout(resolve, 500));
+
+  let dataRoomDestinaion: any = await roomApiRequest
+    .NextClientToServerGetRoomByLocation(Number(id))
+    .then((res) => res.content)
+    .catch((err) => {
+      console.log(err);
+      return [{} as typeContent];
+    });
   return (
     <div>
       <Suspense fallback={<Loading />}>
-        <RoomDestination idDestination={id} destination={name} />
+        <RoomDestination
+          idDestination={id}
+          destination={name}
+          dataRoomDestinaion={dataRoomDestinaion}
+        />
       </Suspense>
     </div>
   );
