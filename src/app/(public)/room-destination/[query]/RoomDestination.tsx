@@ -201,7 +201,7 @@ export default function RoomDestinaion({
           <div className="sticky xl:top-28 top-52">
             <BackgroundGradient className="rounded-[22px] bg-white dark:bg-zinc-900 overflow-hidden ">
               <iframe
-                src={mapIframe[Number(idDestination) - 1].src}
+                src={mapIframe[Number(idDestination) - 1]?.src}
                 className="xl:h-[700px] md:h-[500px] h-[360px] w-full z-50"
                 style={{ border: 0 }}
                 allowFullScreen

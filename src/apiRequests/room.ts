@@ -23,6 +23,7 @@ const roomApiRequest = {
   },
   NextClientToServerGetRoom: (id: string) =>
     http.get<GetRoomByIdResType>(`/api/phong-thue/${id}`),
+
   NextClientToServerGetRoomByLocation: (maViTri: number) =>
     http.get<GetRoomByLocationResType>(
       `/api/phong-thue/lay-phong-theo-vi-tri?maViTri=${maViTri}`

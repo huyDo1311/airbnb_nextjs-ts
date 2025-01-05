@@ -197,3 +197,8 @@ export const formattedDestination2 = (item: any) => {
   let formatResult = item.replace(/-/g, " ");
   return formatResult;
 };
+
+//  generate random id
+export function generateRandomID() {
+  return Date.now() + Math.floor(Math.random() * 1000);
+}

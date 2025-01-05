@@ -1,5 +1,4 @@
 "use client";
-import roomApiRequest from "@/apiRequests/room";
 import { Button } from "@/components/ui/button";
 import { CoolMode } from "@/components/ui/cool-mode";
 
@@ -9,9 +8,9 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { toast } from "@/hooks/use-toast";
-import { CustomerType, useStore } from "@/store/store";
+import { generateRandomID } from "@/lib/utils2";
+import { useStore } from "@/store/store";
 import { Minus, Plus } from "lucide-react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 interface dataTypeCustomers {
@@ -101,12 +100,6 @@ export function CustomerPicker() {
     };
   }, []);
 
-  useEffect(() => {
-    setQuantityOfAdult(0);
-    setQuantityOfChildren(0);
-    setQuantityOfBaby(0);
-    setQuantityOfPets(0);
-  }, [setRemoveDataHeader, removeDataHeader]);
   let handleSearching = () => {
     if (!dataStoreDestination2) {
       toast({

@@ -51,7 +51,7 @@ interface AppState {
   setStar: (newStar: any) => void;
   setDataDetail: (newDataDetail: any) => void;
   setDataLocation: (newLocation: any) => void;
-  setSearch: () => void;
+  setSearch: (id?: number) => void;
   setDataApiListRoom: (newDataApiListRoom: any) => void;
   setNextStep: (newStep: number) => void;
   setDataStoreDestination: (newDestination: any) => void;
@@ -180,20 +180,51 @@ export const useStore = create<AppState>()(
             let cloneDataStoreDestination = state.dataStoreDestination;
             let cloneDataStoreDestination2 = state.dataStoreDestination2;
             let cloneCustomers = { ...state.customers };
+            let dataHistory = {
+              calendar: cloneCalendar,
+              destination: cloneDataStoreDestination,
+              destination2: cloneDataStoreDestination2,
+              customers: cloneCustomers,
+              totalOfCustomers: state.total,
+            };
+            let cloneDataApiListRooms = [...state.dataApiListRoom];
+            let filterRooms = cloneDataApiListRooms.filter(
+              (item) => item.khach >= state.total
+            );
+
+            let cloneSearchingHistory = [...state.searchingHistory];
+
+            let checkResultSearch = cloneSearchingHistory.filter(
+              (item) =>
+                item.destination === cloneDataStoreDestination &&
+                item.totalOfCustomers === state.total &&
+                item.calendar.from === cloneCalendar.from &&
+                item.calendar.to === cloneCalendar.to
+            );
+            if (checkResultSearch.length === 0) {
+              cloneSearchingHistory.push(dataHistory);
+            }
+
             return {
+              searchingHistory: cloneSearchingHistory,
+              resultSearch: filterRooms,
               total: state.total,
-              searchingHistory: [
-                ...state.searchingHistory,
-                {
-                  calendar: cloneCalendar,
-                  destination: cloneDataStoreDestination,
-                  destination2: cloneDataStoreDestination2,
-                  customers: cloneCustomers,
-                  totalOfCustomers: state.total,
-                },
-              ],
             };
           });
+          // set((state) => {
+          //   let cloneDataApiListRooms = [...state.dataApiListRoom];
+          //   let filterRooms = cloneDataApiListRooms.filter(
+          //     (item) => item.khach >= state.total
+          //   );
+          //   let cloneResultSearch = [...state.resultSearch];
+          //   let checkResultSearch = cloneResultSearch.filter(
+          //     (item) => item.id === id
+          //   );
+
+          //   if (checkResultSearch.length === 0) {
+
+          //   }
+          // });
         },
         setCustomerDetails: (newCustomerDetails: any) =>
           set({ customerDetails: newCustomerDetails }),

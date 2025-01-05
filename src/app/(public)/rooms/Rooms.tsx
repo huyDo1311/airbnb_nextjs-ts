@@ -197,9 +197,13 @@ export default function Rooms({ data2 }: any) {
   return (
     <div>
       <FormDialog Open={Open} handleClose={handleClose} />
+      <p className="text-lg font-semibold ms-6">
+        {" "}
+        Có {resultSearch.length} chỗ ở
+      </p>
       <div className="w-full flex justify-center ">
         {resultSearch.length > 0 ? (
-          <div className="w-fit grid lgCustom:grid-cols-4 mdCustom:grid-cols-3  smCustom:grid-cols-2 lg:gap-3   gap-5 py-5">
+          <div className="w-fit grid lgCustom:grid-cols-4 mdCustom:grid-cols-3  smCustom:grid-cols-2 lg:gap-3   gap-5 py-3">
             {renderRooms()}
           </div>
         ) : (

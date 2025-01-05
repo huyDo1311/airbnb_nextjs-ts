@@ -4,7 +4,6 @@ import Logo from "@/app/(public)/Logo";
 import MenuDropDown from "@/app/(public)/MenuDropDown";
 import DarkModeToggle from "@/components/dark-mode-toggle";
 import { BorderBeam } from "@/components/ui/border-beam";
-import { RainbowButton } from "@/components/ui/rainbow-button";
 import { useStore } from "@/store/store";
 import React, { useEffect, useState } from "react";
 

@@ -79,6 +79,7 @@ export function PickDestination() {
     setDataCalendar,
     setResetHistory,
     setTotal,
+    setSearch,
   } = useStore();
   let handleDestination = (id: number, tinhThanh: string): void => {
     // setLocation(tinhThanh);
@@ -87,9 +88,34 @@ export function PickDestination() {
     setNextStep(1);
   };
   const router = useRouter();
+  let handleDetailDestination = (
+    customers: any,
+    totalOfCustomers: number,
+    destination: number,
+    destination2: string,
+    calendar: any
+  ): void => {
+    setCustomers(customers),
+      setTotal(totalOfCustomers),
+      setDataStoreDestination(destination);
+    setDataStoreDestination2(destination2),
+      setDataCalendar(calendar),
+      setIsMinimized(false);
+    if (destination === 0) {
+      router.push("/rooms");
+      setSearch();
+    } else {
+      router.push(
+        `/room-destination/location?name=${formattedDestination(
+          destination2
+        )}&id=${destination}`
+      );
+    }
+  };
 
   let renderHistory = () => {
     let cloneHistory = [...searchingHistory];
+    console.log({ cloneHistory });
     cloneHistory.reverse();
     return cloneHistory.map((itemHistory, index) => {
       return (
@@ -97,18 +123,15 @@ export function PickDestination() {
           key={index}
           variant={"ghost"}
           className="w-full py-5 "
-          onClick={() => (
-            setCustomers(itemHistory?.customers),
-            setTotal(itemHistory?.totalOfCustomers),
-            setDataStoreDestination2(itemHistory?.destination2),
-            setDataCalendar(itemHistory?.calendar),
-            setIsMinimized(false),
-            router.push(
-              `/room-destination/location?name=${formattedDestination(
-                itemHistory.destination2
-              )}&id=${itemHistory.destination}`
-            )
-          )}
+          onClick={() => {
+            handleDetailDestination(
+              itemHistory?.customers,
+              itemHistory?.totalOfCustomers,
+              itemHistory?.destination,
+              itemHistory?.destination2,
+              itemHistory?.calendar
+            );
+          }}
         >
           <div className="flex w-full items-center justify-start space-x-1  text-md  ">
             <p className="me-2">
