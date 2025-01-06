@@ -68,6 +68,7 @@ import {
 } from "lucide-react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 const LottieAnimationPurchase = dynamic(
   () => import("@/components/animatePurchase"),
@@ -109,13 +110,14 @@ export default function RoomDetails({
   const refComments = useRef<HTMLButtonElement | null>(null);
   const refCommentsMobile = useRef<HTMLButtonElement | null>(null);
   const [displayDes, setdisplayDes] = useState<boolean>(false);
+  const router = useRouter();
+
   let handleSuccess = async () => {
     setIsSuccess(true);
     setFetchDataStore();
     setTimeout(() => {
       setIsSuccess(false);
     }, 2000);
-
     const end = Date.now() + 3 * 1000; // 3 seconds
     const colors = ["#a786ff", "#fd8bbc", "#eca184", "#f8deb1"];
 
@@ -146,7 +148,6 @@ export default function RoomDetails({
       frame();
     }, 2000);
   };
-
   useEffect(() => {
     if (dataDetailName) {
       let giaTien = dataDetailName.giaTien;
@@ -278,6 +279,7 @@ export default function RoomDetails({
         .NextClientToServerPostComments(dataCommentSubmit)
         .then(async (res) => {
           setUserInput("");
+          router.refresh();
           await revalidateApiRequest("comments");
         })
         .catch((err) => {
