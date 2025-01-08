@@ -110,44 +110,11 @@ export default function RoomDetails({
   const refComments = useRef<HTMLButtonElement | null>(null);
   const refCommentsMobile = useRef<HTMLButtonElement | null>(null);
   const [displayDes, setdisplayDes] = useState<boolean>(false);
+  const [hoveredIndex, setHoveredIndex] = useState(-1); // To handle hover effect
+  const [selectedIndex, setSelectedIndex] = useState(-1); // To handle click effect
+  const [showRating, setShowRating] = useState<number>(-1);
   const router = useRouter();
 
-  let handleSuccess = async () => {
-    setIsSuccess(true);
-    setFetchDataStore();
-    setTimeout(() => {
-      setIsSuccess(false);
-    }, 2000);
-    const end = Date.now() + 3 * 1000; // 3 seconds
-    const colors = ["#a786ff", "#fd8bbc", "#eca184", "#f8deb1"];
-
-    setTimeout(() => {
-      const frame = () => {
-        if (Date.now() > end) return;
-
-        confetti({
-          particleCount: 2,
-          angle: 60,
-          spread: 55,
-          startVelocity: 60,
-          origin: { x: 0, y: 0.5 },
-          colors: colors,
-        });
-        confetti({
-          particleCount: 2,
-          angle: 120,
-          spread: 55,
-          startVelocity: 60,
-          origin: { x: 1, y: 0.5 },
-          colors: colors,
-        });
-
-        requestAnimationFrame(frame);
-      };
-
-      frame();
-    }, 2000);
-  };
   useEffect(() => {
     if (dataDetailName) {
       let giaTien = dataDetailName.giaTien;
@@ -164,14 +131,6 @@ export default function RoomDetails({
       setTotalMoney(totalMoneyNe);
     }
   }, [differenceDays]);
-
-  let handleDisplayComment = () => {
-    if (window.innerWidth >= 1024) {
-      refComments?.current?.click();
-    } else {
-      refCommentsMobile?.current?.click();
-    }
-  };
 
   useEffect(() => {
     if (isSuccess) {
@@ -227,9 +186,57 @@ export default function RoomDetails({
     }
   }, [dataApiListRoom, fetchDataStore, setDataRented]);
 
-  const [hoveredIndex, setHoveredIndex] = useState(-1); // To handle hover effect
-  const [selectedIndex, setSelectedIndex] = useState(-1); // To handle click effect
-  const [showRating, setShowRating] = useState<number>(-1);
+  useEffect(() => {
+    let findIndex = dataRented.findIndex(
+      (item: typeContent) => item?.id == Number(query)
+    );
+
+    setShowRating(findIndex);
+  }, [dataRented, query, showRating]);
+
+  let handleSuccess = async () => {
+    setIsSuccess(true);
+    setFetchDataStore();
+    setTimeout(() => {
+      setIsSuccess(false);
+    }, 2000);
+    const end = Date.now() + 3 * 1000; // 3 seconds
+    const colors = ["#a786ff", "#fd8bbc", "#eca184", "#f8deb1"];
+
+    setTimeout(() => {
+      const frame = () => {
+        if (Date.now() > end) return;
+
+        confetti({
+          particleCount: 2,
+          angle: 60,
+          spread: 55,
+          startVelocity: 60,
+          origin: { x: 0, y: 0.5 },
+          colors: colors,
+        });
+        confetti({
+          particleCount: 2,
+          angle: 120,
+          spread: 55,
+          startVelocity: 60,
+          origin: { x: 1, y: 0.5 },
+          colors: colors,
+        });
+
+        requestAnimationFrame(frame);
+      };
+
+      frame();
+    }, 2000);
+  };
+  let handleDisplayComment = () => {
+    if (window.innerWidth >= 1024) {
+      refComments?.current?.click();
+    } else {
+      refCommentsMobile?.current?.click();
+    }
+  };
   const handleMouseEnter = (index: number) => {
     setHoveredIndex(index); // Update the hover index
   };
@@ -393,7 +400,7 @@ export default function RoomDetails({
               </>
             )}
           </div>
-          <div className="w-full rounded-xl overflow-hidden">
+          <div className="w-full rounded-xl overflow-hidden ">
             {dataDetail?.hinhAnh ? (
               <Image
                 src={dataDetail?.hinhAnh}
@@ -1082,14 +1089,6 @@ export default function RoomDetails({
       );
     }
   };
-
-  useEffect(() => {
-    let findIndex = dataRented.findIndex(
-      (item: typeContent) => item?.id == Number(query)
-    );
-
-    setShowRating(findIndex);
-  }, [dataRented, query, showRating]);
 
   return (
     <div>

@@ -74,8 +74,8 @@ export default async function Page({ params, searchParams }: Props) {
     .catch((err) => console.log(err));
 
   return (
-    <div className="w-full lg:px-20 py-5 flex justify-center z-50">
-      <div className="w-full">
+    <div className=" lg:px-20 py-5 flex justify-center z-50">
+      <div className="max-w-[1500px]">
         {/* Pass query to RoomDetails */}
         <Suspense fallback={<Loading />}>
           <RoomDetails

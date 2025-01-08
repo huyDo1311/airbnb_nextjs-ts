@@ -21,6 +21,8 @@ import { Eye, EyeClosed, LoaderCircle } from "lucide-react";
 import { useState } from "react";
 import { useStore } from "@/store/store";
 import { useRouter } from "next/navigation";
+import FacebookLogin from "@greatsumini/react-facebook-login";
+import { FacebookButton } from "@/app/(public)/auth/FacebookForm";
 
 interface SigninFormProps {
   handleClose: () => void; // Specify that handleClose is a function that takes no arguments and returns void
@@ -174,6 +176,7 @@ export default function SigninForm({
               </div>
             </form>
           </Form>
+          <FacebookButton />
         </CardContent>
       </Card>
     </div>

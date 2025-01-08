@@ -287,7 +287,7 @@ export default function ListRoomCsr({ data, data2 }: any) {
         <div className="w-full">
           <FormDialog Open={Open} handleClose={handleClose} />
           <div className="w-full flex justify-center ">
-            <div className="w-fit grid lgCustom:grid-cols-4 mdCustom:grid-cols-3  smCustom:grid-cols-2 lg:gap-3   gap-5 py-5">
+            <div className="w-fit grid xlCustom:grid-cols-6   lgCustom:grid-cols-4 mdCustom:grid-cols-3  smCustom:grid-cols-2 lg:gap-3   gap-5 py-5">
               {renderRooms()}
             </div>
           </div>
@@ -324,7 +324,7 @@ export default function ListRoomCsr({ data, data2 }: any) {
           </Pagination>
         </div>
       ) : (
-        <div className="w-fit grid lgCustom:grid-cols-4 mdCustom:grid-cols-3  smCustom:grid-cols-2  gap-5 py-5">
+        <div className="w-fit grid  xlCustom:grid-cols-6   lgCustom:grid-cols-4 mdCustom:grid-cols-3  smCustom:grid-cols-2  gap-5 py-5">
           {renderSkeleton()}
         </div>
       )}
