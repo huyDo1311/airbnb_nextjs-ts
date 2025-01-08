@@ -1,4 +1,4 @@
-import { FacebookLogin } from "@/constants/type";
+import { FacebookLoginNe } from "@/constants/type";
 import http from "@/lib/http";
 import {
   SigninBodyType,
@@ -15,7 +15,7 @@ const authApiRequest = {
       baseUrl: "",
     }),
 
-  NextClientToNextServerFacebookLogin: (body: FacebookLogin) =>
+  NextClientToNextServerFacebookLogin: (body: FacebookLoginNe) =>
     http.post<SigninResponseType>(`/api/auth/signin`, body),
 
   NextServerToServerSignup: (body: SignupBodyType) =>
