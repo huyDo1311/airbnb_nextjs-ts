@@ -176,7 +176,6 @@ export default function SigninForm({
               </div>
             </form>
           </Form>
-          <FacebookButton />
         </CardContent>
       </Card>
     </div>

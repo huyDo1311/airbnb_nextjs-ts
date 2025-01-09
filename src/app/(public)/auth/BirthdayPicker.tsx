@@ -30,7 +30,6 @@ export function BirthdayPicker({ field }: any) {
   const [disableMonth, setdisableMonth] = React.useState<boolean>(false);
   const startYear = getYear(new Date()) - 100;
   const endYear = getYear(new Date());
-  const [newDayNe, setnewDayNe] = React.useState<Date | undefined>(undefined);
   const [selectMonthNe, setselectMonthNe] = React.useState<any>();
   const endMonth = new Date().getMonth() + 1;
   const months: any = [
@@ -77,6 +76,9 @@ export function BirthdayPicker({ field }: any) {
   const handleYearChange = (year: string) => {
     if (parseInt(year) === endYear) {
       setdisableMonth(true);
+      // setActiveMonth(true);
+      //  let newDate = setMonth(date!, 0);
+      // setDate(newDate);
     } else {
       setdisableMonth(false);
     }
