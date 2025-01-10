@@ -118,7 +118,6 @@ export default function DashboardMain() {
       thanhTien: thanhTien,
     };
   });
-  // console.log("🚀 ~ updatedDataArray ~ updatedDataArray:", updatedDataArray)
 
   // Lọc các booking theo khoảng thời gian
   const filteredData = updatedDataArray.filter((item: any) => {

@@ -45,6 +45,36 @@ export const UserUpdateBody = z
 
 export type UserUpdateBodyType = z.TypeOf<typeof UserUpdateBody>;
 
+export const UserUpdateBody2 = z
+  .object({
+    // id: z.number().min(1), // id là số nguyên và phải lớn hơn hoặc bằng 1
+    name: z
+      .string()
+      .min(1, "Tên không được bỏ trống")
+      .regex(
+        /^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểễếỄỆỉịọỏốồổỗộớờởỡợụủứừửữựỳỵỷỹ\s]+$/,
+        {
+          message: "Tên chỉ được chứa chữ cái tiếng Việt và khoảng trắng", // Custom error message
+        }
+      ), // Tên phải là chuỗi và có độ dài tối thiểu 1 ký tự, tối đa 256 ký tự
+    email: z.string().email("Email không hợp lệ"), // Email phải có định dạng hợp lệ
+    phone: z
+      .string()
+      .min(1, "Số điện thoại không được bỏ trống")
+      .min(10, "Số điện thoại phải có đủ 10 số")
+      .max(10, "Số điện thoại chỉ được chứa 10 chữ số"), // Số điện thoại với độ dài từ 10 đến 15 ký tự
+    birthday: z.custom((val) => val !== null, {
+      message: "Không được bỏ trống",
+    }), // Ngày sinh, có thể không có (optional)
+    gender: z.custom((val) => val !== null, {
+      message: "Không được bỏ trống",
+    }), // Giới tính là boolean
+    // role: z.enum([Role.User, Role.Admin]),
+    // avatar: z.string().url().optional(),
+  })
+  .strict();
+export type UserUpdateBodyType2 = z.TypeOf<typeof UserUpdateBody2>;
+
 export const UserUpdateResponse = z
   .object({
     statusCode: z.number().int(), // Mã trạng thái HTTP
@@ -54,7 +84,7 @@ export const UserUpdateResponse = z
       email: z.string(), // Email người dùng
       password: z.string(), // Mật khẩu người dùng (có thể có trong response, tùy yêu cầu API)
       phone: z.string(), // Số điện thoại người dùng
-      birthday: z.string(), // Ngày sinh người dùng
+      birthday: z.date(), // Ngày sinh người dùng
       avatar: z.string().url().optional(),
       gender: z.boolean(), // Giới tính người dùng
       role: z.string(), // Vai trò người dùng
@@ -108,28 +138,25 @@ export const UserSchema = z.object({
 
 export type UserType = z.TypeOf<typeof UserSchema>;
 
-export const UsertListRes = z.object({  
-    statusCode: z.number(), // Mã trạng thái HTTP
-    content: z.array(UserSchema),
-    dateTime: z.string().datetime(), // ISO 8601 datetime format
+export const UsertListRes = z.object({
+  statusCode: z.number(), // Mã trạng thái HTTP
+  content: z.array(UserSchema),
+  dateTime: z.string().datetime(), // ISO 8601 datetime format
 });
 
 export type UserListResType = z.TypeOf<typeof UsertListRes>;
 
-
-
-export const CreateUserBody = z
-  .object({
-    id: z.number(),
-    name: z.string(),
-    email: z.string(),
-    password: z.string().optional(),
-    phone: z.string().optional(),
-    birthday: z.string().optional(),
-    gender: z.boolean(),
-    role: z.enum([Role.User, Role.Admin]),
-  })
-export type CreateUserBodyType = z.TypeOf<typeof CreateUserBody>
+export const CreateUserBody = z.object({
+  id: z.number(),
+  name: z.string(),
+  email: z.string(),
+  password: z.string().optional(),
+  phone: z.string().optional(),
+  birthday: z.string().optional(),
+  gender: z.boolean(),
+  role: z.enum([Role.User, Role.Admin]),
+});
+export type CreateUserBodyType = z.TypeOf<typeof CreateUserBody>;
 
 //CreateUserResponseType sử dụng GetUserResponseType
 
@@ -146,4 +173,3 @@ export const DeleteUserResponse = z
 
 // Type của response
 export type DeleteUserResponseType = z.TypeOf<typeof DeleteUserResponse>;
-

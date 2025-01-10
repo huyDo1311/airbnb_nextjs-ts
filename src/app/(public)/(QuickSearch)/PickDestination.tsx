@@ -115,7 +115,6 @@ export function PickDestination() {
 
   let renderHistory = () => {
     let cloneHistory = [...searchingHistory];
-    console.log({ cloneHistory });
     cloneHistory.reverse();
     return cloneHistory.map((itemHistory, index) => {
       return (

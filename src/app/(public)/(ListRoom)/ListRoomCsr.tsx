@@ -187,6 +187,7 @@ export default function ListRoomCsr({ data, data2 }: any) {
                                 src={item.hinhAnh}
                                 width={2000}
                                 height={2000}
+                                quality={100}
                                 alt="ks"
                               />
                             </div>
@@ -281,6 +282,7 @@ export default function ListRoomCsr({ data, data2 }: any) {
       );
     });
   };
+
   return (
     <div className="w-full">
       {dataApiListRoom.length > 0 ? (

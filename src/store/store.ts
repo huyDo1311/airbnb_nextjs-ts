@@ -338,7 +338,6 @@ export const useStore = create<AppState>()(
         },
         clearStorageUser: () => {
           set((state) => {
-            console.log("1");
             // Reset the user data to its default value (empty object or some default)
             let defaultData = { ...state.getUserData }; // Adjust this to your default user data structure
             return { getUserData: defaultData }; // Reset user data

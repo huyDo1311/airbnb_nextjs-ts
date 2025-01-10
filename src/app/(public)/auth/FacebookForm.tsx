@@ -38,7 +38,6 @@ export function FacebookButton() {
   const [loading, setLoading] = useState(false);
 
   const handleFacebookLogin = () => {
-    console.log("hello");
     FacebookLoginClient.getProfile(
       async (profile: any) => {
         let facebook = profile;

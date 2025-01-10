@@ -17,7 +17,7 @@ import { toast } from "@/hooks/use-toast";
 import { handleErrorApi, setUserToLocalStorage } from "@/lib/utils";
 import { useSigninMutation } from "@/queries/useAuth";
 import Image from "next/image";
-import { Eye, EyeClosed, LoaderCircle } from "lucide-react";
+import { CircleAlert, Eye, EyeClosed, LoaderCircle } from "lucide-react";
 import { useState } from "react";
 import { useStore } from "@/store/store";
 import { useRouter } from "next/navigation";
@@ -56,9 +56,24 @@ export default function SigninForm({
       if (setFetchData) {
         setFetchData(true);
       }
-      toast({
-        description: "Xin chào " + result.content.user.name,
-      });
+      console.log(1);
+      if (result.statusCode === 400) {
+        console.log(2);
+        toast({
+          variant: "destructive",
+          description: (
+            <p className="flex text-md font-normal items-center">
+              {" "}
+              <CircleAlert className="me-2" />
+              {result.content}
+            </p>
+          ),
+        });
+      } else {
+        toast({
+          description: "Xin chào " + result.content.user.name,
+        });
+      }
     } catch (error: any) {
       handleErrorApi({
         error,
@@ -151,7 +166,15 @@ export default function SigninForm({
                   )}
                   <span> Đăng nhập</span>
                 </Button>
-                <Button variant="outline" className="w-full" type="button">
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={() =>
+                    toast({
+                      title: "Tính năng đang được thử nghiệm",
+                    })
+                  }
+                >
                   <div className="w-52 flex justify-start space-x-4 items-center ">
                     <Image
                       src="/assets/google.png"
@@ -162,7 +185,15 @@ export default function SigninForm({
                     <span> Đăng nhập bằng Google</span>
                   </div>
                 </Button>
-                <Button variant="outline" className="w-full" type="button">
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={() =>
+                    toast({
+                      title: "Tính năng đang được thử nghiệm",
+                    })
+                  }
+                >
                   <div className="w-52 flex justify-start space-x-4 items-center ">
                     <Image
                       src="/assets/facebook.png"
